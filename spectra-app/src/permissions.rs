@@ -1,12 +1,15 @@
-use uf_product_macros::OrbitalPermissionManifest;
+//! Permission manifest deferred until upstream Orbital exports manifest types.
 
-#[derive(OrbitalPermissionManifest)]
-#[permission_manifest(
-    domain_key = "spectra",
-    domain_name = "Spectra",
-    domain_description = "Permissions for Spectra observability query surfaces"
-)]
+/// Placeholder permission enum for the exported Spectra app shell.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum SpectraPermission {
-    #[permission(description = "Query Spectra event and metric tables")]
     QueryTable,
+}
+
+impl SpectraPermission {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::QueryTable => "spectra.query_table",
+        }
+    }
 }

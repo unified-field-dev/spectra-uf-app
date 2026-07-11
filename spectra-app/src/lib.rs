@@ -42,7 +42,6 @@ orbital_app! {
     version: "0.1.0",
     routes: SpectraRoutes,
     route_path: "/spectra",
-    permission_manifest: SpectraPermission,
 }
 
 #[orbital_macros::orbital_routes_extract]
