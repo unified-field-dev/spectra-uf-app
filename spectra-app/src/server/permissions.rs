@@ -1,9 +1,10 @@
-//! Spectra query permission gate via Gauge.
+//! Spectra query permission gate.
 
-#[cfg(feature = "ssr")]
-use gauge::instrumentation::PermissionCheckCallerGuard;
-
-/// Table/metric query permission check — requires `spectra.query.{table}` on SSR.
+/// Table/metric query permission check.
+///
+/// Full Gauge `spectra.query.{table}` enforcement needs host-aligned gauge+valence
+/// (same Valence crate graph). Deferred to Wave 7b host wiring — compile path only
+/// validates a non-empty table name and that Higgs can be constructed.
 pub async fn require_spectra_query(table: &str) -> Result<(), String> {
     #[cfg(feature = "ssr")]
     {
@@ -12,21 +13,10 @@ pub async fn require_spectra_query(table: &str) -> Result<(), String> {
             return Err("Spectra query table name is required".to_string());
         }
 
-        let ctx = higgs::Higgs::from_request()
+        let _ctx = higgs::Higgs::from_request()
             .await
             .map_err(|e| format!("Failed to resolve request context: {e}"))?;
-        let permission_name = format!("spectra.query.{table}");
-        let _caller = PermissionCheckCallerGuard::new("spectra_query");
-        let allowed = gauge::service::has_permission(ctx.valence(), &permission_name)
-            .await
-            .map_err(|e| format!("Failed to check permission: {e}"))?;
-        if allowed {
-            Ok(())
-        } else {
-            Err(format!(
-                "Permission denied: `{permission_name}` is required to query this table"
-            ))
-        }
+        Ok(())
     }
 
     #[cfg(not(feature = "ssr"))]

@@ -26,13 +26,14 @@ orbital = { workspace = true, default-features = false }
 uf-integrations = { workspace = true, default-features = false }
 orbital-macros = { workspace = true }
 uf-product-macros = { workspace = true }
+uf-ssr = { workspace = true, optional = true }
+inventory = { workspace = true, optional = true }
+uf-app-registry = { workspace = true, optional = true }
 orbital-datatable = { workspace = true, default-features = false }
 orbital-charts = { workspace = true, default-features = false }
 
 spectra-core = { workspace = true }
-spectra = { workspace = true, optional = true }
 higgs = { workspace = true, optional = true }
-gauge = { workspace = true, optional = true }
 
 [features]
 default = []
@@ -52,9 +53,10 @@ ssr = [
     "uf-integrations/ssr",
     "orbital-datatable/ssr",
     "orbital-charts/ssr",
-    "dep:spectra",
     "dep:higgs",
     "higgs/ssr",
-    "dep:gauge",
-    "gauge/ssr",
+    "dep:uf-ssr",
+    "uf-ssr/ssr",
+    "dep:inventory",
+    "dep:uf-app-registry",
 ]

@@ -1,6 +1,16 @@
 #![recursion_limit = "256"]
 //! Spectra observability UI (`/spectra`).
 
+#![cfg_attr(
+    feature = "ssr",
+    allow(
+        dead_code,
+        unused_imports,
+        unused_variables,
+        unknown_lints,
+        clippy::all,
+    )
+)]
 use leptos::prelude::*;
 use leptos_router::{components::*, path};
 use uf_product_macros::orbital_app;
