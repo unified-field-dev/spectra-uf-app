@@ -43,9 +43,9 @@ impl Parse for ServerArgs {
 /// # Example
 ///
 /// ```ignore
-/// #[orbital::server]
+/// #[uf_product_macros::server]
 /// pub async fn counter_get() -> Result<CounterResponse, ServerFnError> {
-///     let v = orbital::ssr::valence().await?;
+///     let v = uf_ssr::ssr::valence().await?;
 ///     // ... function body ...
 /// }
 /// ```
@@ -56,7 +56,7 @@ impl Parse for ServerArgs {
 /// #[server]
 /// pub async fn counter_get() -> Result<CounterResponse, ServerFnError> {
 ///     uf_ssr::ssr::with_operation("counter_get", async move {
-///         let v = orbital::ssr::valence().await?;
+///         let v = uf_ssr::ssr::valence().await?;
 ///         // ... function body ...
 ///     }).await
 /// }
@@ -73,7 +73,7 @@ pub fn expand_server(attr: TokenStream, input: TokenStream) -> TokenStream {
     if input_fn.sig.asyncness.is_none() {
         return syn::Error::new_spanned(
             &input_fn.sig,
-            "#[orbital::server] can only be used on async functions",
+            "#[uf_product_macros::server] can only be used on async functions",
         )
         .to_compile_error()
         .into();

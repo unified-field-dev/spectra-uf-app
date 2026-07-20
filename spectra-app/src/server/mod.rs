@@ -36,7 +36,8 @@ pub async fn query_metrics(
     require_spectra_query(&query.metric)
         .await
         .map_err(ServerFnError::new)?;
-    // Host-injected Spectra router wiring is deferred to Wave 7b; compile-only stub.
+    // Host-injected Spectra router wiring lands with deployment composition; return an
+    // empty result shape until the host registers a live query backend.
     Ok(MetricsQueryResult {
         series: Vec::new(),
         headline: Vec::new(),

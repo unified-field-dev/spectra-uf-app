@@ -21,8 +21,10 @@ Mount Spectra admin routes from your host shell (SSR + hydrate features as requi
 ## Verify
 
 ```bash
+export CARGO_BUILD_JOBS=1
 cargo check --workspace
 cargo check -p spectra-app --features ssr
+cargo test -p spectra-app --features ssr
 ```
 
 ## License
