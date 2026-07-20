@@ -1,30 +1,30 @@
-# Spectra Uf App
+# Spectra UF App
 
-        [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-        Official Unified Field admin UI for Spectra.
+Official Unified Field admin UI for Spectra (Leptos).
 
-        ## Quick start
+```toml
+[dependencies]
+spectra-app = { git = "https://github.com/deathbreakfast/spectra-uf-app", package = "spectra-app", branch = "main" }
+```
 
-        ```toml
-        [dependencies]
-        # Example — replace branch with a release tag when available.
-        spectra-uf-app = { git = "https://github.com/deathbreakfast/spectra-uf-app", branch = "main" }
-        ```
+Mount Spectra admin routes from your host shell (SSR + hydrate features as required by your Leptos setup).
 
-        ```rust
-        # Official spectra admin UI (Leptos)
-# Enable from your host app via git dependency.
-        ```## Workspace
+## Workspace
 
 | Crate | Role |
 |-------|------|
-| `spectra-app` | spectra-app crate |
+| `spectra-app` | Spectra admin UI |
+| `uf-*` | Thin shell / registry helpers shared with other uf-app repos |
 
 ## Verify
 
 ```bash
 cargo check --workspace
+cargo check -p spectra-app --features ssr
 ```
 
-See [EXTRACTION.md](EXTRACTION.md) for the phased import plan.
+## License
+
+MIT. See [LICENSE](LICENSE), [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md), and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
