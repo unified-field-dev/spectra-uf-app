@@ -10,6 +10,7 @@ use spectra_core::{
 
 use self::components::EventExplorePanel;
 
+/// Event explore view: query, filter, and visualize logged events for a schema.
 #[component]
 pub fn EventExplorePage() -> impl IntoView {
     let params = use_params_map();

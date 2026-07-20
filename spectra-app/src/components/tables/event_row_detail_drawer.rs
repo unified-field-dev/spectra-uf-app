@@ -5,8 +5,11 @@ use spectra_core::EventGridRow;
 
 #[component]
 pub fn EventRowDetailDrawer(
+    /// Row of data to render.
     row: EventGridRow,
+    /// Reactive signal controlling whether the element is open.
     #[prop(into)] open: Signal<bool>,
+    /// Callback invoked when close occurs.
     on_close: Callback<()>,
 ) -> impl IntoView {
     let json = StoredValue::new(serde_json::to_string_pretty(&row.fields).unwrap_or_default());

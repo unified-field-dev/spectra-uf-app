@@ -4,7 +4,12 @@ use orbital::components::{Card, Title3};
 use orbital::primitives::{Button, ButtonAppearance, Flex};
 
 #[component]
-pub fn QuickActionsCard(name: String, kind: String) -> impl IntoView {
+pub fn QuickActionsCard(
+    /// Display name.
+    name: String,
+    /// Kind or category.
+    kind: String,
+) -> impl IntoView {
     let href = if kind == "metric" {
         format!("/spectra/metric/{name}/explore")
     } else {

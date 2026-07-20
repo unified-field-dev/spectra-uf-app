@@ -7,6 +7,7 @@ use orbital::primitives::Flex;
 
 use self::components::MetricExplorePanel;
 
+/// Metric explore view: query and chart a single metric over a selectable time range.
 #[component]
 pub fn MetricExplorePage() -> impl IntoView {
     let params = use_params_map();

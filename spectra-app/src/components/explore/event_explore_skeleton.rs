@@ -4,7 +4,10 @@ use spectra_core::EventExploreView;
 use crate::components::query::ChartSkeleton;
 
 #[component]
-pub fn EventExploreSkeleton(view: EventExploreView) -> impl IntoView {
+pub fn EventExploreSkeleton(
+    /// Current view selection.
+    view: EventExploreView,
+) -> impl IntoView {
     let _ = view;
     view! { <ChartSkeleton /> }
 }

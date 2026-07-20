@@ -10,7 +10,9 @@ const PRESETS: &[(&str, i64)] = &[
 
 #[component]
 pub fn TimeRangePicker(
+    /// Reactive signal for the selected secs.
     #[prop(into)] selected_secs: Signal<i64>,
+    /// Callback invoked when the value changes.
     on_change: Callback<i64>,
 ) -> impl IntoView {
     let _ = selected_secs;

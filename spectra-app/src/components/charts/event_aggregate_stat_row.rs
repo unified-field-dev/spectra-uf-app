@@ -4,7 +4,10 @@ use orbital::primitives::Flex;
 use spectra_core::StatCardDto;
 
 #[component]
-pub fn EventAggregateStatRow(headline: Vec<StatCardDto>) -> impl IntoView {
+pub fn EventAggregateStatRow(
+    /// Headline text.
+    headline: Vec<StatCardDto>,
+) -> impl IntoView {
     view! {
         <Flex>
             {headline.into_iter().map(|c| {

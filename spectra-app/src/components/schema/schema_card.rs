@@ -7,7 +7,10 @@ use spectra_core::SchemaListItem;
 use super::KindBadge;
 
 #[component]
-pub fn SchemaCard(item: SchemaListItem) -> impl IntoView {
+pub fn SchemaCard(
+    /// Item to render.
+    item: SchemaListItem,
+) -> impl IntoView {
     let name = item.table_or_metric.clone();
     let kind = item.logging_kind.clone();
     let href = if kind == "metric" {

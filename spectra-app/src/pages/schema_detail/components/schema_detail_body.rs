@@ -7,7 +7,10 @@ use crate::server::get_schema_metadata;
 use super::quick_actions_card::QuickActionsCard;
 
 #[component]
-pub fn SchemaDetailBody(#[prop(into)] name: Memo<String>) -> impl IntoView {
+pub fn SchemaDetailBody(
+    /// Reactive signal for the display name.
+    #[prop(into)] name: Memo<String>,
+) -> impl IntoView {
     let detail_res = Resource::new(move || name.get(), |n| async move { get_schema_metadata(n).await });
 
     view! {

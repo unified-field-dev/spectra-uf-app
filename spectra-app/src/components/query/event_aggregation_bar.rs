@@ -5,7 +5,9 @@ use spectra_core::{EventAggregationSpec, EventExploreView, EventMeasure};
 
 #[component]
 pub fn EventAggregationBar(
+    /// Current view selection.
     view: EventExploreView,
+    /// Two-way signal holding the spec describing what to render.
     spec: RwSignal<EventAggregationSpec>,
 ) -> impl IntoView {
     if view == EventExploreView::EventLog {

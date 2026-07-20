@@ -4,7 +4,10 @@ use spectra_core::EventAggregateResult;
 use crate::components::charts::{EventAggregateStatRow, EventPieChart};
 
 #[component]
-pub fn EventPiePanel(result: EventAggregateResult) -> impl IntoView {
+pub fn EventPiePanel(
+    /// Result data to render.
+    result: EventAggregateResult,
+) -> impl IntoView {
     match result {
         EventAggregateResult::Slices { headline, .. } => {
             view! {

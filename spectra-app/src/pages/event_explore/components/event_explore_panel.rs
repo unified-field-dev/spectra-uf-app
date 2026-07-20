@@ -21,11 +21,17 @@ enum ExploreData {
 
 #[component]
 pub fn EventExplorePanel(
+    /// Reactive signal for the table identifier.
     table: Memo<String>,
+    /// Reactive signal for the range secs.
     range_secs: ReadSignal<i64>,
+    /// Setter used to update the range secs.
     set_range_secs: WriteSignal<i64>,
+    /// Reactive signal for the current view selection.
     view: ReadSignal<EventExploreView>,
+    /// Setter used to update the view.
     set_view: WriteSignal<EventExploreView>,
+    /// Two-way signal holding the aggregation mode to apply.
     aggregation: RwSignal<EventAggregationSpec>,
 ) -> impl IntoView {
     let explore_res = Resource::new(

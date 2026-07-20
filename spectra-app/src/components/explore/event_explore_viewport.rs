@@ -5,8 +5,11 @@ use super::{EventLogPanel, EventPiePanel, EventSeriesPanel};
 
 #[component]
 pub fn EventExploreViewport(
+    /// Current view selection.
     view: EventExploreView,
+    /// Optional row result.
     row_result: Option<EventQueryResult>,
+    /// Optional aggregate result.
     aggregate_result: Option<EventAggregateResult>,
 ) -> impl IntoView {
     view! {

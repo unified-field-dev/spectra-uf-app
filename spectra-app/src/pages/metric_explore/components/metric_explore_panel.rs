@@ -10,8 +10,11 @@ use super::metric_toolbar::MetricToolbar;
 
 #[component]
 pub fn MetricExplorePanel(
+    /// Reactive signal for the metric name.
     metric_name: Memo<String>,
+    /// Reactive signal for the range secs.
     range_secs: ReadSignal<i64>,
+    /// Setter used to update the range secs.
     set_range_secs: WriteSignal<i64>,
 ) -> impl IntoView {
     let query_res = Resource::new(

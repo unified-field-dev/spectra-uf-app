@@ -6,6 +6,7 @@ use orbital::primitives::{Flex, Input, InputAppearance};
 
 use self::components::SchemaIndexSection;
 
+/// Schema index: browsable list of all registered event/metric schemas.
 #[component]
 pub fn SchemaIndexPage() -> impl IntoView {
     let query = RwSignal::new(String::new());

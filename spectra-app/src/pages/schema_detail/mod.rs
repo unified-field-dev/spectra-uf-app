@@ -7,6 +7,7 @@ use orbital::primitives::Flex;
 
 use self::components::SchemaDetailBody;
 
+/// Detail view for a single schema: fields, kind, and quick actions to explore its data.
 #[component]
 pub fn SchemaDetailPage() -> impl IntoView {
     let params = use_params_map();

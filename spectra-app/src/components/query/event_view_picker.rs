@@ -12,7 +12,9 @@ const VIEWS: &[(EventExploreView, &str)] = &[
 
 #[component]
 pub fn EventViewPicker(
+    /// Reactive signal for the current view selection.
     #[prop(into)] view: Signal<EventExploreView>,
+    /// Callback invoked when the value changes.
     on_change: Callback<EventExploreView>,
 ) -> impl IntoView {
     view! {
