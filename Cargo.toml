@@ -31,11 +31,13 @@ serde_json = "1"
 turf = "0.10"
 chrono = { version = "0.4", default-features = false, features = ["clock", "std", "wasmbind", "serde"] }
 
-spectra-core = { git = "https://github.com/deathbreakfast/spectra", rev = "f648d621e3031dbd610aa477a51046436d57c472", default-features = false }
-spectra = { git = "https://github.com/deathbreakfast/spectra", rev = "f648d621e3031dbd610aa477a51046436d57c472", default-features = false, features = ["mem"] }
-gauge = { git = "https://github.com/deathbreakfast/gauge", rev = "427da34d25f2438ef58d9ba775ff109ff32961f0", default-features = false }
-higgs = { git = "https://github.com/deathbreakfast/valence-platform", rev = "8e8a4e7", package = "higgs", default-features = false }
-valence = { git = "https://github.com/deathbreakfast/valence-platform", rev = "8e8a4e7", package = "valence", default-features = false }
+spectra-core = { package = "uf-spectra-core", version = "0.1.0", default-features = false }
+spectra = { package = "uf-spectra", version = "0.1.0", default-features = false, features = ["mem"] }
+gauge = { path = "../fleet/repos/gauge/gauge", default-features = false }
+higgs = { path = "../fleet/repos/valence-platform/higgs", default-features = false }
+uf-host = { path = "../fleet/repos/valence-platform/uf-host", default-features = false }
+uf-identity = { path = "../fleet/repos/valence-platform/uf-identity" }
+valence = { package = "uf-valence", version = "0.1.1", default-features = false, features = ["mem", "surreal"] }
 
 orbital = { git = "https://github.com/deathbreakfast/orbital", rev = "2815678421984f854e2690c6e13d45bc6512ae38", default-features = false }
 orbital-macros = { git = "https://github.com/deathbreakfast/orbital", rev = "2815678421984f854e2690c6e13d45bc6512ae38" }
@@ -47,3 +49,7 @@ uf-product-macros = { path = "uf-product-macros" }
 uf-ssr = { path = "uf-ssr", default-features = false }
 uf-app-registry = { path = "uf-app-registry" }
 inventory = "0.3"
+
+# crates.io uf-valence-codegen emits side-effect hooks; stubs until core republish
+[patch.crates-io]
+uf-valence-core = { path = "../valence/valence-core" }
