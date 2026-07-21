@@ -11,6 +11,14 @@ spectra-app = { git = "https://github.com/deathbreakfast/spectra-uf-app", packag
 
 Mount Spectra admin routes from your host shell (SSR + hydrate features as required by your Leptos setup).
 
+## Audience
+
+| Reader | Use this repo for |
+|--------|-------------------|
+| **Host integrators** | Mounting Spectra admin routes in a Leptos SSR/hydrate shell |
+| **UF platform authors** | Shared uf-app registry patterns used across PBCQ admin UIs |
+| **Spectra operators** | Admin UI for topics, subscriptions, and Spectra ops views |
+
 ## Workspace
 
 | Crate | Role |
