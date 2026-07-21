@@ -7,19 +7,20 @@ use spectra_core::SchemaListItem;
 use super::KindBadge;
 
 #[component]
+#[allow(clippy::needless_pass_by_value)]
 pub fn SchemaCard(
     /// Item to render.
     item: SchemaListItem,
 ) -> impl IntoView {
     let name = item.table_or_metric.clone();
-    let kind = item.logging_kind.clone();
+    let kind = item.logging_kind;
     let href = if kind == "metric" {
         format!("/spectra/metric/{name}/explore")
     } else {
         format!("/spectra/schema/{name}/explore")
     };
     let detail_href = format!("/spectra/schema/{name}");
-    let test_id = format!("spectra-schema-card-{}", name);
+    let test_id = format!("spectra-schema-card-{name}");
     view! {
         <div data-testid=test_id>
             <Card>

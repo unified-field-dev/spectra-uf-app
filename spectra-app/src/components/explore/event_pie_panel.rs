@@ -9,13 +9,13 @@ pub fn EventPiePanel(
     result: EventAggregateResult,
 ) -> impl IntoView {
     match result {
-        EventAggregateResult::Slices { headline, .. } => {
-            view! {
-                <EventAggregateStatRow headline=headline />
-                <EventPieChart />
-            }
-            .into_any()
+        EventAggregateResult::Slices { headline, .. } => view! {
+            <EventAggregateStatRow headline=headline />
+            <EventPieChart />
         }
-        _ => view! { <span>"No slice data"</span> }.into_any(),
+        .into_any(),
+        EventAggregateResult::TimeSeries { .. } => {
+            view! { <span>"No slice data"</span> }.into_any()
+        }
     }
 }

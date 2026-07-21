@@ -3,13 +3,10 @@
 use leptos::prelude::*;
 use leptos_router::components::Outlet;
 use orbital::components::{
-    Caption1,
-    Navigation, NavigationBody, NavigationConfig, NavigationLink, NavigationMaterial,
+    Caption1, Navigation, NavigationBody, NavigationConfig, NavigationLink, NavigationMaterial,
 };
 use orbital::primitives::Flex;
-use uf_integrations::{
-    ShellAppBar, ShellLeftNav, UnifiedFieldAppBar, UnifiedFieldShellLayout,
-};
+use uf_integrations::{ShellAppBar, ShellLeftNav, UnifiedFieldAppBar, UnifiedFieldShellLayout};
 
 use crate::AppMetadata;
 

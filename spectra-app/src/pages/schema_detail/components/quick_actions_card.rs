@@ -4,6 +4,7 @@ use orbital::components::{Card, Title3};
 use orbital::primitives::{Button, ButtonAppearance, Flex};
 
 #[component]
+#[allow(clippy::needless_pass_by_value)]
 pub fn QuickActionsCard(
     /// Display name.
     name: String,

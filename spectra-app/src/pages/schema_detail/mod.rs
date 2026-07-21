@@ -11,9 +11,7 @@ use self::components::SchemaDetailBody;
 #[component]
 pub fn SchemaDetailPage() -> impl IntoView {
     let params = use_params_map();
-    let name = Memo::new(move |_| {
-        params.with(|p| p.get("name").map(|s| s.to_string()).unwrap_or_default())
-    });
+    let name = Memo::new(move |_| params.with(|p| p.get("name").unwrap_or_default()));
     view! {
         <ContentContainer>
             <Flex vertical=true gap=SpacingSize::Size240.flex_gap()>

@@ -6,7 +6,8 @@ use leptos::prelude::*;
 pub use permissions::require_spectra_query;
 use spectra_core::{
     list_schemas, rows_to_event_result, schema_detail, EventAggregateRequest, EventAggregateResult,
-    EventQuery, EventQueryResult, MetricsQuery, MetricsQueryResult, SchemaDetailDto, SchemaListItem,
+    EventQuery, EventQueryResult, MetricsQuery, MetricsQueryResult, SchemaDetailDto,
+    SchemaListItem,
 };
 
 /// List summary metadata for every registered schema.

@@ -20,12 +20,7 @@ pub fn EventAggregationBar(
             .unwrap_or(3600)
             .to_string(),
     );
-    let group_by = RwSignal::new(
-        spec.get_untracked()
-            .group_by_field
-            .clone()
-            .unwrap_or_default(),
-    );
+    let group_by = RwSignal::new(spec.get_untracked().group_by_field.unwrap_or_default());
     let measure_str = RwSignal::new(if spec.get_untracked().measure == EventMeasure::Count {
         "count".to_string()
     } else {

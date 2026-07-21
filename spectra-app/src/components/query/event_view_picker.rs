@@ -1,6 +1,6 @@
 use leptos::prelude::*;
 use orbital::components::Caption1;
-use orbital::primitives::{Button, Flex};
+use orbital::primitives::{Button, ButtonAppearance, Flex};
 use spectra_core::EventExploreView;
 
 const VIEWS: &[(EventExploreView, &str)] = &[
@@ -13,7 +13,8 @@ const VIEWS: &[(EventExploreView, &str)] = &[
 #[component]
 pub fn EventViewPicker(
     /// Reactive signal for the current view selection.
-    #[prop(into)] view: Signal<EventExploreView>,
+    #[prop(into)]
+    view: Signal<EventExploreView>,
     /// Callback invoked when the value changes.
     on_change: Callback<EventExploreView>,
 ) -> impl IntoView {
@@ -24,8 +25,15 @@ pub fn EventViewPicker(
                 {VIEWS.iter().map(|(v, label)| {
                     let v = *v;
                     let label = *label;
+                    let appearance = move || {
+                        if view.get() == v {
+                            ButtonAppearance::Primary
+                        } else {
+                            ButtonAppearance::Secondary
+                        }
+                    };
                     view! {
-                        <Button on:click=move |_| on_change.run(v)>
+                        <Button appearance=Signal::derive(appearance) on:click=move |_| on_change.run(v)>
                             {label}
                         </Button>
                     }

@@ -1,6 +1,9 @@
 //! Spectra query permission gate.
 
 /// Rejects blank table/metric names before host permission checks run.
+///
+/// Only called from the `ssr`-gated branch of `require_spectra_query`.
+#[cfg_attr(not(feature = "ssr"), allow(dead_code))]
 pub fn validate_spectra_query_name(table: &str) -> Result<(), String> {
     if table.trim().is_empty() {
         Err("Spectra query table name is required".to_string())

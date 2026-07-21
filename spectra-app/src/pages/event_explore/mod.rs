@@ -4,9 +4,7 @@ use leptos::prelude::*;
 use leptos_router::hooks::use_params_map;
 use orbital::components::{ContentContainer, SpacingSize, Title3};
 use orbital::primitives::Flex;
-use spectra_core::{
-    EventAggregationSpec, EventExploreView, EventMeasure,
-};
+use spectra_core::{EventAggregationSpec, EventExploreView, EventMeasure};
 
 use self::components::EventExplorePanel;
 
@@ -14,9 +12,7 @@ use self::components::EventExplorePanel;
 #[component]
 pub fn EventExplorePage() -> impl IntoView {
     let params = use_params_map();
-    let table = Memo::new(move |_| {
-        params.with(|p| p.get("name").map(|s| s.to_string()).unwrap_or_default())
-    });
+    let table = Memo::new(move |_| params.with(|p| p.get("name").unwrap_or_default()));
     let (range_secs, set_range_secs) = signal(3600i64);
     let (view, set_view) = signal(EventExploreView::EventLog);
     let aggregation = RwSignal::new(EventAggregationSpec {

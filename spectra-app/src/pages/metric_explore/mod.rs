@@ -11,9 +11,7 @@ use self::components::MetricExplorePanel;
 #[component]
 pub fn MetricExplorePage() -> impl IntoView {
     let params = use_params_map();
-    let metric_name = Memo::new(move |_| {
-        params.with(|p| p.get("name").map(|s| s.to_string()).unwrap_or_default())
-    });
+    let metric_name = Memo::new(move |_| params.with(|p| p.get("name").unwrap_or_default()));
     let (range_secs, set_range_secs) = signal(3600i64);
 
     view! {

@@ -57,7 +57,10 @@
     )
 )]
 use leptos::prelude::*;
-use leptos_router::{components::*, path};
+use leptos_router::{
+    components::{ParentRoute, Route, ToHref},
+    path,
+};
 use uf_product_macros::orbital_app;
 
 mod components;

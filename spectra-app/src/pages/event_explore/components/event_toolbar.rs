@@ -8,11 +8,13 @@ use crate::components::query::{
 #[component]
 pub fn EventToolbar(
     /// Reactive signal for the range secs.
-    #[prop(into)] range_secs: Signal<i64>,
+    #[prop(into)]
+    range_secs: Signal<i64>,
     /// Callback invoked when range occurs.
     on_range: Callback<i64>,
     /// Reactive signal for the current view selection.
-    #[prop(into)] view: Signal<EventExploreView>,
+    #[prop(into)]
+    view: Signal<EventExploreView>,
     /// Callback invoked when view occurs.
     on_view: Callback<EventExploreView>,
     /// Two-way signal holding the aggregation mode to apply.

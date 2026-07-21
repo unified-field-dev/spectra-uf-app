@@ -9,13 +9,11 @@ pub fn EventSeriesPanel(
     result: EventAggregateResult,
 ) -> impl IntoView {
     match result {
-        EventAggregateResult::TimeSeries { headline, .. } => {
-            view! {
-                <EventAggregateStatRow headline=headline />
-                <EventTimeSeriesChart />
-            }
-            .into_any()
+        EventAggregateResult::TimeSeries { headline, .. } => view! {
+            <EventAggregateStatRow headline=headline />
+            <EventTimeSeriesChart />
         }
-        _ => view! { <span>"No series data"</span> }.into_any(),
+        .into_any(),
+        EventAggregateResult::Slices { .. } => view! { <span>"No series data"</span> }.into_any(),
     }
 }

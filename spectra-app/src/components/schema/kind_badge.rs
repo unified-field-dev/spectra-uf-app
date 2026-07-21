@@ -2,6 +2,7 @@ use leptos::prelude::*;
 use orbital::components::Caption1;
 
 #[component]
+#[allow(clippy::needless_pass_by_value)]
 pub fn KindBadge(
     /// Kind or category.
     kind: String,

@@ -8,9 +8,10 @@ use crate::server::list_schema_metadata;
 #[component]
 pub fn SchemaIndexSection(
     /// Reactive signal for the search query text.
-    #[prop(into)] query: Signal<String>,
+    #[prop(into)]
+    query: Signal<String>,
 ) -> impl IntoView {
-    let schemas_res = Resource::new(|| (), |_| async move { list_schema_metadata().await });
+    let schemas_res = Resource::new(|| (), |()| async move { list_schema_metadata().await });
 
     view! {
         <Suspense fallback=|| view! { "Loading schemas…" }>

@@ -11,10 +11,7 @@ pub fn to_column_defs(columns: &[GridColumnDto]) -> Vec<DataTableColumnDef> {
         .collect()
 }
 
-pub fn to_row_models(
-    rows: &[EventGridRow],
-    columns: &[GridColumnDto],
-) -> Vec<DataTableRowModel> {
+pub fn to_row_models(rows: &[EventGridRow], columns: &[GridColumnDto]) -> Vec<DataTableRowModel> {
     rows.iter()
         .map(|r| {
             let cells = columns

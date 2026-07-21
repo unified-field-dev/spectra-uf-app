@@ -5,6 +5,7 @@ use spectra_core::EventQueryResult;
 use super::event_grid_mapper::{to_column_defs, to_row_models};
 
 #[component]
+#[allow(clippy::needless_pass_by_value)]
 pub fn SpectraEventDataGrid(
     /// Result data to render.
     result: EventQueryResult,
