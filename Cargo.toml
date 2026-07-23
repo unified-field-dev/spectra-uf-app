@@ -2,10 +2,6 @@
 resolver = "2"
 members = [
     "spectra-app",
-    "uf-integrations",
-    "uf-product-macros",
-    "uf-ssr",
-    "uf-app-registry",
 ]
 
 [workspace.package]
@@ -107,10 +103,12 @@ orbital-macros = { git = "https://github.com/deathbreakfast/orbital", branch = "
 orbital-datatable = { git = "https://github.com/deathbreakfast/orbital", branch = "fix/crates-io-publish", default-features = false }
 orbital-charts = { git = "https://github.com/deathbreakfast/orbital", branch = "fix/crates-io-publish", default-features = false }
 
-uf-integrations = { path = "uf-integrations", default-features = false }
-uf-product-macros = { path = "uf-product-macros" }
-uf-ssr = { path = "uf-ssr", default-features = false }
-uf-app-registry = { path = "uf-app-registry" }
+# Shared with embedded host / other uf-apps (avoids lockfile path collisions).
+uf-integrations = { path = "../unified-field-product/uf-integrations", default-features = false }
+uf-product-macros = { path = "../unified-field-product/uf-product-macros" }
+uf-product = { path = "../unified-field-product/uf-product", default-features = false }
+uf-ssr = { path = "../counter-app/uf-ssr", default-features = false }
+uf-app-registry = { path = "../counter-app/uf-app-registry" }
 inventory = "0.3"
 
 # crates.io uf-valence-codegen emits side-effect hooks; stubs until core republish
