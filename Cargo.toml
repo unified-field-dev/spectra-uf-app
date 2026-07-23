@@ -96,10 +96,10 @@ chrono = { version = "0.4", default-features = false, features = ["clock", "std"
 
 spectra-core = { package = "uf-spectra-core", version = "0.1.0", default-features = false }
 spectra = { package = "uf-spectra", version = "0.1.0", default-features = false, features = ["mem"] }
-gauge = { git = "https://github.com/deathbreakfast/gauge", branch = "feat/crates-io-uf-deps", default-features = false }
+gauge = { git = "https://github.com/deathbreakfast/gauge", branch = "main", default-features = false }
 higgs = { path = "../fleet/repos/valence-platform/higgs-platform", default-features = false }
-uf-host = { git = "https://github.com/deathbreakfast/valence-platform", branch = "feat/crates-io-uf-deps", default-features = false }
-uf-identity = { git = "https://github.com/deathbreakfast/valence-platform", branch = "feat/crates-io-uf-deps" }
+uf-host = { git = "https://github.com/deathbreakfast/valence-platform", branch = "main", default-features = false }
+uf-identity = { git = "https://github.com/deathbreakfast/valence-platform", branch = "main" }
 valence = { package = "uf-valence", version = "0.1.1", default-features = false, features = ["mem", "sqlite"] }
 
 orbital = { package = "orbital-ui", git = "https://github.com/deathbreakfast/orbital", branch = "fix/crates-io-publish", default-features = false }
