@@ -26,6 +26,7 @@ chrono = { workspace = true, features = ["serde"] }
 
 orbital = { workspace = true, default-features = false }
 uf-integrations = { workspace = true, default-features = false }
+lepton-shell = { workspace = true, default-features = false }
 orbital-macros = { workspace = true }
 uf-product-macros = { workspace = true }
 uf-product = { workspace = true, default-features = false, optional = true }
@@ -44,6 +45,7 @@ hydrate = [
     "leptos/hydrate",
     "orbital/hydrate",
     "uf-integrations/hydrate",
+    "lepton-shell/hydrate",
     "orbital-datatable/hydrate",
     "orbital-charts/hydrate",
     "dep:uf-product",
@@ -56,6 +58,7 @@ ssr = [
     "dep:leptos_axum",
     "orbital/ssr",
     "uf-integrations/ssr",
+    "lepton-shell/ssr",
     "orbital-datatable/ssr",
     "orbital-charts/ssr",
     "dep:higgs",
