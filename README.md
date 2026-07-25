@@ -2,22 +2,31 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-Official Unified Field admin UI for Spectra (Leptos).
+Leptos admin UI for Spectra schemas, events, and metrics — mounted under `/spectra`.
 
 ```toml
 [dependencies]
 spectra-app = { git = "https://github.com/deathbreakfast/spectra-uf-app", package = "spectra-app", branch = "main" }
 ```
 
-Mount Spectra admin routes from your host shell (SSR + hydrate features as required by your Leptos setup).
+```rust
+use spectra_app::SpectraRoutes;
+use leptos_router::components::Routes;
 
-## Audience
+view! {
+    <Routes fallback=|| "not found">
+        <SpectraRoutes />
+    </Routes>
+}
+```
 
-| Reader | Use this repo for |
-|--------|-------------------|
-| **Host integrators** | Mounting Spectra admin routes in a Leptos SSR/hydrate shell |
-| **UF platform authors** | Shared uf-app registry patterns used across PBCQ admin UIs |
-| **Spectra operators** | Admin UI for topics, subscriptions, and Spectra ops views |
+## About
+
+- Schema index and detail for registered event/metric schemas
+- Event explore (table, time series, breakdowns)
+- Metric explore for a single series over time
+
+Host must supply Spectra query backends and auth guard context. Enable `ssr` / hydrate features to match your host.
 
 ## Workspace
 
