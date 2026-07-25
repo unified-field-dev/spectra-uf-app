@@ -7,6 +7,7 @@ use orbital::components::{
     Caption1, Navigation, NavigationBody, NavigationConfig, NavigationLink, NavigationMaterial,
 };
 use orbital::primitives::Flex;
+use orbital::routes::RequireAuthenticated;
 use uf_integrations::{
     ShellAppBar, ShellAuthMenu, ShellLeftNav, UnifiedFieldAppBar, UnifiedFieldShellLayout,
 };
@@ -41,12 +42,14 @@ pub fn SpectraLayout() -> impl IntoView {
                         </NavigationBody>
                     </Navigation>
                 </ShellLeftNav>
-                <Flex vertical=true>
-                    <div data-testid="spectra-breadcrumbs">
-                        <Caption1>"Spectra"</Caption1>
-                    </div>
-                    <Outlet />
-                </Flex>
+                <RequireAuthenticated>
+                    <Flex vertical=true>
+                        <div data-testid="spectra-breadcrumbs">
+                            <Caption1>"Spectra"</Caption1>
+                        </div>
+                        <Outlet />
+                    </Flex>
+                </RequireAuthenticated>
             </UnifiedFieldShellLayout>
         </div>
     }

@@ -13,16 +13,10 @@ pub async fn prefetch_family() {
     SpectraHomeRoute::preload().await;
 }
 
-/// Eager auth-gated layout shell for `/spectra/*` ParentRoute.
+/// Eager layout shell for `/spectra/*` ParentRoute (auth gate lives inside [`SpectraLayout`]).
 #[component]
 pub fn SpectraLayoutRouteView() -> impl IntoView {
-    view! {
-        <div data-testid="spectra-auth-guard-root">
-            <orbital::routes::RequireAuthenticated>
-                <SpectraLayout />
-            </orbital::routes::RequireAuthenticated>
-        </div>
-    }
+    view! { <SpectraLayout /> }
 }
 
 /// Lazy `/spectra` home.
