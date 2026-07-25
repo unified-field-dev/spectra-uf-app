@@ -3,7 +3,7 @@
 //! metrics under `/spectra`.
 //!
 //! Spectra itself is a log/metric storage crate with no built-in UI; this crate is the
-//! `#[uf_product_macros::orbital_app]`-registered operations surface a host mounts to give
+//! `#[uf_product_macros::uf_app]`-registered operations surface a host mounts to give
 //! operators a way to browse schemas and explore event/metric data.
 //!
 //! ## Features
@@ -21,7 +21,7 @@
 //! ## Getting started
 //!
 //! Mount [`SpectraRoutes`] inside your host's `<Routes>`; it registers the `/spectra`
-//! subtree (auth-gated) and, via `orbital_app!`, its launcher metadata:
+//! subtree (auth-gated) and, via `uf_app!`, its launcher metadata:
 //!
 //! ```rust,ignore
 //! use leptos::prelude::*;
@@ -61,7 +61,7 @@ use leptos_router::{
     components::{ParentRoute, Route, ToHref},
     path, Lazy,
 };
-use uf_product_macros::orbital_app;
+use uf_product_macros::uf_app;
 
 mod components;
 mod explore_time;
@@ -86,7 +86,7 @@ pub use server::{
     get_schema_metadata, list_schema_metadata, query_event_aggregate, query_events, query_metrics,
 };
 
-orbital_app! {
+uf_app! {
     name: "Spectra",
     id: "spectra",
     description: "Log and metric explorer",
