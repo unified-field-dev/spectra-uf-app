@@ -59,13 +59,14 @@
 use leptos::prelude::*;
 use leptos_router::{
     components::{ParentRoute, Route, ToHref},
-    path,
+    path, Lazy,
 };
 use uf_product_macros::orbital_app;
 
 mod components;
 mod explore_time;
 mod layout;
+mod lazy_routes;
 pub mod pages;
 mod permissions;
 pub mod server;
@@ -73,6 +74,10 @@ pub mod server;
 pub use permissions::SpectraPermission;
 
 pub use layout::SpectraLayout;
+pub use lazy_routes::{
+    prefetch_family, EventExploreRoute, MetricExploreRoute, SchemaDetailRoute, SchemaIndexRoute,
+    SpectraHomeRoute, SpectraLayoutRouteView,
+};
 pub use pages::{
     EventExplorePage, MetricExplorePage, SchemaDetailPage, SchemaIndexPage, SpectraHomePage,
 };
@@ -80,17 +85,6 @@ pub use pages::{
 pub use server::{
     get_schema_metadata, list_schema_metadata, query_event_aggregate, query_events, query_metrics,
 };
-
-#[component]
-fn SpectraAuthGuard() -> impl IntoView {
-    view! {
-        <div data-testid="spectra-auth-guard-root">
-            <orbital::routes::RequireAuthenticated>
-                <SpectraLayout />
-            </orbital::routes::RequireAuthenticated>
-        </div>
-    }
-}
 
 orbital_app! {
     name: "Spectra",
@@ -104,6 +98,8 @@ orbital_app! {
 
 /// Spectra's nested route tree, gated behind an auth guard and mounted at `/spectra`.
 ///
+/// Leaf pages are [`LazyRoute`](leptos_router::LazyRoute) views so
+/// `cargo leptos --split` can emit a separate WASM chunk for this family.
 /// Registers the home, schema index/detail, and event/metric explore routes. Intended to be
 /// used inside a host `<Routes>` component, e.g. `<SpectraRoutes />`.
 #[allow(missing_docs)]
@@ -111,12 +107,12 @@ orbital_app! {
 #[component(transparent)]
 pub fn SpectraRoutes() -> impl leptos_router::MatchNestedRoutes + Clone {
     view! {
-        <ParentRoute path=path!("spectra") view=SpectraAuthGuard>
-            <Route path=path!("") view=SpectraHomePage />
-            <Route path=path!("schema") view=SchemaIndexPage />
-            <Route path=path!("schema/:name") view=SchemaDetailPage />
-            <Route path=path!("metric/:name/explore") view=MetricExplorePage />
-            <Route path=path!("schema/:name/explore") view=EventExplorePage />
+        <ParentRoute path=path!("spectra") view=SpectraLayoutRouteView>
+            <Route path=path!("") view={Lazy::<SpectraHomeRoute>::new()} />
+            <Route path=path!("schema") view={Lazy::<SchemaIndexRoute>::new()} />
+            <Route path=path!("schema/:name") view={Lazy::<SchemaDetailRoute>::new()} />
+            <Route path=path!("metric/:name/explore") view={Lazy::<MetricExploreRoute>::new()} />
+            <Route path=path!("schema/:name/explore") view={Lazy::<EventExploreRoute>::new()} />
         </ParentRoute>
     }
     .into_inner()
