@@ -17,6 +17,26 @@
 //!   over time.
 //! - **Read API** — [`server`] exposes the SSR-only server functions backing the pages
 //!   above, gated by [`server::require_spectra_query`].
+//! - **Permissions** — [`SpectraPermission`] is the (currently single-variant) permission
+//!   enum for query access; [`server::require_spectra_query`] is the actual per-request
+//!   gate every query/aggregate server fn calls before touching the query backend.
+//!
+//! ## Routes
+//!
+//! Mounted under `/spectra` by [`SpectraRoutes`]. Concern → page → key server fn(s):
+//!
+//! | Path | Page | Key server fn(s) |
+//! |---|---|---|
+//! | `/spectra` | [`SpectraHomePage`] | `list_schema_metadata` |
+//! | `/spectra/schema` | [`SchemaIndexPage`] | `list_schema_metadata` |
+//! | `/spectra/schema/:name` | [`SchemaDetailPage`] | `get_schema_metadata` |
+//! | `/spectra/schema/:name/explore` | [`EventExplorePage`] | `query_events` → [`server::require_spectra_query`], `query_event_aggregate` → [`server::require_spectra_query`] |
+//! | `/spectra/metric/:name/explore` | [`MetricExplorePage`] | `query_metrics` → [`server::require_spectra_query`] |
+//!
+//! Every explore query (`query_events`, `query_event_aggregate`, `query_metrics`) first
+//! calls [`server::require_spectra_query`] with the target table/metric name; it rejects
+//! blank names and requires a resolvable Higgs request context before the (currently
+//! stubbed, host-injected) query backend runs.
 //!
 //! ## Getting started
 //!
@@ -42,7 +62,9 @@
 //!
 //! - [`SpectraRoutes`] — the route entrypoint mounted by hosts.
 //! - [`SpectraLayout`] — the shared app bar / nav shell wrapping every route.
-//! - [`mod@server`] — server functions backing the UI.
+//! - [`mod@server`] — server functions backing the UI, including the
+//!   [`server::require_spectra_query`] permission gate.
+//! - [`SpectraPermission`] — the permission enum surfaced for host manifest wiring.
 
 #![allow(missing_docs)]
 #![allow(clippy::unused_unit, unused_imports)]
