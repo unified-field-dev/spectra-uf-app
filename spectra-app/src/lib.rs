@@ -17,9 +17,10 @@
 //!   over time.
 //! - **Read API** — [`server`] exposes the SSR-only server functions backing the pages
 //!   above, gated by [`server::require_spectra_query`].
-//! - **Permissions** — [`SpectraPermission`] is the (currently single-variant) permission
-//!   enum for query access; [`server::require_spectra_query`] is the actual per-request
-//!   gate every query/aggregate server fn calls before touching the query backend.
+//! - **Permissions** — [`SpectraPermission`] (`QueryTable`) is registered via
+//!   `uf_app!` / `UfPermissionManifest`; server fns use `permission = "QueryTable"`.
+//!   Explore queries also call [`server::require_spectra_query`] for per-table
+//!   Gauge `spectra.query.{table}` checks.
 //!
 //! ## Routes
 //!
@@ -33,10 +34,9 @@
 //! | `/spectra/schema/:name/explore` | [`EventExplorePage`] | `query_events` → [`server::require_spectra_query`], `query_event_aggregate` → [`server::require_spectra_query`] |
 //! | `/spectra/metric/:name/explore` | [`MetricExplorePage`] | `query_metrics` → [`server::require_spectra_query`] |
 //!
-//! Every explore query (`query_events`, `query_event_aggregate`, `query_metrics`) first
-//! calls [`server::require_spectra_query`] with the target table/metric name; it rejects
-//! blank names and requires a resolvable Higgs request context before the (currently
-//! stubbed, host-injected) query backend runs.
+//! Every server fn requires an authenticated session and `QueryTable`. Explore queries
+//! additionally call [`server::require_spectra_query`] for Gauge
+//! `spectra.query.{table}` before the (currently stubbed, host-injected) query backend runs.
 //!
 //! ## Getting started
 //!
@@ -116,6 +116,7 @@ uf_app! {
     version: "0.1.0",
     routes: SpectraRoutes,
     route_path: "/spectra",
+    permission_manifest: permissions::SpectraPermission,
 }
 
 /// Spectra's nested route tree, gated behind an auth guard and mounted at `/spectra`.

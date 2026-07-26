@@ -39,6 +39,7 @@ orbital-charts = { workspace = true, default-features = false }
 spectra-core = { workspace = true }
 spectra-backend = { path = "../spectra-backend" }
 higgs = { workspace = true, optional = true }
+gauge = { workspace = true, optional = true }
 
 [features]
 default = []
@@ -64,6 +65,8 @@ ssr = [
     "orbital-charts/ssr",
     "dep:higgs",
     "higgs/ssr",
+    "dep:gauge",
+    "gauge/ssr",
     "dep:uf-ssr",
     "uf-ssr/ssr",
     "dep:uf-product",

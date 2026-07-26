@@ -93,7 +93,7 @@ chrono = { version = "0.4", default-features = false, features = ["clock", "std"
 
 spectra-core = { package = "uf-spectra-core", version = "0.1.0", default-features = false }
 spectra = { package = "uf-spectra", version = "0.1.0", default-features = false, features = ["mem"] }
-gauge = { git = "https://github.com/deathbreakfast/gauge", branch = "main", default-features = false }
+gauge = { path = "../../L3-products-zones-hosts/gauge/gauge", default-features = false }
 higgs = { path = "../../L1-host-stack-kits/higgs/higgs", default-features = false }
 uf-host = { path = "../../L1-host-stack-kits/higgs/uf-host", default-features = false }
 uf-identity = { path = "../../L1-host-stack-kits/higgs/uf-identity" }

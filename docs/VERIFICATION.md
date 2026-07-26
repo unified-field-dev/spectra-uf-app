@@ -38,13 +38,14 @@ cargo test -p spectra-app --features ssr
 | Behavior | Level | Happy | Sad | Notes |
 |----------|-------|-------|-----|-------|
 | `validate_spectra_query_name` | unit+integ | non-empty / trimmed name | blank / whitespace → `"required"` | gate for explore queries |
+| `spectra_query_permission_name` | unit+integ | `spectra.query.{table}` (trimmed) | — | Gauge name for SP-01 |
 | `schema_metadata_list` (`list_schema_metadata`) | unit+integ | `Vec` of named event/metric items | — | empty registry OK |
 | `schema_metadata_detail` (`get_schema_metadata`) | unit+integ | detail matches list entry when present | unknown name → `None` | |
 | `empty_event_query_result` (`query_events` stub) | unit+integ | empty rows + default `ts` column | — | host backend TBD |
 | `empty_event_aggregate_result` (`query_event_aggregate` stub) | unit+integ | empty `TimeSeries` | — | aggregation workflow stub |
 | `empty_metrics_query_result` (`query_metrics` stub) | unit+integ | empty series/headline | — | host backend TBD |
 | `range_from_secs` (explore window helper) | unit | span / zero window | negative secs inverts | in `spectra-app` when UI compiles |
-| `require_spectra_query` + Higgs `#[server]` fns | — | — | — | deferred — needs host request context / SSR |
+| `require_spectra_query` + QueryTable session | — | — | — | deferred — needs host SSR (SP-01..03) |
 | Leptos UI / Playwright / `cargo leptos` e2e | e2e | — | — | **waived** — covering integ named below |
 | AWS / soak | AWS | — | — | **waived** — L2 app; no cloud resources |
 | Micro-benchmarks | bench | — | — | **waived** — no hot-path campaign |
@@ -63,6 +64,7 @@ Covering integ tests for the e2e waiver:
 - `empty_metrics_query_result_shape_happy_path` / `empty_event_query_result_unknown_table_happy_path`
 - `empty_event_aggregate_result_timeseries_stub_happy_path`
 - `validate_spectra_query_name_accepts_table_happy_path` / `validate_spectra_query_name_rejects_blank_sad`
+- `spectra_query_permission_name_formats_table_happy_path`
 
 ## Layer 3 — AWS campaigns + performance
 

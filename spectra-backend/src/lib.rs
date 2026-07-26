@@ -22,6 +22,12 @@ pub fn validate_spectra_query_name(table: &str) -> Result<(), String> {
     }
 }
 
+/// Gauge permission name for querying a Spectra table or metric.
+#[must_use]
+pub fn spectra_query_permission_name(table: &str) -> String {
+    format!("spectra.query.{}", table.trim())
+}
+
 /// Catalog listing used by `list_schema_metadata` after request context resolves.
 #[must_use]
 pub fn schema_metadata_list() -> Vec<SchemaListItem> {
@@ -62,9 +68,22 @@ pub fn empty_event_aggregate_result() -> EventAggregateResult {
 mod tests {
     use super::{
         empty_event_aggregate_result, empty_event_query_result, empty_metrics_query_result,
-        schema_metadata_detail, schema_metadata_list, validate_spectra_query_name,
+        schema_metadata_detail, schema_metadata_list, spectra_query_permission_name,
+        validate_spectra_query_name,
     };
     use spectra_core::EventAggregateResult;
+
+    #[test]
+    fn spectra_query_permission_name_formats_table_happy_path() {
+        assert_eq!(
+            spectra_query_permission_name("my_events"),
+            "spectra.query.my_events"
+        );
+        assert_eq!(
+            spectra_query_permission_name("  metric_a  "),
+            "spectra.query.metric_a"
+        );
+    }
 
     #[test]
     fn schema_metadata_list_returns_vec_happy_path() {

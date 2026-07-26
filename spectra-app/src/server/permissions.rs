@@ -1,20 +1,34 @@
 //! Spectra query permission gate.
 
-pub use spectra_backend::validate_spectra_query_name;
+pub use spectra_backend::{spectra_query_permission_name, validate_spectra_query_name};
 
-/// Table/metric query permission check.
+/// Table/metric query permission check via Gauge `spectra.query.{table}`.
 ///
-/// Full Gauge `spectra.query.{table}` enforcement needs host-aligned gauge+valence
-/// (same Valence crate graph). Until host wiring lands, this validates a non-empty
-/// table/metric name and that Higgs request context can be constructed under `ssr`.
+/// Validates a non-empty table/metric name, resolves Higgs request context, and
+/// calls [`gauge::service::actor_can`] for the per-table permission.
 pub async fn require_spectra_query(table: &str) -> Result<(), String> {
     #[cfg(feature = "ssr")]
     {
         validate_spectra_query_name(table)?;
 
-        let _ctx = higgs::Higgs::from_request()
+        let ctx = higgs::Higgs::from_request()
             .await
             .map_err(|e| format!("Failed to resolve request context: {e}"))?;
+
+        let valence = ctx
+            .valence()
+            .map_err(|e| format!("Failed to resolve valence: {e}"))?;
+
+        let permission = spectra_query_permission_name(table);
+        let allowed = gauge::service::actor_can(&valence, &permission)
+            .await
+            .map_err(|e| format!("Permission check failed for `{permission}`: {e}"))?;
+
+        if !allowed {
+            return Err(format!(
+                "Permission denied: `{permission}` is required to query this table"
+            ));
+        }
         Ok(())
     }
 

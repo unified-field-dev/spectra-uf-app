@@ -5,7 +5,7 @@
 
 use spectra_backend::{
     empty_event_aggregate_result, empty_event_query_result, empty_metrics_query_result,
-    validate_spectra_query_name,
+    spectra_query_permission_name, validate_spectra_query_name,
 };
 use spectra_core::EventAggregateResult;
 
@@ -49,4 +49,12 @@ fn validate_spectra_query_name_rejects_blank_sad() {
 #[test]
 fn validate_spectra_query_name_accepts_table_happy_path() {
     validate_spectra_query_name("ops.events").expect("non-empty table");
+}
+
+#[test]
+fn spectra_query_permission_name_formats_table_happy_path() {
+    assert_eq!(
+        spectra_query_permission_name("ops.events"),
+        "spectra.query.ops.events"
+    );
 }
