@@ -1,0 +1,13 @@
+[package]
+name = "spectra-backend"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+description = "Pure schema/query contracts backing spectra-app server functions"
+readme = "README.md"
+
+[lints]
+workspace = true
+
+[dependencies]
+spectra-core = { workspace = true }

@@ -37,6 +37,7 @@ orbital-datatable = { workspace = true, default-features = false }
 orbital-charts = { workspace = true, default-features = false }
 
 spectra-core = { workspace = true }
+spectra-backend = { path = "../spectra-backend" }
 higgs = { workspace = true, optional = true }
 
 [features]

@@ -4152,6 +4152,7 @@ dependencies = [
  "orbital-ui",
  "serde",
  "serde_json",
+ "spectra-backend",
  "turf",
  "uf-app-registry",
  "uf-integrations",
@@ -4159,6 +4160,13 @@ dependencies = [
  "uf-product-macros",
  "uf-spectra-core",
  "uf-ssr",
+]
+
+[[package]]
+name = "spectra-backend"
+version = "0.1.0"
+dependencies = [
+ "uf-spectra-core",
 ]
 
 [[package]]

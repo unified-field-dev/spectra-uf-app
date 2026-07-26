@@ -1,20 +1,27 @@
 //! Spectra app server functions.
+//!
+//! Leptos `#[server]` entrypoints resolve Higgs request context, then delegate to
+//! [`spectra_backend`] helpers (and [`permissions`]) so catalog/query contracts can
+//! be verified without a full host.
 
 mod permissions;
 
 use leptos::prelude::*;
 pub use permissions::require_spectra_query;
+pub use spectra_backend::{
+    empty_event_aggregate_result, empty_event_query_result, empty_metrics_query_result,
+    schema_metadata_detail, schema_metadata_list, validate_spectra_query_name,
+};
 use spectra_core::{
-    list_schemas, rows_to_event_result, schema_detail, EventAggregateRequest, EventAggregateResult,
-    EventQuery, EventQueryResult, MetricsQuery, MetricsQueryResult, SchemaDetailDto,
-    SchemaListItem,
+    EventAggregateRequest, EventAggregateResult, EventQuery, EventQueryResult, MetricsQuery,
+    MetricsQueryResult, SchemaDetailDto, SchemaListItem,
 };
 
 /// List summary metadata for every registered schema.
 #[uf_product_macros::server]
 pub async fn list_schema_metadata() -> Result<Vec<SchemaListItem>, ServerFnError> {
     let _ctx = higgs::Higgs::from_request().await?;
-    Ok(list_schemas())
+    Ok(schema_metadata_list())
 }
 
 /// Fetch full detail for a single schema by name, if it exists.
@@ -24,7 +31,7 @@ pub async fn get_schema_metadata(
     name: String,
 ) -> Result<Option<SchemaDetailDto>, ServerFnError> {
     let _ctx = higgs::Higgs::from_request().await?;
-    Ok(schema_detail(&name))
+    Ok(schema_metadata_detail(&name))
 }
 
 /// Run a metric query and return the resulting time series and headline values.
@@ -39,10 +46,7 @@ pub async fn query_metrics(
         .map_err(ServerFnError::new)?;
     // Host-injected Spectra router wiring lands with deployment composition; return an
     // empty result shape until the host registers a live query backend.
-    Ok(MetricsQueryResult {
-        series: Vec::new(),
-        headline: Vec::new(),
-    })
+    Ok(empty_metrics_query_result())
 }
 
 /// Run an event query against a table and return matching rows.
@@ -55,7 +59,7 @@ pub async fn query_events(
     require_spectra_query(&query.table)
         .await
         .map_err(ServerFnError::new)?;
-    Ok(rows_to_event_result(&query.table, Vec::new(), 0))
+    Ok(empty_event_query_result(&query.table))
 }
 
 /// Run an aggregate query (time series or headline) over events in a table.
@@ -68,8 +72,5 @@ pub async fn query_event_aggregate(
     require_spectra_query(&request.table)
         .await
         .map_err(ServerFnError::new)?;
-    Ok(EventAggregateResult::TimeSeries {
-        series: Vec::new(),
-        headline: Vec::new(),
-    })
+    Ok(empty_event_aggregate_result())
 }

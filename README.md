@@ -33,13 +33,18 @@ Host must supply Spectra query backends and auth guard context. Enable `ssr` / h
 | Crate | Role |
 |-------|------|
 | `spectra-app` | Spectra admin UI |
+| `spectra-backend` | Pure schema/query contracts for server fns (no UI deps) |
 | `uf-*` (top-level `uf-app-registry`, `uf-integrations`, `uf-product-macros`, `uf-ssr`) | Not workspace members and not depended on — the workspace's real `uf-*` crates come from `L3-products-zones-hosts` (see `[workspace.dependencies]` in `Cargo.toml`). These local trees are unused leftovers; do not treat them as source of truth. |
 
 ## Verify
 
+See [docs/VERIFICATION.md](docs/VERIFICATION.md) for the TEST_MAP and Layer 1–3 gates.
+
 ```bash
 export CARGO_BUILD_JOBS=1
-cargo check --workspace
+cargo test -p spectra-backend
+cargo clippy -p spectra-backend --all-targets -- -D warnings
+# Full UI surface (requires a compiling uf-product graph):
 cargo check -p spectra-app --features ssr
 cargo test -p spectra-app --features ssr
 ```
