@@ -28,6 +28,14 @@ view! {
 
 Host must supply Spectra query backends and auth guard context. Enable `ssr` / hydrate features to match your host. See the `spectra-app` crate rustdocs for the full Concern → route → server fn table.
 
+## Examples
+
+| Host | When to use | Command | Success | Look next |
+|------|-------------|---------|---------|-----------|
+| [`protected-spectra-host`](examples/protected-spectra-host/) | Auth + `/spectra` schema index | `CARGO_BUILD_JOBS=1 CARGO_TARGET_DIR=target-spectra-uf-app cargo run -p protected-spectra-host` | Deny/allow + schema JSON | Product host with `SpectraRoutes` |
+
+Full ladder: [`examples/README.md`](examples/README.md).
+
 ## Workspace
 
 | Crate | Role |

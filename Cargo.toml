@@ -3,6 +3,7 @@ resolver = "2"
 members = [
     "spectra-app",
     "spectra-backend",
+    "examples/protected-spectra-host",
 ]
 
 [workspace.package]

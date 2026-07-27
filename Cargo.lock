@@ -1554,7 +1554,6 @@ dependencies = [
  "log",
  "serde_json",
  "thiserror 2.0.19",
- "tokio",
  "uf-host",
  "uf-identity",
  "uf-valence",
@@ -2058,6 +2057,8 @@ dependencies = [
  "uf-valence",
  "url",
  "urlencoding",
+ "wasm-bindgen",
+ "web-sys",
 ]
 
 [[package]]
@@ -2079,6 +2080,7 @@ dependencies = [
  "rand_core 0.6.4",
  "serde",
  "serde_json",
+ "sha2",
  "tokio",
  "uf-host",
  "uf-identity",
@@ -3613,6 +3615,18 @@ dependencies = [
  "syn 2.0.119",
  "version_check",
  "yansi",
+]
+
+[[package]]
+name = "protected-spectra-host"
+version = "0.1.0"
+dependencies = [
+ "axum",
+ "http-body-util",
+ "serde_json",
+ "spectra-backend",
+ "tokio",
+ "tower",
 ]
 
 [[package]]
@@ -5232,6 +5246,7 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "serde",
+ "subtle",
 ]
 
 [[package]]
