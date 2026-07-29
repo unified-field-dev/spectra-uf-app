@@ -79,7 +79,7 @@ payloads only.
   compile — report that separately from Spectra contract results.
 - Tests may `unwrap`/`expect`; production server fns map failures to `ServerFnError`
   (no ordinary-path unwrap).
-- Sad-path assertions check message content or `None` — not smoke-only `is_err()`.
+- Sad-path assertions check message content or `None` — (stronger than `is_err()` alone).
 - Happy-path tests are named `*_happy_path` so audits detect them.
 - `SpectraRoutes` data loaders call the `#[server]` fns; those fns are thin Higgs
   wrappers over the helpers listed in the TEST_MAP.
