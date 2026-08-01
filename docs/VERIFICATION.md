@@ -1,9 +1,9 @@
 # spectra-uf-app verification
 
-Re-run after code or doc changes. This workspace is the L2 Spectra operations app
+Re-run after code or doc changes. This workspace is the Spectra operations app
 (`spectra-app` Leptos UI + `spectra-backend` pure server contracts). Layer 1 unit +
 integration tests cover schema catalog and explore-query stub helpers. No Leptos UI
-e2e, `*-e2e` crate, or AWS campaign is required for this L2 app.
+e2e, `*-e2e` crate, or AWS campaign is required for this workspace.
 
 ## Environment
 
@@ -47,14 +47,14 @@ cargo test -p spectra-app --features ssr
 | `range_from_secs` (explore window helper) | unit | span / zero window | negative secs inverts | in `spectra-app` when UI compiles |
 | `require_spectra_query` + QueryTable session | — | — | — | deferred — needs host SSR (SP-01..03) |
 | Leptos UI / Playwright / `cargo leptos` e2e | e2e | — | — | **waived** — covering integ named below |
-| AWS / soak | AWS | — | — | **waived** — L2 app; no cloud resources |
+| AWS / soak | AWS | — | — | **waived** — no cloud resources |
 | Micro-benchmarks | bench | — | — | **waived** — no hot-path campaign |
 
 ## Layer 2 — E2E
 
 **Waived.** Schema list/detail and explore-query stub shapes are exercised by Layer 1
 integration tests named below. A Leptos/UI browser suite or IsolatedLab `*-e2e` crate
-is out of scope for this backend-first L2 remediation; live host wiring belongs in the
+is out of scope for this backend-first remediation; live host wiring belongs in the
 product host workspace.
 
 Covering integ tests for the e2e waiver:
@@ -68,7 +68,7 @@ Covering integ tests for the e2e waiver:
 
 ## Layer 3 — AWS campaigns + performance
 
-**Waived.** L2 application workspace; no cloud resources or Criterion benches.
+**Waived.** This application workspace; no cloud resources or Criterion benches.
 Correctness is in-process against the Spectra schema registry and stub query
 payloads only.
 
