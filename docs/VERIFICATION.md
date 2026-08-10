@@ -4,7 +4,7 @@ Re-run after code or doc changes. This workspace is the Spectra operations app
 (`spectra-app` Leptos UI + `spectra-backend` pure server contracts). Layer 1 unit +
 integration tests cover schema catalog and explore-query stub helpers, plus
 sibling-source UI surface contracts for `spectra-app`. No Leptos UI e2e, `*-e2e`
-crate, or AWS campaign is required for this workspace. Spectra core owns
+crate, or cloud fleet is required for this workspace. Spectra core owns
 storage/query IsolatedLab; this repo verifies the UF app mapping layer.
 
 ## Environment
@@ -14,7 +14,7 @@ export CARGO_BUILD_JOBS=1
 export CARGO_TARGET_DIR=target-spectra-uf-app
 ```
 
-## Teaching host (Pass 3 gate)
+## Teaching host
 
 Axum oneshot under [`examples/protected-spectra-host`](../examples/protected-spectra-host/).
 Copy table + product mount sketches live in that host README.
@@ -49,12 +49,12 @@ cargo clippy -p protected-spectra-host --all-targets -- -D warnings
 cargo test -p spectra-backend
 ```
 
-`cargo fmt --all` can fail in this monorepo checkout when a path-patched
-member sits outside that workspace; package-scoped fmt is the honest local gate.
+`cargo fmt --all` can fail when a sibling checkout sits outside this workspace;
+package-scoped fmt is the honest local gate.
 
-Full workspace (includes `spectra-app` UI). May fail when the path-patched
-`uf-product` / `uf-integrations` UI graph is broken upstream — that is a
-pre-existing host-product UI compile issue, not a Spectra backend contract gap.
+Full workspace (includes `spectra-app` UI). May fail when the sibling
+`uf-product` / `uf-integrations` UI graph does not compile — that is a
+host-product UI issue, not a Spectra backend contract gap.
 Surface needles for routes, nav testids, `RequireAuthenticated`, and
 `QueryTable` live in `product_surface`.
 
@@ -106,7 +106,7 @@ Covering integ tests for the e2e waiver:
 - `spectra_product_workspace_members_happy_path`
 - `spectra_routes_mount_happy_path` / `layout_auth_gate_and_nav_happy_path` / `ops_reads_require_query_table_happy_path`
 
-## Layer 3 — AWS campaigns + performance
+## Layer 3 — Cloud + performance
 
 **Waived.** This application workspace; no cloud resources or Criterion benches.
 Correctness is in-process against the Spectra schema registry and stub query

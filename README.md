@@ -61,10 +61,6 @@ cargo test -p spectra-backend
 | [`spectra-backend`](spectra-backend/) | Pure schema catalog + explore-query stub helpers |
 | [`protected-spectra-host`](examples/protected-spectra-host/) | Teaching host: deny/allow + schema index |
 
-Top-level `uf-*` directories in this checkout (if present) are unused leftovers.
-Real `uf-integrations` / `uf-product-macros` / `uf-ssr` / `uf-app-registry` pins
-live in workspace `[workspace.dependencies]` (see `Cargo.toml`).
-
 ## Examples
 
 | Host | When to use | Command | Success | Look next |
@@ -110,8 +106,8 @@ RUSTDOCFLAGS="-D rustdoc::broken-intra-doc-links" cargo doc -p spectra-backend -
 
 Teaching host success line:
 `protected_spectra_host: OK — /spectra deny/allow + schema index`.
-`spectra-app` compile/doc can fail when the path-patched Orbital / host graph is
-broken upstream — treat that as host-product debt, not a Spectra mapping gap.
+`spectra-app` compile/doc can fail when the sibling Orbital / host graph does
+not compile — treat that as host-product debt, not a Spectra mapping gap.
 Full command block: [`docs/VERIFICATION.md`](docs/VERIFICATION.md). Contribute:
 [`CONTRIBUTING.md`](CONTRIBUTING.md).
 

@@ -1,6 +1,0 @@
-# Historical sketch. Live CI is `.github/workflows/ci.yml`.
-#
-# That workflow runs the Layer 1 gates from `docs/VERIFICATION.md`:
-# fmt, clippy `-D warnings` on `spectra-backend` + teaching host, contract
-# tests, protected-spectra-host check/run, and spectra-backend rustdoc with
-# broken-intra-doc-link deny. It does not build `spectra-app` SSR/UI.
