@@ -72,7 +72,7 @@
 //! |-------|--------|
 //! | Highlight | Getting started above |
 //! | Mid | `spectra-backend` unit + integ suites (`docs/VERIFICATION.md`) |
-//! | Detailed | `examples/protected-spectra-host` (deny/allow + schema index) |
+//! | Detailed | `examples/protected-spectra-host` (deny/allow + schema index; inventory `spectra` / `/spectra`; copy README) |
 //!
 //! ## Where to look next
 //!

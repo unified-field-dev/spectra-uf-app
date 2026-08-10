@@ -39,7 +39,7 @@
 //! |-------|--------|
 //! | Highlight | Concern → API table above |
 //! | Mid | This crate's unit + integ suites (`docs/VERIFICATION.md`) |
-//! | Detailed | `examples/protected-spectra-host` |
+//! | Detailed | `examples/protected-spectra-host` (inventory `spectra` / `/spectra`; copy README) |
 
 use spectra_core::{
     list_schemas, rows_to_event_result, schema_detail, EventAggregateResult, EventQueryResult,

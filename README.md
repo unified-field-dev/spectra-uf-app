@@ -68,15 +68,17 @@ live in workspace `[workspace.dependencies]` (see `Cargo.toml`).
 
 | Host | When to use | Command | Success | Look next |
 |------|-------------|---------|---------|-----------|
-| [`protected-spectra-host`](examples/protected-spectra-host/) | Auth + `/spectra` schema index | `CARGO_BUILD_JOBS=1 CARGO_TARGET_DIR=target-spectra-uf-app cargo run -p protected-spectra-host` | Deny/allow + schema JSON | Product host with `SpectraRoutes` |
+| [`protected-spectra-host`](examples/protected-spectra-host/) | Auth + `/spectra` schema index | `CARGO_BUILD_JOBS=1 CARGO_TARGET_DIR=target-spectra-uf-app cargo run -p protected-spectra-host` | Deny/allow + schema JSON | Mount `SpectraRoutes` |
 
+Copy table + product mount `Cargo.toml`:
+[`examples/protected-spectra-host/README.md`](examples/protected-spectra-host/README.md).
 Full ladder: [`examples/README.md`](examples/README.md).
 
 | Level | Where |
 |-------|--------|
 | Highlight | Mount snippet above; crate-root Getting started |
 | Mid | `spectra-backend` unit + integ suites (see `docs/VERIFICATION.md`) |
-| Detailed | `protected-spectra-host` (session gate + schema index) |
+| Detailed | `protected-spectra-host` (session gate + schema index; inventory `spectra` / `/spectra`) |
 
 ## Security
 
@@ -92,15 +94,18 @@ Local gates (fmt/clippy/CI workflow not claimed here):
 ```bash
 export CARGO_BUILD_JOBS=1
 export CARGO_TARGET_DIR=target-spectra-uf-app
+cargo check -p protected-spectra-host
+cargo run -p protected-spectra-host
 cargo clippy -p spectra-backend --all-targets -- -D warnings
 cargo test -p spectra-backend
 RUSTDOCFLAGS="-D rustdoc::broken-intra-doc-links" cargo doc -p spectra-backend --no-deps
 ```
 
-Prefer `spectra-backend` for contract CI. `spectra-app` compile/doc can fail when
-the path-patched Orbital / host graph is broken upstream — treat that as
-host-product debt, not a Spectra mapping gap. Full command block:
-[`docs/VERIFICATION.md`](docs/VERIFICATION.md). Contribute:
+Prefer `spectra-backend` for contract CI. Teaching host success line:
+`protected_spectra_host: OK — /spectra deny/allow + schema index`.
+`spectra-app` compile/doc can fail when the path-patched Orbital / host graph is
+broken upstream — treat that as host-product debt, not a Spectra mapping gap.
+Full command block: [`docs/VERIFICATION.md`](docs/VERIFICATION.md). Contribute:
 [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
 ## FAQ

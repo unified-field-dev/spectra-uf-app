@@ -1,5 +1,10 @@
 //! Protected `/spectra` host: session auth gate + schema-index happy path.
 //!
+//! Copy surfaces for product hosts: this package's `Cargo.toml` + `main.rs`,
+//! plus the product-mount dependency / Leptos sketches in the host README.
+//! Oneshot path `/spectra` matches Orbital app id/path `spectra` / `/spectra`
+//! (see JSON `inventory`).
+//!
 //! Mirrors what a real host does before mounting [`spectra_app::SpectraRoutes`]:
 //! deny anonymous traffic under `/spectra`, then serve the schema catalog shape
 //! the UI's schema index builds via `spectra-backend::schema_metadata_list`.
@@ -67,6 +72,12 @@ async fn spectra_schemas(Extension(session): Extension<DemoSession>) -> impl Int
         "user": session.user_id,
         "schema_count": schemas.len(),
         "schemas": schemas,
+        "inventory": {
+            "app_id": "spectra",
+            "route_path": "/spectra",
+            "auth_gate": "RequireAuthenticated",
+            "admin_permission": "QueryTable",
+        },
     }))
 }
 
@@ -105,11 +116,20 @@ async fn main() {
         .await
         .expect("oneshot");
     assert_eq!(response.status(), StatusCode::OK);
-    let bytes = response.into_body().collect().await.expect("body").to_bytes();
+    let bytes = response
+        .into_body()
+        .collect()
+        .await
+        .expect("body")
+        .to_bytes();
     let body: serde_json::Value = serde_json::from_slice(&bytes).expect("json");
     assert_eq!(body["path"], "/spectra");
     assert_eq!(body["user"], "demo-ops");
     assert!(body["schema_count"].as_u64().is_some());
+    assert_eq!(body["inventory"]["app_id"], "spectra");
+    assert_eq!(body["inventory"]["route_path"], "/spectra");
+    assert_eq!(body["inventory"]["auth_gate"], "RequireAuthenticated");
+    assert_eq!(body["inventory"]["admin_permission"], "QueryTable");
 
     println!("protected_spectra_host: OK — /spectra deny/allow + schema index");
 }

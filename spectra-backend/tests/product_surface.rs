@@ -344,6 +344,40 @@ fn permission_manifest_query_table_happy_path() {
 }
 
 #[test]
+fn protected_spectra_host_matches_uf_app_happy_path() {
+    let host =
+        fs::read_to_string(workspace_root().join("examples/protected-spectra-host/src/main.rs"))
+            .expect("protected-spectra-host main.rs");
+    for needle in [
+        "\"app_id\": \"spectra\"",
+        "\"route_path\": \"/spectra\"",
+        "\"auth_gate\": \"RequireAuthenticated\"",
+        "\"admin_permission\": \"QueryTable\"",
+        "schema_metadata_list",
+    ] {
+        assert!(
+            host.contains(needle),
+            "protected-spectra-host missing contract `{needle}`"
+        );
+    }
+    let lib = read_app("lib.rs");
+    assert!(
+        lib.contains("id: \"spectra\"") && lib.contains("route_path: \"/spectra\""),
+        "host inventory must stay aligned with uf_app!"
+    );
+    let layout = read_app("layout/spectra_layout.rs");
+    assert!(
+        layout.contains("RequireAuthenticated"),
+        "host auth_gate must stay aligned with SpectraLayout guard"
+    );
+    let perms = read_app("permissions.rs");
+    assert!(
+        perms.contains("QueryTable"),
+        "host admin_permission must stay aligned with SpectraPermission"
+    );
+}
+
+#[test]
 fn lazy_routes_wire_pages_happy_path() {
     let lazy = read_app("lazy_routes.rs");
     for needle in [
