@@ -30,6 +30,10 @@ Orbital / `uf-product` belong to a composite product host).
 
 ## Layer 1 — Unit + integration (CI)
 
+GitHub Actions (`.github/workflows/ci.yml`) covers this Layer 1 subset plus the
+teaching host and spectra-backend rustdoc gate below. It does not build
+`spectra-app` (Leptos UI / SSR).
+
 Sibling-source UI contracts (no Orbital / `spectra-app` compile):
 
 ```bash
@@ -41,6 +45,7 @@ Backend contracts (preferred path; no UI graph):
 ```bash
 cargo fmt -p spectra-backend -p spectra-app -p protected-spectra-host -- --check
 cargo clippy -p spectra-backend --all-targets -- -D warnings
+cargo clippy -p protected-spectra-host --all-targets -- -D warnings
 cargo test -p spectra-backend
 ```
 

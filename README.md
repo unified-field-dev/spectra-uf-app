@@ -1,5 +1,6 @@
 # Spectra UF App
 
+[![CI](https://github.com/deathbreakfast/spectra-uf-app/actions/workflows/ci.yml/badge.svg)](https://github.com/deathbreakfast/spectra-uf-app/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 [GitHub](https://github.com/deathbreakfast/spectra-uf-app) · `cargo doc -p spectra-backend --open` · distributed via git (not crates.io)
@@ -89,19 +90,25 @@ public issue for security-sensitive reports.
 
 ## Verify
 
-Local gates (fmt/clippy/CI workflow not claimed here):
+GitHub Actions (`.github/workflows/ci.yml`) runs the Layer 1 subset from
+[`docs/VERIFICATION.md`](docs/VERIFICATION.md): fmt, clippy `-D warnings` on
+`spectra-backend` (+ teaching host), contract tests, `protected-spectra-host`
+check/run, and spectra-backend rustdoc with broken-intra-doc-link deny.
 
 ```bash
 export CARGO_BUILD_JOBS=1
 export CARGO_TARGET_DIR=target-spectra-uf-app
+cargo fmt -p spectra-backend -p spectra-app -p protected-spectra-host -- --check
+cargo clippy -p spectra-backend --all-targets -- -D warnings
+cargo clippy -p protected-spectra-host --all-targets -- -D warnings
+cargo test -p spectra-backend --test workspace_members --test product_surface
+cargo test -p spectra-backend
 cargo check -p protected-spectra-host
 cargo run -p protected-spectra-host
-cargo clippy -p spectra-backend --all-targets -- -D warnings
-cargo test -p spectra-backend
 RUSTDOCFLAGS="-D rustdoc::broken-intra-doc-links" cargo doc -p spectra-backend --no-deps
 ```
 
-Prefer `spectra-backend` for contract CI. Teaching host success line:
+Teaching host success line:
 `protected_spectra_host: OK — /spectra deny/allow + schema index`.
 `spectra-app` compile/doc can fail when the path-patched Orbital / host graph is
 broken upstream — treat that as host-product debt, not a Spectra mapping gap.
