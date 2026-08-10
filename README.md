@@ -2,14 +2,36 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-Leptos admin UI for Spectra schemas, events, and metrics — mounted under `/spectra`.
+[GitHub](https://github.com/deathbreakfast/spectra-uf-app) · `cargo doc -p spectra-backend --open` · distributed via git (not crates.io)
+
+## About
+
+Spectra UF App is the Unified Field **operations UI** for Spectra schemas,
+events, and metrics under `/spectra`. Spectra itself has no built-in UI; hosts
+mount this crate so operators can browse registered schemas and explore
+event/metric data.
+
+- **UI (`spectra-app`)** — pages, Higgs `#[server]` wrappers, `SpectraRoutes`,
+  `uf_app!` registration
+- **Backend (`spectra-backend`)** — pure schema/query stub helpers (no Leptos);
+  preferred Layer 1 CI path
+
+Hosts supply Spectra query backends and auth guard context. Enable `ssr` /
+hydrate to match your host. Crate-root rustdoc owns Concern → route → server fn
+tables; prefer `cargo doc -p spectra-backend --open` for the mapping contract.
+UI rustdoc is pin-dependent on Orbital / host graphs. Explore queries currently
+return empty stub payloads until a host injects a live Spectra backend.
+
+## Getting started
 
 ```toml
 [dependencies]
-spectra-app = { git = "https://github.com/deathbreakfast/spectra-uf-app", package = "spectra-app", branch = "main" }
+# Pin tag or rev — do not use branch = "main".
+spectra-app = { git = "https://github.com/deathbreakfast/spectra-uf-app", package = "spectra-app", rev = "REPLACE_WITH_PIN", default-features = false }
+spectra-backend = { git = "https://github.com/deathbreakfast/spectra-uf-app", package = "spectra-backend", rev = "REPLACE_WITH_PIN" }
 ```
 
-```rust
+```rust,ignore
 use spectra_app::SpectraRoutes;
 use leptos_router::components::Routes;
 
@@ -20,13 +42,27 @@ view! {
 }
 ```
 
-## About
+Wire Spectra query backends + session extractors in host bootstrap, then mount
+the routes above. Full Leptos SSR hosts live outside this repository; use the
+local teaching host for the auth + schema index contract.
 
-- Schema index and detail for registered event/metric schemas
-- Event explore (table, time series, breakdowns)
-- Metric explore for a single series over time
+```bash
+export CARGO_BUILD_JOBS=1
+export CARGO_TARGET_DIR=target-spectra-uf-app
+cargo test -p spectra-backend
+```
 
-Host must supply Spectra query backends and auth guard context. Enable `ssr` / hydrate features to match your host. See the `spectra-app` crate rustdocs for the full Concern → route → server fn table.
+## Workspace
+
+| Crate | Role |
+|-------|------|
+| [`spectra-app`](spectra-app/) | Leptos ops UI + `SpectraRoutes` + app registration |
+| [`spectra-backend`](spectra-backend/) | Pure schema catalog + explore-query stub helpers |
+| [`protected-spectra-host`](examples/protected-spectra-host/) | Teaching host: deny/allow + schema index |
+
+Top-level `uf-*` directories in this checkout (if present) are unused leftovers.
+Real `uf-integrations` / `uf-product-macros` / `uf-ssr` / `uf-app-registry` pins
+live in workspace `[workspace.dependencies]` (see `Cargo.toml`).
 
 ## Examples
 
@@ -36,27 +72,55 @@ Host must supply Spectra query backends and auth guard context. Enable `ssr` / h
 
 Full ladder: [`examples/README.md`](examples/README.md).
 
-## Workspace
+| Level | Where |
+|-------|--------|
+| Highlight | Mount snippet above; crate-root Getting started |
+| Mid | `spectra-backend` unit + integ suites (see `docs/VERIFICATION.md`) |
+| Detailed | `protected-spectra-host` (session gate + schema index) |
 
-| Crate | Role |
-|-------|------|
-| `spectra-app` | Spectra admin UI |
-| `spectra-backend` | Pure schema/query contracts for server fns (no UI deps) |
-| `uf-*` (top-level `uf-app-registry`, `uf-integrations`, `uf-product-macros`, `uf-ssr`) | Local top-level `uf-*` trees are unused leftovers. Real pins live in workspace `[workspace.dependencies]` (see `Cargo.toml`). |
+## Security
+
+Auth-gated `/spectra` routes (`QueryTable` plus per-table
+`spectra.query.{table}` for explore) and private vulnerability reporting:
+[`SECURITY.md`](SECURITY.md). Report vulnerabilities privately — do not open a
+public issue for security-sensitive reports.
 
 ## Verify
 
-See [docs/VERIFICATION.md](docs/VERIFICATION.md) for the TEST_MAP and Layer 1–3 gates.
+Local gates (fmt/clippy/CI workflow not claimed here):
 
 ```bash
 export CARGO_BUILD_JOBS=1
-cargo test -p spectra-backend
+export CARGO_TARGET_DIR=target-spectra-uf-app
 cargo clippy -p spectra-backend --all-targets -- -D warnings
-# Full UI surface (requires a compiling uf-product graph):
-cargo check -p spectra-app --features ssr
-cargo test -p spectra-app --features ssr
+cargo test -p spectra-backend
+RUSTDOCFLAGS="-D rustdoc::broken-intra-doc-links" cargo doc -p spectra-backend --no-deps
 ```
+
+Prefer `spectra-backend` for contract CI. `spectra-app` compile/doc can fail when
+the path-patched Orbital / host graph is broken upstream — treat that as
+host-product debt, not a Spectra mapping gap. Full command block:
+[`docs/VERIFICATION.md`](docs/VERIFICATION.md). Contribute:
+[`CONTRIBUTING.md`](CONTRIBUTING.md).
+
+## FAQ
+
+**Is this a standalone Spectra server?** No. `spectra-app` mounts under a host
+`<Routes>` tree. Schema registry and query storage live in the Spectra core
+crates; hosts inject live query backends.
+
+**Why is there a separate `spectra-backend` crate?** So schema catalog and
+explore-query stub helpers stay unit-testable without the Leptos/UI dependency
+graph. `spectra-app` `#[server]` fns are thin wrappers over those helpers.
+
+**What can operators do from the UI?** Browse registered schemas and explore
+events/metrics (table, time series, breakdowns). Explore payloads are empty stubs
+until the host wires a live Spectra backend.
+
+**Where does Spectra core fit?** Schema registration and storage live in the
+Spectra core repos. This repo maps admin list/get/query APIs into UF ops pages.
 
 ## License
 
-MIT. See [LICENSE](LICENSE), [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md), and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
+MIT. See [LICENSE](LICENSE), [CONTRIBUTING.md](CONTRIBUTING.md),
+[SECURITY.md](SECURITY.md), and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).

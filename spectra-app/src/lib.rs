@@ -6,25 +6,37 @@
 //! `#[uf_product_macros::uf_app]`-registered operations surface a host mounts to give
 //! operators a way to browse schemas and explore event/metric data.
 //!
-//! ## Features
+//! Orbital inventory macros (`uf_app!`, `orbital_routes_extract`) emit undocumented
+//! associated items, so this crate allows `missing_docs` at the crate root while keeping
+//! hand-written modules and items documented.
 //!
-//! - **Home** — [`SpectraHomePage`] lists registered schemas as an entry point.
-//! - **Schema browsing** — [`SchemaIndexPage`] / [`SchemaDetailPage`] for inspecting
-//!   registered event/metric schemas.
-//! - **Event explore** — [`EventExplorePage`] for querying and visualizing events in a table
-//!   (log view, time series, and pie breakdowns).
-//! - **Metric explore** — [`MetricExplorePage`] for querying and charting a single metric
-//!   over time.
-//! - **Read API** — [`server`] exposes the SSR-only server functions backing the pages
-//!   above, gated by [`server::require_spectra_query`].
-//! - **Permissions** — [`SpectraPermission`] (`QueryTable`) is registered via
-//!   `uf_app!` / `UfPermissionManifest`; server fns use `permission = "QueryTable"`.
-//!   Explore queries also call [`server::require_spectra_query`] for per-table
-//!   Gauge `spectra.query.{table}` checks.
+//! ## Organized by task
 //!
-//! ## Routes
+//! | Task | Start here |
+//! |------|------------|
+//! | **Mount `/spectra` routes** | [`SpectraRoutes`] |
+//! | **Browse schema home / index** | [`SpectraHomePage`], [`SchemaIndexPage`] |
+//! | **Inspect a schema** | [`SchemaDetailPage`] |
+//! | **Explore events** | [`EventExplorePage`], [`mod@server`] |
+//! | **Explore a metric** | [`MetricExplorePage`] |
+//! | **Permission gates** | [`SpectraPermission`], [`server::require_spectra_query`] |
+//! | **Pure catalog / query stubs** | `spectra-backend` (not this crate) |
 //!
-//! Mounted under `/spectra` by [`SpectraRoutes`]. Concern → page → key server fn(s):
+//! ## Owns / does not own
+//!
+//! **Owns:** Leptos pages, Higgs `#[server]` wrappers, layout/nav shell, permission
+//! manifest, and `uf_app!` / [`SpectraRoutes`] registration.
+//!
+//! **Does not own:** Schema catalog or explore-query stub helpers (`spectra-backend`);
+//! Spectra core storage or live query backends (Spectra core / host injection); full
+//! Leptos SSR host binaries (live outside this repository).
+//!
+//! ## Routes (Concern → page → server fn)
+//!
+//! Mounted under `/spectra` by [`SpectraRoutes`]. Every server fn requires an
+//! authenticated session and `QueryTable`. Explore queries additionally call
+//! [`server::require_spectra_query`] for Gauge `spectra.query.{table}` before the
+//! (currently stubbed, host-injected) query backend runs.
 //!
 //! | Path | Page | Key server fn(s) |
 //! |---|---|---|
@@ -33,10 +45,6 @@
 //! | `/spectra/schema/:name` | [`SchemaDetailPage`] | `get_schema_metadata` |
 //! | `/spectra/schema/:name/explore` | [`EventExplorePage`] | `query_events` → [`server::require_spectra_query`], `query_event_aggregate` → [`server::require_spectra_query`] |
 //! | `/spectra/metric/:name/explore` | [`MetricExplorePage`] | `query_metrics` → [`server::require_spectra_query`] |
-//!
-//! Every server fn requires an authenticated session and `QueryTable`. Explore queries
-//! additionally call [`server::require_spectra_query`] for Gauge
-//! `spectra.query.{table}` before the (currently stubbed, host-injected) query backend runs.
 //!
 //! ## Getting started
 //!
@@ -58,10 +66,19 @@
 //! }
 //! ```
 //!
+//! ## Examples ladder
+//!
+//! | Level | Where |
+//! |-------|--------|
+//! | Highlight | Getting started above |
+//! | Mid | `spectra-backend` unit + integ suites (`docs/VERIFICATION.md`) |
+//! | Detailed | `examples/protected-spectra-host` (deny/allow + schema index) |
+//!
 //! ## Where to look next
 //!
 //! - [`SpectraRoutes`] — the route entrypoint mounted by hosts.
 //! - [`SpectraLayout`] — the shared app bar / nav shell wrapping every route.
+//! - [`pages`] — the page components listed under Organized by task above.
 //! - [`mod@server`] — server functions backing the UI, including the
 //!   [`server::require_spectra_query`] permission gate.
 //! - [`SpectraPermission`] — the permission enum surfaced for host manifest wiring.

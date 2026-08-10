@@ -3,6 +3,43 @@
 //! Leptos `#[server]` entrypoints in `spectra-app` resolve Higgs request context,
 //! then call these helpers so catalog/query shapes stay unit- and
 //! integration-testable without a full host or UI graph.
+//!
+//! ## Organized by task
+//!
+//! | Task | Start here |
+//! |------|------------|
+//! | **Validate explore table names** | [`validate_spectra_query_name`] |
+//! | **Gauge permission names** | [`spectra_query_permission_name`] |
+//! | **Schema catalog list/detail** | [`schema_metadata_list`], [`schema_metadata_detail`] |
+//! | **Empty explore stubs** | [`empty_event_query_result`], [`empty_event_aggregate_result`], [`empty_metrics_query_result`] |
+//! | **UI pages / `#[server]` wrappers** | `spectra-app` (not this crate) |
+//!
+//! ## Owns / does not own
+//!
+//! **Owns:** Pure validation, Gauge name formatting, schema catalog helpers, and
+//! empty explore-query stub payloads used by the Spectra ops UI server surface.
+//!
+//! **Does not own:** Leptos pages, Higgs `#[server]` wrappers, or route registration
+//! (`spectra-app`); Spectra core storage or live query backends (Spectra core / host).
+//!
+//! ## Concern → API
+//!
+//! | Concern | API | Owner |
+//! |---------|-----|-------|
+//! | Table/metric name validation | [`validate_spectra_query_name`] | this crate |
+//! | Gauge `spectra.query.{table}` | [`spectra_query_permission_name`] | this crate |
+//! | Schema catalog list/detail | [`schema_metadata_list`], [`schema_metadata_detail`] | this crate |
+//! | Event explore stub | [`empty_event_query_result`], [`empty_event_aggregate_result`] | this crate |
+//! | Metric explore stub | [`empty_metrics_query_result`] | this crate |
+//! | Pages, routes, server fns | `spectra-app` (`SpectraRoutes`) | `spectra-app` |
+//!
+//! ## Examples ladder
+//!
+//! | Level | Where |
+//! |-------|--------|
+//! | Highlight | Concern → API table above |
+//! | Mid | This crate's unit + integ suites (`docs/VERIFICATION.md`) |
+//! | Detailed | `examples/protected-spectra-host` |
 
 use spectra_core::{
     list_schemas, rows_to_event_result, schema_detail, EventAggregateResult, EventQueryResult,

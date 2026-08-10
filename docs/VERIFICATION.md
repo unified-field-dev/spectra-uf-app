@@ -72,6 +72,20 @@ Covering integ tests for the e2e waiver:
 Correctness is in-process against the Spectra schema registry and stub query
 payloads only.
 
+## Rustdoc policy
+
+Preferred deny gate (no UI graph):
+
+```bash
+RUSTDOCFLAGS="-D rustdoc::broken-intra-doc-links" cargo doc -p spectra-backend --no-deps
+```
+
+Workspace `rustdoc::broken_intra_doc_links` is `allow` in `Cargo.toml` because
+sibling/cfg-gated links often fail under `--no-deps`. Prefer the
+`RUSTDOCFLAGS` deny form above for the backend contract crate. `spectra-app`
+rustdoc with deny flags is pin-dependent on Orbital / host graphs.
+`spectra-app` still uses `#![allow(missing_docs)]` on macro-heavy UI surfaces.
+
 ## Notes
 
 - Prefer `cargo test -p spectra-backend` for backend contract CI when the UI

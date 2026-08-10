@@ -4,7 +4,7 @@ Thank you for improving this project.
 
 ## Development setup
 
-1. Clone [unified-field-dev/spectra-uf-app](https://github.com/unified-field-dev/spectra-uf-app)
+1. Clone [deathbreakfast/spectra-uf-app](https://github.com/deathbreakfast/spectra-uf-app)
 2. Install Rust stable
 3. From the repository root:
 
