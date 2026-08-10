@@ -97,16 +97,9 @@
 //!   Gauge / explore stubs.
 
 #![allow(missing_docs)]
-#![allow(clippy::unused_unit, unused_imports)]
 #![cfg_attr(
     feature = "ssr",
-    allow(
-        dead_code,
-        unused_imports,
-        unused_variables,
-        unknown_lints,
-        clippy::all,
-    )
+    allow(dead_code, unused_imports, unused_variables, unknown_lints)
 )]
 use leptos::prelude::*;
 use leptos_router::{

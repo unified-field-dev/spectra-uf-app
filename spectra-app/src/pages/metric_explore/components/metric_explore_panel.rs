@@ -1,4 +1,5 @@
 use leptos::prelude::*;
+use orbital::primitives::{MessageBar, MessageBarIntent};
 use spectra_core::MetricsQuery;
 
 use crate::components::charts::{MetricStatCardRow, MetricTimeSeriesChart};
@@ -46,7 +47,9 @@ pub fn MetricExplorePanel(
                 Some(Err(e)) if e.to_string().contains("Permission denied") => {
                     view! { <PermissionDeniedState /> }.into_any()
                 }
-                Some(Err(e)) => view! { <p>{e.to_string()}</p> }.into_any(),
+                Some(Err(e)) => view! {
+                    <MessageBar intent=MessageBarIntent::Error>{e.to_string()}</MessageBar>
+                }.into_any(),
                 None => view! { <ChartSkeleton /> }.into_any(),
             }}
         </Transition>

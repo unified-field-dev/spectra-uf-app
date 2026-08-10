@@ -1,4 +1,5 @@
 use leptos::prelude::*;
+use orbital::primitives::{MessageBar, MessageBarIntent};
 use serde::{Deserialize, Serialize};
 use spectra_core::{
     EventAggregateRequest, EventAggregateResult, EventAggregationSpec, EventExploreView,
@@ -99,7 +100,9 @@ pub fn EventExplorePanel(
                 Some(Err(e)) if e.to_string().contains("Permission denied") => {
                     view! { <PermissionDeniedState /> }.into_any()
                 }
-                Some(Err(e)) => view! { <p>{e.to_string()}</p> }.into_any(),
+                Some(Err(e)) => view! {
+                    <MessageBar intent=MessageBarIntent::Error>{e.to_string()}</MessageBar>
+                }.into_any(),
                 None => view! { <EventExploreSkeleton view=view.get() /> }.into_any(),
             }}
         </Transition>

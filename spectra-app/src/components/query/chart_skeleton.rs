@@ -5,7 +5,7 @@ use orbital::primitives::{Skeleton, SkeletonItem};
 pub fn ChartSkeleton() -> impl IntoView {
     view! {
         <Skeleton>
-            <SkeletonItem />
+            <SkeletonItem width="100%".to_string() height="12rem".to_string() />
         </Skeleton>
     }
 }

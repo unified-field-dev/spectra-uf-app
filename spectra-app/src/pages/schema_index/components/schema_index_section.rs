@@ -1,6 +1,6 @@
 use leptos::prelude::*;
-use orbital::components::AutoGrid;
-use orbital::components::SpacingSize;
+use orbital::components::{AutoGrid, EmptyState, SpacingSize};
+use orbital::primitives::{MessageBar, MessageBarIntent};
 
 use crate::components::schema::SchemaCard;
 use crate::server::list_schema_metadata;
@@ -26,7 +26,20 @@ pub fn SchemaIndexSection(
                             })
                             .collect();
                         if filtered.is_empty() {
-                            view! { <p>"No schemas match your search."</p> }.into_any()
+                            if q.is_empty() {
+                                view! {
+                                    <EmptyState message="No schemas registered" />
+                                }
+                                .into_any()
+                            } else {
+                                view! {
+                                    <EmptyState
+                                        message="No schemas match your search"
+                                        description="Try a different search term."
+                                    />
+                                }
+                                .into_any()
+                            }
                         } else {
                             view! {
                                 <AutoGrid min=Signal::derive(|| "270px".to_string())>
@@ -38,7 +51,12 @@ pub fn SchemaIndexSection(
                             .into_any()
                         }
                     }
-                    Some(Err(_)) => view! { <p>"Failed to load schemas."</p> }.into_any(),
+                    Some(Err(_)) => view! {
+                        <MessageBar intent=MessageBarIntent::Error>
+                            "Failed to load schemas."
+                        </MessageBar>
+                    }
+                    .into_any(),
                     None => view! { <p>"Loading…"</p> }.into_any(),
                 }
             }}

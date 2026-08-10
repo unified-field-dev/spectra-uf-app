@@ -33,7 +33,9 @@ fn empty_event_aggregate_result_timeseries_stub_happy_path() {
             assert!(series.is_empty());
             assert!(headline.is_empty());
         }
-        other => panic!("expected empty TimeSeries stub, got {other:?}"),
+        EventAggregateResult::Slices { .. } => {
+            panic!("expected empty TimeSeries stub, got Slices")
+        }
     }
 }
 

@@ -1,6 +1,6 @@
 use leptos::prelude::*;
 use leptos_router::components::A;
-use orbital::components::{Card, Title3};
+use orbital::components::{Card, SpacingSize, Title3};
 use orbital::primitives::Flex;
 use spectra_core::SchemaListItem;
 
@@ -24,7 +24,7 @@ pub fn SchemaCard(
     view! {
         <div data-testid=test_id>
             <Card>
-                <Flex vertical=true>
+                <Flex vertical=true gap=SpacingSize::Size80.flex_gap()>
                     <Title3>{name.clone()}</Title3>
                     <KindBadge kind=kind />
                     <A href=detail_href>"Details"</A>
