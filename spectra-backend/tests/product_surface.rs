@@ -398,3 +398,62 @@ fn lazy_routes_wire_pages_happy_path() {
         );
     }
 }
+
+#[test]
+fn ops_path_helpers_wire_detail_hrefs_happy_path() {
+    let schema_card = read_app("components/schema/schema_card.rs");
+    let quick = read_app("pages/schema_detail/components/quick_actions_card.rs");
+    for (label, src) in [
+        ("schema_card", schema_card.as_str()),
+        ("quick_actions_card", quick.as_str()),
+    ] {
+        assert!(
+            src.contains("spectra_schema_explore_path")
+                || src.contains("spectra_metric_explore_path")
+                || src.contains("spectra_schema_path"),
+            "{label} must build detail/explore hrefs via spectra_backend path helpers"
+        );
+        assert!(
+            !src.contains("format!(\"/spectra/schema/{name}")
+                && !src.contains("format!(\"/spectra/metric/{name}"),
+            "{label} must not interpolate raw names into /spectra hrefs"
+        );
+    }
+}
+
+#[test]
+fn ops_path_helpers_drop_encoding_sad_path() {
+    let schema_card = read_app("components/schema/schema_card.rs");
+    assert!(
+        schema_card.contains("spectra_schema_path")
+            && schema_card.contains("spectra_schema_explore_path")
+            && schema_card.contains("spectra_metric_explore_path"),
+        "dropping spectra_*_path helpers reopens path-segment smuggling via schema names"
+    );
+}
+
+#[test]
+fn get_schema_metadata_validates_name_happy_path() {
+    let server = read_app("server/mod.rs");
+    let start = server
+        .find("pub async fn get_schema_metadata")
+        .expect("get_schema_metadata");
+    let body = &server[start..start + 450.min(server.len() - start)];
+    assert!(
+        body.contains("validate_spectra_query_name(&name)"),
+        "get_schema_metadata must reject blank/unsafe/oversized names before catalog lookup"
+    );
+}
+
+#[test]
+fn get_schema_metadata_drop_validate_sad_path() {
+    let server = read_app("server/mod.rs");
+    let start = server
+        .find("pub async fn get_schema_metadata")
+        .expect("get_schema_metadata");
+    let body = &server[start..start + 450.min(server.len() - start)];
+    assert!(
+        body.contains("validate_spectra_query_name(&name)"),
+        "dropping validate_spectra_query_name on get_schema_metadata lets unsafe ids reach Spectra IO"
+    );
+}

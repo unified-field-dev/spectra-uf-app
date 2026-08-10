@@ -4,10 +4,11 @@ pub use spectra_backend::{spectra_query_permission_name, validate_spectra_query_
 
 /// Table/metric query permission check via Gauge `spectra.query.{table}`.
 ///
-/// Validates a non-empty table/metric name, resolves Higgs request context, and
-/// calls [`gauge::service::actor_can`] for the per-table permission.
+/// Validates the table/metric name (blank / oversized / path-unsafe rejected),
+/// resolves Higgs request context, and calls [`gauge::service::actor_can`] for
+/// the per-table permission.
 ///
-/// Blank names surface [`spectra_backend::SpectraQueryNameError`] Display text;
+/// Invalid names surface [`spectra_backend::SpectraQueryNameError`] Display text;
 /// other failures stay as operator-facing strings at this gate.
 pub async fn require_spectra_query(table: &str) -> Result<(), String> {
     #[cfg(feature = "ssr")]

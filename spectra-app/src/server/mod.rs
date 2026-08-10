@@ -10,11 +10,21 @@
 //!
 //! ## Errors
 //!
-//! Fallible ops return [`ServerFnError`] (Leptos boundary). Blank table/metric
-//! names are rejected by [`spectra_backend::validate_spectra_query_name`] as
-//! [`spectra_backend::SpectraQueryNameError`] and mapped via `to_string()` inside
-//! [`require_spectra_query`]. Missing session, Higgs/valence resolution failures,
-//! and Gauge denials are also `ServerFnError` strings at this boundary.
+//! Fallible ops return [`ServerFnError`] (Leptos boundary). Blank, oversized, or
+//! path-unsafe table/metric names are rejected by
+//! [`spectra_backend::validate_spectra_query_name`] as
+//! [`spectra_backend::SpectraQueryNameError`] and mapped via `to_string()` (explore
+//! via [`require_spectra_query`]; schema detail at the server fn). Missing session,
+//! Higgs/valence resolution failures, and Gauge denials are also `ServerFnError`
+//! strings at this boundary.
+//!
+//! ## Security note
+//!
+//! Authz is session + `QueryTable` on every ops server fn, plus per-table Gauge
+//! `spectra.query.{table}` on explore queries. Detail/explore hrefs must use
+//! [`spectra_backend`] path helpers so registry names cannot smuggle `/` path
+//! segments. Event/metric row payloads may contain PII when a live backend is
+//! wired — grant `QueryTable` / per-table query permissions narrowly.
 
 mod permissions;
 
@@ -22,8 +32,9 @@ use leptos::prelude::*;
 pub use permissions::require_spectra_query;
 pub use spectra_backend::{
     empty_event_aggregate_result, empty_event_query_result, empty_metrics_query_result,
-    schema_metadata_detail, schema_metadata_list, spectra_query_permission_name,
-    validate_spectra_query_name,
+    encode_ops_path_segment, schema_metadata_detail, schema_metadata_list,
+    spectra_metric_explore_path, spectra_query_permission_name, spectra_schema_explore_path,
+    spectra_schema_path, validate_spectra_query_name, MAX_SPECTRA_QUERY_NAME_CHARS,
 };
 use spectra_core::{
     EventAggregateRequest, EventAggregateResult, EventQuery, EventQueryResult, MetricsQuery,
@@ -62,6 +73,7 @@ pub async fn get_schema_metadata(
 ) -> Result<Option<SchemaDetailDto>, ServerFnError> {
     let ctx = higgs::Higgs::from_request().await?;
     require_session(&ctx)?;
+    validate_spectra_query_name(&name).map_err(|e| ServerFnError::new(e.to_string()))?;
     Ok(schema_metadata_detail(&name))
 }
 

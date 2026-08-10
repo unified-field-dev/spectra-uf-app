@@ -2,6 +2,7 @@ use leptos::prelude::*;
 use leptos_router::components::A;
 use orbital::components::{Card, Title3};
 use orbital::primitives::{Button, ButtonAppearance, Flex};
+use spectra_backend::{spectra_metric_explore_path, spectra_schema_explore_path};
 
 #[component]
 #[allow(clippy::needless_pass_by_value)]
@@ -12,9 +13,9 @@ pub fn QuickActionsCard(
     kind: String,
 ) -> impl IntoView {
     let href = if kind == "metric" {
-        format!("/spectra/metric/{name}/explore")
+        spectra_metric_explore_path(&name)
     } else {
-        format!("/spectra/schema/{name}/explore")
+        spectra_schema_explore_path(&name)
     };
     view! {
         <Card>

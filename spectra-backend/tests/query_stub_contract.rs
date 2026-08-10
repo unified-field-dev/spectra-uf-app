@@ -6,6 +6,7 @@
 use spectra_backend::{
     empty_event_aggregate_result, empty_event_query_result, empty_metrics_query_result,
     spectra_query_permission_name, validate_spectra_query_name, SpectraQueryNameError,
+    MAX_SPECTRA_QUERY_NAME_CHARS,
 };
 use spectra_core::EventAggregateResult;
 
@@ -48,6 +49,19 @@ fn validate_spectra_query_name_rejects_blank_sad() {
     assert_eq!(
         validate_spectra_query_name("   ").expect_err("whitespace name"),
         SpectraQueryNameError::EmptyTableName
+    );
+}
+
+#[test]
+fn validate_spectra_query_name_rejects_slash_and_oversized_sad() {
+    assert_eq!(
+        validate_spectra_query_name("a/b").expect_err("slash"),
+        SpectraQueryNameError::UnsafeTableName
+    );
+    let oversized = "t".repeat(MAX_SPECTRA_QUERY_NAME_CHARS + 1);
+    assert_eq!(
+        validate_spectra_query_name(&oversized).expect_err("oversized"),
+        SpectraQueryNameError::TableNameTooLong
     );
 }
 

@@ -1,7 +1,9 @@
 use super::{
     empty_event_aggregate_result, empty_event_query_result, empty_metrics_query_result,
-    schema_metadata_detail, schema_metadata_list, spectra_query_permission_name,
-    validate_spectra_query_name, SpectraQueryNameError,
+    encode_ops_path_segment, schema_metadata_detail, schema_metadata_list,
+    spectra_metric_explore_path, spectra_query_permission_name, spectra_schema_explore_path,
+    spectra_schema_path, validate_spectra_query_name, SpectraQueryNameError,
+    MAX_SPECTRA_QUERY_NAME_CHARS,
 };
 use spectra_core::EventAggregateResult;
 
@@ -73,7 +75,69 @@ fn validate_spectra_query_name_rejects_blank_sad() {
 }
 
 #[test]
+fn validate_spectra_query_name_rejects_slash_control_dotdot_sad() {
+    assert_eq!(
+        validate_spectra_query_name("a/b").expect_err("slash"),
+        SpectraQueryNameError::UnsafeTableName
+    );
+    assert_eq!(
+        validate_spectra_query_name("a\\b").expect_err("backslash"),
+        SpectraQueryNameError::UnsafeTableName
+    );
+    assert_eq!(
+        validate_spectra_query_name("a\nb").expect_err("control"),
+        SpectraQueryNameError::UnsafeTableName
+    );
+    assert_eq!(
+        validate_spectra_query_name(".").expect_err("dot"),
+        SpectraQueryNameError::UnsafeTableName
+    );
+    assert_eq!(
+        validate_spectra_query_name("..").expect_err("dotdot"),
+        SpectraQueryNameError::UnsafeTableName
+    );
+    assert!(SpectraQueryNameError::UnsafeTableName
+        .to_string()
+        .contains("unsafe"));
+}
+
+#[test]
+fn validate_spectra_query_name_rejects_oversized_sad() {
+    let oversized: String = "t".repeat(MAX_SPECTRA_QUERY_NAME_CHARS + 1);
+    assert_eq!(
+        validate_spectra_query_name(&oversized).expect_err("oversized"),
+        SpectraQueryNameError::TableNameTooLong
+    );
+    assert!(SpectraQueryNameError::TableNameTooLong
+        .to_string()
+        .contains(&MAX_SPECTRA_QUERY_NAME_CHARS.to_string()));
+}
+
+#[test]
 fn validate_spectra_query_name_accepts_non_empty_happy_path() {
     validate_spectra_query_name("events").expect("non-empty");
-    validate_spectra_query_name("  metrics.latency  ").expect("trimmed non-empty");
+    validate_spectra_query_name("  metrics.latency  ").expect("trimmed dotted");
+    validate_spectra_query_name("ops.events").expect("dotted table");
+}
+
+#[test]
+fn encode_ops_path_segment_encodes_slash_and_space_happy_path() {
+    assert_eq!(encode_ops_path_segment("orders"), "orders");
+    assert_eq!(encode_ops_path_segment("a/b"), "a%2Fb");
+    assert_eq!(encode_ops_path_segment("a b"), "a%20b");
+    assert_eq!(encode_ops_path_segment("a\\b"), "a%5Cb");
+    assert_eq!(encode_ops_path_segment("ops.events"), "ops.events");
+}
+
+#[test]
+fn spectra_ops_paths_encode_segments_happy_path() {
+    assert_eq!(spectra_schema_path("a/b"), "/spectra/schema/a%2Fb");
+    assert_eq!(
+        spectra_schema_explore_path("a/b"),
+        "/spectra/schema/a%2Fb/explore"
+    );
+    assert_eq!(
+        spectra_metric_explore_path("m x"),
+        "/spectra/metric/m%20x/explore"
+    );
 }
