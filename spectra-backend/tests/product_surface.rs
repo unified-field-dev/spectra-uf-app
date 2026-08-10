@@ -126,6 +126,10 @@ fn ops_reads_require_query_table_happy_path() {
         server.matches(query_attr).count() >= 5,
         "catalog + explore server fns must carry QueryTable permission attribute"
     );
+    assert!(
+        server.contains("SPECTRA_QUERY_PERMISSION: &str = \"QueryTable\""),
+        "SPECTRA_QUERY_PERMISSION constant must stay QueryTable"
+    );
 }
 
 #[test]

@@ -5,7 +5,7 @@
 
 use spectra_backend::{
     empty_event_aggregate_result, empty_event_query_result, empty_metrics_query_result,
-    spectra_query_permission_name, validate_spectra_query_name,
+    spectra_query_permission_name, validate_spectra_query_name, SpectraQueryNameError,
 };
 use spectra_core::EventAggregateResult;
 
@@ -39,10 +39,13 @@ fn empty_event_aggregate_result_timeseries_stub_happy_path() {
 
 #[test]
 fn validate_spectra_query_name_rejects_blank_sad() {
-    let err = validate_spectra_query_name("").expect_err("blank name");
-    assert!(
-        err.contains("required"),
-        "expected required-name message, got {err}"
+    assert_eq!(
+        validate_spectra_query_name("").expect_err("blank name"),
+        SpectraQueryNameError::EmptyTableName
+    );
+    assert_eq!(
+        validate_spectra_query_name("   ").expect_err("whitespace name"),
+        SpectraQueryNameError::EmptyTableName
     );
 }
 

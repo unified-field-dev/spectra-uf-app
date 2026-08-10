@@ -7,6 +7,14 @@
 //! Every server fn requires an authenticated session and `QueryTable` (via
 //! `#[uf_product_macros::server(permission = "...")]`). Explore queries also call
 //! [`require_spectra_query`] for per-table Gauge `spectra.query.{table}` checks.
+//!
+//! ## Errors
+//!
+//! Fallible ops return [`ServerFnError`] (Leptos boundary). Blank table/metric
+//! names are rejected by [`spectra_backend::validate_spectra_query_name`] as
+//! [`spectra_backend::SpectraQueryNameError`] and mapped via `to_string()` inside
+//! [`require_spectra_query`]. Missing session, Higgs/valence resolution failures,
+//! and Gauge denials are also `ServerFnError` strings at this boundary.
 
 mod permissions;
 
@@ -21,6 +29,10 @@ use spectra_core::{
     EventAggregateRequest, EventAggregateResult, EventQuery, EventQueryResult, MetricsQuery,
     MetricsQueryResult, SchemaDetailDto, SchemaListItem,
 };
+
+/// Permission name required for Spectra catalog and explore reads
+/// (manifest: [`crate::permissions::SpectraPermission::QueryTable`]).
+pub const SPECTRA_QUERY_PERMISSION: &str = "QueryTable";
 
 /// Require an authenticated session (`session_user_id`).
 #[cfg(feature = "ssr")]

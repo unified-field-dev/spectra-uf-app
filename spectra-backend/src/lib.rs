@@ -8,7 +8,7 @@
 //!
 //! | Task | Start here |
 //! |------|------------|
-//! | **Validate explore table names** | [`validate_spectra_query_name`] |
+//! | **Validate explore table names** | [`SpectraQueryNameError`], [`validate_spectra_query_name`] |
 //! | **Gauge permission names** | [`spectra_query_permission_name`] |
 //! | **Schema catalog list/detail** | [`schema_metadata_list`], [`schema_metadata_detail`] |
 //! | **Empty explore stubs** | [`empty_event_query_result`], [`empty_event_aggregate_result`], [`empty_metrics_query_result`] |
@@ -26,7 +26,7 @@
 //!
 //! | Concern | API | Owner |
 //! |---------|-----|-------|
-//! | Table/metric name validation | [`validate_spectra_query_name`] | this crate |
+//! | Table/metric name validation | [`SpectraQueryNameError`], [`validate_spectra_query_name`] | this crate |
 //! | Gauge `spectra.query.{table}` | [`spectra_query_permission_name`] | this crate |
 //! | Schema catalog list/detail | [`schema_metadata_list`], [`schema_metadata_detail`] | this crate |
 //! | Event explore stub | [`empty_event_query_result`], [`empty_event_aggregate_result`] | this crate |
@@ -46,14 +46,36 @@ use spectra_core::{
     MetricsQueryResult, SchemaDetailDto, SchemaListItem,
 };
 
+/// Blank table/metric name rejected before Gauge permission checks or explore stubs.
+///
+/// Callers map this into Leptos `ServerFnError` (or equivalent) at the `#[server]`
+/// boundary; the Display text stays stable for UI and contract tests.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[non_exhaustive]
+pub enum SpectraQueryNameError {
+    /// Table or metric name was empty or whitespace-only.
+    EmptyTableName,
+}
+
+impl std::fmt::Display for SpectraQueryNameError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::EmptyTableName => write!(f, "Spectra query table name is required"),
+        }
+    }
+}
+
+impl std::error::Error for SpectraQueryNameError {}
+
 /// Rejects blank table/metric names before host permission checks run.
 ///
 /// # Errors
 ///
-/// Returns an error message when `table` is empty or whitespace-only.
-pub fn validate_spectra_query_name(table: &str) -> Result<(), String> {
+/// Returns [`SpectraQueryNameError::EmptyTableName`] when `table` is empty or
+/// whitespace-only.
+pub fn validate_spectra_query_name(table: &str) -> Result<(), SpectraQueryNameError> {
     if table.trim().is_empty() {
-        Err("Spectra query table name is required".to_string())
+        Err(SpectraQueryNameError::EmptyTableName)
     } else {
         Ok(())
     }
@@ -106,7 +128,7 @@ mod tests {
     use super::{
         empty_event_aggregate_result, empty_event_query_result, empty_metrics_query_result,
         schema_metadata_detail, schema_metadata_list, spectra_query_permission_name,
-        validate_spectra_query_name,
+        validate_spectra_query_name, SpectraQueryNameError,
     };
     use spectra_core::EventAggregateResult;
 
@@ -162,10 +184,17 @@ mod tests {
 
     #[test]
     fn validate_spectra_query_name_rejects_blank_sad() {
-        let err = validate_spectra_query_name("").expect_err("blank");
-        assert!(err.contains("required"), "{err}");
-        let err = validate_spectra_query_name("   ").expect_err("whitespace");
-        assert!(err.contains("required"), "{err}");
+        assert_eq!(
+            validate_spectra_query_name("").expect_err("blank"),
+            SpectraQueryNameError::EmptyTableName
+        );
+        assert_eq!(
+            validate_spectra_query_name("   ").expect_err("whitespace"),
+            SpectraQueryNameError::EmptyTableName
+        );
+        assert!(SpectraQueryNameError::EmptyTableName
+            .to_string()
+            .contains("required"));
     }
 
     #[test]
