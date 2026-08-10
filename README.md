@@ -1,9 +1,9 @@
 # Spectra UF App
 
-[![CI](https://github.com/deathbreakfast/spectra-uf-app/actions/workflows/ci.yml/badge.svg)](https://github.com/deathbreakfast/spectra-uf-app/actions/workflows/ci.yml)
+[![CI](https://github.com/unified-field-dev/spectra-uf-app/actions/workflows/ci.yml/badge.svg)](https://github.com/unified-field-dev/spectra-uf-app/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-[GitHub](https://github.com/deathbreakfast/spectra-uf-app) · `cargo doc -p spectra-backend --open` · distributed via git (not crates.io)
+[GitHub](https://github.com/unified-field-dev/spectra-uf-app) · `cargo doc -p spectra-backend --open` · distributed via git (not crates.io)
 
 ## About
 
@@ -28,8 +28,8 @@ return empty stub payloads until a host injects a live Spectra backend.
 ```toml
 [dependencies]
 # Pin tag or rev — do not use branch = "main".
-spectra-app = { git = "https://github.com/deathbreakfast/spectra-uf-app", package = "spectra-app", rev = "REPLACE_WITH_PIN", default-features = false }
-spectra-backend = { git = "https://github.com/deathbreakfast/spectra-uf-app", package = "spectra-backend", rev = "REPLACE_WITH_PIN" }
+spectra-app = { git = "https://github.com/unified-field-dev/spectra-uf-app", package = "spectra-app", rev = "REPLACE_WITH_PIN", default-features = false }
+spectra-backend = { git = "https://github.com/unified-field-dev/spectra-uf-app", package = "spectra-backend", rev = "REPLACE_WITH_PIN" }
 ```
 
 ```rust,ignore

@@ -31,8 +31,8 @@ matches the Orbital app id/path (`spectra` / `/spectra`).
 
 ```toml
 [dependencies]
-spectra-app = { git = "https://github.com/deathbreakfast/spectra-uf-app", package = "spectra-app", rev = "REPLACE_WITH_PIN", default-features = false }
-spectra-backend = { git = "https://github.com/deathbreakfast/spectra-uf-app", package = "spectra-backend", rev = "REPLACE_WITH_PIN" }
+spectra-app = { git = "https://github.com/unified-field-dev/spectra-uf-app", package = "spectra-app", rev = "REPLACE_WITH_PIN", default-features = false }
+spectra-backend = { git = "https://github.com/unified-field-dev/spectra-uf-app", package = "spectra-backend", rev = "REPLACE_WITH_PIN" }
 uf-product = { /* your pin */, default-features = false }
 uf-integrations = { /* your pin */, default-features = false }
 
@@ -77,7 +77,7 @@ ops `#[server]` fns carry `QueryTable` (manifest
 + session extractors in host bootstrap before mounting the routes.
 
 For shell chrome (layout, fonts, Axum + Leptos boot), copy
-[`shell-chrome-host`](https://github.com/deathbreakfast/unified-field-product/tree/main/examples/shell-chrome-host)
+[`shell-chrome-host`](https://github.com/unified-field-dev/unified-field-product/tree/main/examples/shell-chrome-host)
 from unified-field-product, then mount `SpectraRoutes`.
 
 ## Run (documented gate)

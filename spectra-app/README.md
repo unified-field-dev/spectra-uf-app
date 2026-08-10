@@ -5,7 +5,7 @@ Leptos operations UI for Spectra: schema browsing and event/metric explore under
 
 ```toml
 # Pin tag or rev — do not use branch = "main".
-spectra-app = { git = "https://github.com/deathbreakfast/spectra-uf-app", package = "spectra-app", rev = "REPLACE_WITH_PIN", default-features = false }
+spectra-app = { git = "https://github.com/unified-field-dev/spectra-uf-app", package = "spectra-app", rev = "REPLACE_WITH_PIN", default-features = false }
 ```
 
 ```rust,ignore

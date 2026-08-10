@@ -3,6 +3,12 @@ name = "spectra-app"
 version = "0.1.0"
 edition = "2021"
 license.workspace = true
+authors.workspace = true
+repository.workspace = true
+homepage.workspace = true
+documentation.workspace = true
+description = "Leptos ops UI for Spectra schemas, events, and metrics under /spectra"
+readme = "README.md"
 
 [lints]
 workspace = true
