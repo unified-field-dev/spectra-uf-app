@@ -61,13 +61,13 @@ serde_json = "1"
 turf = "0.10"
 chrono = { version = "0.4", default-features = false, features = ["clock", "std", "wasmbind", "serde"] }
 
-spectra-core = { package = "uf-spectra-core", version = "0.1.0", default-features = false }
-spectra = { package = "uf-spectra", version = "0.1.0", default-features = false, features = ["mem"] }
+spectra-core = { package = "uf-spectra-core", version = "0.1.2", default-features = false }
+spectra = { package = "uf-spectra", version = "0.1.2", default-features = false, features = ["mem"] }
 gauge = { path = "../../L3-zone-products/gauge/gauge", default-features = false }
 higgs = { path = "../../L1-host-stack-kits/higgs/higgs", default-features = false }
 higgs-host = { path = "../../L1-host-stack-kits/higgs/higgs-host", default-features = false }
 higgs-identity = { path = "../../L1-host-stack-kits/higgs/higgs-identity" }
-valence = { package = "uf-valence", version = "0.1.1", default-features = false, features = ["mem", "sqlite"] }
+valence = { package = "uf-valence", version = "0.1.4", default-features = false, features = ["mem", "sqlite"] }
 
 orbital = { package = "orbital-ui", git = "https://github.com/deathbreakfast/orbital", branch = "main", default-features = false }
 orbital-macros = { git = "https://github.com/deathbreakfast/orbital", branch = "main" }
@@ -84,12 +84,6 @@ lepton-shell = { path = "../../L2-product-platform/lepton-uf-app/lepton-shell", 
 inventory = "0.3"
 
 # crates.io uf-valence family — local tree
-[patch.crates-io]
-uf-valence = { path = "../../L0-upstream-cores/valence/valence" }
-uf-valence-core = { path = "../../L0-upstream-cores/valence/valence-core" }
-uf-valence-codegen = { path = "../../L0-upstream-cores/valence/valence-codegen" }
-uf-valence-macros = { path = "../../L0-upstream-cores/valence/valence-macros" }
-uf-valence-telemetry = { path = "../../L0-upstream-cores/valence/valence-telemetry" }
 
 [patch."https://github.com/deathbreakfast/higgs"]
 higgs = { path = "../../L1-host-stack-kits/higgs/higgs" }
@@ -113,3 +107,15 @@ uf-search-core = { path = "../../L2-product-platform/unified-field-product/uf-se
 uf-notifications-core = { path = "../../L2-product-platform/uf-notifications/uf-notifications-core" }
 uf-notifications-api = { path = "../../L2-product-platform/uf-notifications/uf-notifications-api" }
 
+
+# Kits may still git-pin older Valence; force one crates.io graph.
+[patch."https://github.com/unified-field-dev/valence"]
+uf-valence = { version = "0.1.4" }
+uf-valence-core = { version = "0.1.4" }
+uf-valence-codegen = { version = "0.1.4" }
+uf-valence-macros = { version = "0.1.4" }
+uf-valence-telemetry = { version = "0.1.4" }
+uf-valence-backend-mem = { version = "0.1.4" }
+uf-valence-backend-sqlite = { version = "0.1.4" }
+uf-valence-backend-sql = { version = "0.1.4" }
+uf-valence-schema-dsl = { version = "0.1.4" }
