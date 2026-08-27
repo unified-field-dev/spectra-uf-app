@@ -1,48 +1,92 @@
-//! Pure backend contracts for the Spectra UF app server surface.
+//! Pure backend contracts for the Spectra ops UI server surface.
 //!
-//! Leptos `#[server]` entrypoints in `spectra-app` resolve Higgs request context,
-//! then call these helpers so catalog/query shapes stay unit- and
-//! integration-testable without a full host or UI graph.
+//! Validation, catalog helpers, and empty explore-query payloads that `spectra-app`
+//! `#[server]` functions call after resolving Higgs request context. Keeps schema list/detail
+//! and explore result shapes unit-testable without a Leptos host or UI graph.
 //!
-//! ## Organized by task
+//! ## Features
 //!
-//! | Task | Start here |
-//! |------|------------|
-//! | **Validate explore table names** | [`SpectraQueryNameError`], [`validate_spectra_query_name`], [`MAX_SPECTRA_QUERY_NAME_CHARS`] |
-//! | **Gauge permission names** | [`spectra_query_permission_name`] |
-//! | **Ops path encoding** | [`encode_ops_path_segment`], [`spectra_schema_path`], [`spectra_schema_explore_path`], [`spectra_metric_explore_path`] |
-//! | **Schema catalog list/detail** | [`schema_metadata_list`], [`schema_metadata_detail`] |
-//! | **Empty explore stubs** | [`empty_event_query_result`], [`empty_event_aggregate_result`], [`empty_metrics_query_result`] |
-//! | **UI pages / `#[server]` wrappers** | `spectra-app` (not this crate) |
+//! - **Query name validation** — Reject blank, oversized, or path-unsafe table and metric
+//!   names before Gauge permission checks or explore stubs.
+//!   [Get started](#validate-query-names)
+//! - **Catalog and explore stubs** — Schema list/detail helpers and empty explore payloads
+//!   returned until the host injects live query backends.
+//!   [Get started](#catalog-and-stubs)
+//! - **Gauge permission names** — Format per-table `spectra.query.{table}` strings via
+//!   [`spectra_query_permission_name`].
+//! - **Ops path encoding** — Percent-encode path segments for `/spectra` hrefs via
+//!   [`encode_ops_path_segment`], [`spectra_schema_path`], [`spectra_schema_explore_path`],
+//!   and [`spectra_metric_explore_path`].
 //!
-//! ## Owns / does not own
+//! ## Validate query names
 //!
-//! **Owns:** Pure validation, Gauge name formatting, ops path helpers, schema
-//! catalog helpers, and empty explore-query stub payloads used by the Spectra
-//! ops UI server surface.
+//! Explore and schema-detail lookups reject names that would break routing or smuggle path
+//! segments into Gauge checks. [`validate_spectra_query_name`] runs before `spectra-app`
+//! server functions call catalog or explore helpers — call it in custom wrappers when you add
+//! new read paths that accept table or metric parameters.
 //!
-//! **Does not own:** Leptos pages, Higgs `#[server]` wrappers, or route registration
-//! (`spectra-app`); Spectra core storage or live query backends (Spectra core / host).
+//! **Prerequisites:** None beyond importing this crate; validators are synchronous and return
+//! [`SpectraQueryNameError`] on failure.
 //!
-//! ## Concern → API
+//! ```rust,ignore
+//! use spectra_backend::{
+//!     validate_spectra_query_name, SpectraQueryNameError, MAX_SPECTRA_QUERY_NAME_CHARS,
+//! };
 //!
-//! | Concern | API | Owner |
-//! |---------|-----|-------|
-//! | Table/metric name validation | [`SpectraQueryNameError`], [`validate_spectra_query_name`], [`MAX_SPECTRA_QUERY_NAME_CHARS`] | this crate |
-//! | Gauge `spectra.query.{table}` | [`spectra_query_permission_name`] | this crate |
-//! | Ops path encoding | [`encode_ops_path_segment`], [`spectra_schema_path`], [`spectra_schema_explore_path`], [`spectra_metric_explore_path`] | this crate |
-//! | Schema catalog list/detail | [`schema_metadata_list`], [`schema_metadata_detail`] | this crate |
-//! | Event explore stub | [`empty_event_query_result`], [`empty_event_aggregate_result`] | this crate |
-//! | Metric explore stub | [`empty_metrics_query_result`] | this crate |
-//! | Pages, routes, server fns | `spectra-app` (`SpectraRoutes`) | `spectra-app` |
+//! validate_spectra_query_name("ops.events").expect("valid table");
+//! assert_eq!(
+//!     validate_spectra_query_name("").unwrap_err(),
+//!     SpectraQueryNameError::EmptyTableName
+//! );
+//! assert_eq!(MAX_SPECTRA_QUERY_NAME_CHARS, 256);
+//! ```
+//!
+//! On success validators return `Ok(())` and the trimmed name is safe for permission checks.
+//! Blank, oversized, control-character, slash, backslash, or `.` / `..` names map to typed
+//! [`SpectraQueryNameError`] variants with operator-facing messages.
+//!
+//! ## Catalog and stubs
+//!
+//! Catalog helpers list registered schemas and resolve detail metadata; explore stubs return
+//! empty result shapes the UI can render before a host wires live Spectra query backends.
+//! [`schema_metadata_list`] and [`schema_metadata_detail`] back schema index/detail pages;
+//! [`empty_event_query_result`], [`empty_event_aggregate_result`], and
+//! [`empty_metrics_query_result`] back explore server functions.
+//!
+//! **Prerequisites:** Catalog helpers delegate to `spectra-core` registry functions — they do
+//! not perform network IO. Explore stubs are synchronous and ignore query parameters except
+//! where noted.
+//!
+//! ```rust,ignore
+//! use spectra_backend::{
+//!     schema_metadata_list, schema_metadata_detail,
+//!     empty_event_query_result, empty_metrics_query_result,
+//! };
+//!
+//! let schemas = schema_metadata_list();
+//! let first_name = schemas.first().map(|s| s.table_or_metric.as_str());
+//! assert_eq!(first_name, Some("ops.events"));
+//!
+//! let detail = schema_metadata_detail("ops.events");
+//! assert_eq!(detail.as_ref().map(|d| d.table_or_metric.as_str()), Some("ops.events"));
+//!
+//! let events = empty_event_query_result("ops.events");
+//! assert_eq!(events.row_count, 0);
+//!
+//! let metrics = empty_metrics_query_result();
+//! assert_eq!(metrics.series.len(), 0);
+//! ```
+//!
+//! On success catalog helpers return registered schema rows or `None` when a name is unknown;
+//! explore stubs return empty vectors with stable column metadata so pages load without error.
 //!
 //! ## Examples ladder
 //!
 //! | Level | Where |
 //! |-------|--------|
-//! | Highlight | Concern → API table above |
+//! | Highlight | [Validate query names](#validate-query-names) |
 //! | Mid | This crate's unit + integ suites (`docs/VERIFICATION.md`) |
-//! | Detailed | `examples/protected-spectra-host` (inventory `spectra` / `/spectra`; copy README) |
+//! | Detailed | `examples/protected-spectra-host` (inventory `spectra` / `/spectra`) |
 
 use spectra_core::{
     list_schemas, rows_to_event_result, schema_detail, EventAggregateResult, EventQueryResult,

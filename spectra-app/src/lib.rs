@@ -1,50 +1,170 @@
 #![recursion_limit = "256"]
-//! Spectra operations app: routes and UI composition for exploring logged events and
-//! metrics under `/spectra`.
+//! Spectra operations app — browse registered schemas and explore event logs and metrics.
 //!
-//! Spectra itself is a log/metric storage crate with no built-in UI; this crate is the
-//! `#[uf_product_macros::uf_app]`-registered operations surface a host mounts to give
-//! operators a way to browse schemas and explore event/metric data.
+//! Leptos UI mounted under `/spectra` so operators can inspect schema metadata and run
+//! explore queries without building custom pages. Registers alongside other product apps via
+//! `uf_app!` and requires an authenticated session with `QueryTable` before server functions
+//! load catalog or explore data.
 //!
 //! Orbital inventory macros (`uf_app!`, `orbital_routes_extract`) emit undocumented
 //! associated items, so this crate allows `missing_docs` at the crate root while keeping
 //! hand-written modules and items documented.
 //!
-//! ## Organized by task
+//! ## Features
 //!
-//! | Task | Start here |
-//! |------|------------|
-//! | **Mount `/spectra` routes** | [`SpectraRoutes`] |
-//! | **Browse schema home / index** | [`SpectraHomePage`], [`SchemaIndexPage`], [`list_schema_metadata`] |
-//! | **Inspect a schema** | [`SchemaDetailPage`], [`get_schema_metadata`] |
-//! | **Explore events** | [`EventExplorePage`], [`query_events`], [`query_event_aggregate`] |
-//! | **Explore a metric** | [`MetricExplorePage`], [`query_metrics`] |
-//! | **Permission gates** | [`SpectraPermission`], [`SPECTRA_QUERY_PERMISSION`], [`server::require_spectra_query`] |
-//! | **Pure catalog / query stubs** | `spectra-backend` (not this crate) |
+//! - **Spectra admin routes** — Nested `/spectra` route tree behind auth for schema home,
+//!   index, detail, and explore pages. Mount once when the host router starts.
+//!   [Get started](#mount-spectra-routes)
+//! - **Schema catalog** — [`SchemaIndexPage`] and [`SchemaDetailPage`] list and inspect
+//!   registered schemas via [`list_schema_metadata`] and [`get_schema_metadata`].
+//!   [Get started](#browse-schemas)
+//! - **Event explore** — [`EventExplorePage`] loads paginated event rows and chart
+//!   aggregates via [`query_events`] and [`query_event_aggregate`].
+//!   [Get started](#explore-events)
+//! - **Metric explore** — [`MetricExplorePage`] loads time-series and headline stats via
+//!   [`query_metrics`]. [Get started](#explore-metrics)
+//! - **Server function wrappers** — [`mod@server`] Higgs `#[server]` fns, per-table Gauge
+//!   checks via [`require_spectra_query`], and re-exports of [`spectra_backend`] helpers.
+//! - **Permission manifest** — [`SpectraPermission`] and [`SPECTRA_QUERY_PERMISSION`] for
+//!   host manifest wiring.
 //!
-//! ## Owns / does not own
+//! ## Mount Spectra routes
 //!
-//! **Owns:** Leptos pages, Higgs `#[server]` wrappers, layout/nav shell, permission
-//! manifest, and `uf_app!` / [`SpectraRoutes`] registration.
+//! [`SpectraRoutes`] nests the full `/spectra` subtree inside a host Leptos `<Routes>` tree.
+//! Operators get schema catalog pages and event/metric explore views. Mount during host router
+//! setup at startup, alongside other `uf_app!` product routes — the macro registers launcher
+//! metadata and the `/spectra` inventory entry.
 //!
-//! **Does not own:** Schema catalog or explore-query stub helpers (`spectra-backend`);
-//! Spectra core storage or live query backends (Spectra core / host injection); full
-//! Leptos SSR host binaries (live outside this repository).
+//! **Prerequisites:** `ssr` on this crate; authenticated session; `QueryTable` permission
+//! ([`SPECTRA_QUERY_PERMISSION`]); host-injected Spectra query backend for live explore data.
 //!
-//! ## Concern → API
+//! ```rust,ignore
+//! use leptos::prelude::*;
+//! use leptos_router::components::Routes;
+//! use spectra_app::SpectraRoutes;
 //!
-//! | Concern | API | Owner |
-//! |---------|-----|-------|
-//! | Mount `/spectra` | [`SpectraRoutes`], [`SpectraLayout`] | this crate |
-//! | Ops pages | [`SpectraHomePage`], [`SchemaIndexPage`], [`SchemaDetailPage`], [`EventExplorePage`], [`MetricExplorePage`] | this crate |
-//! | Server fns | [`list_schema_metadata`], [`get_schema_metadata`], [`query_events`], [`query_event_aggregate`], [`query_metrics`], [`SPECTRA_QUERY_PERMISSION`] | this crate ([`mod@server`]) |
-//! | Name validation / stubs | `spectra_backend::SpectraQueryNameError`, `spectra_backend::validate_spectra_query_name` | `spectra-backend` |
-//! | Permission manifest | [`SpectraPermission`] | this crate |
+//! view! {
+//!     <Routes fallback=|| "not found">
+//!         <SpectraRoutes />
+//!     </Routes>
+//! }
+//! ```
 //!
-//! ## Routes (Concern → page → server fn)
+//! On success `/spectra` resolves to the schema home, `/spectra/schema` lists registered
+//! schemas, and nested detail and explore routes load per-schema pages. Unauthenticated
+//! sessions are rejected by server functions — see root `SECURITY.md`.
 //!
-//! Mounted under `/spectra` by [`SpectraRoutes`]. Every server fn requires an
-//! authenticated session and [`SPECTRA_QUERY_PERMISSION`]. Explore queries additionally call
+//! ## Browse schemas
+//!
+//! Schema pages list every registered Spectra schema and show field metadata on detail.
+//! [`SchemaIndexPage`] and [`SpectraHomePage`] call [`list_schema_metadata`] for the index;
+//! [`SchemaDetailPage`] calls [`get_schema_metadata`] for one schema name. Open these routes
+//! when operators need column types, partition hints, or quick links into explore views.
+//!
+//! **Prerequisites:** [`SpectraRoutes`] mounted; `ssr` feature; `QueryTable` permission;
+//! schema names must pass `spectra_backend::validate_spectra_query_name` on detail lookup.
+//!
+//! ```rust,ignore
+//! use spectra_app::{list_schema_metadata, get_schema_metadata, SchemaIndexPage, SchemaDetailPage};
+//! use spectra_core::SchemaListItem;
+//!
+//! let _index: SchemaIndexPage;
+//! let _detail: SchemaDetailPage;
+//! let schemas: Vec<SchemaListItem> = list_schema_metadata().await?;
+//! let schema_name = schemas.first().map(|s| s.table_or_metric.as_str());
+//! assert_eq!(schema_name, Some("ops.events"));
+//!
+//! let detail = get_schema_metadata("ops.events".into()).await?;
+//! assert_eq!(detail.as_ref().map(|d| d.table_or_metric.as_str()), Some("ops.events"));
+//! ```
+//!
+//! On success the index returns sorted [`spectra_core::SchemaListItem`] rows and detail resolves one schema
+//! or returns `None` when the name is unknown. Blank or path-unsafe names fail validation
+//! before catalog lookup.
+//!
+//! ## Explore events
+//!
+//! Event explore pages show a paginated event log grid and optional chart aggregates for one
+//! table. [`EventExplorePage`] calls [`query_events`] for row data and [`query_event_aggregate`]
+//! for time-series or headline charts. Use this route when operators audit recent rows or
+//! bucketed counts for a schema-backed event table.
+//!
+//! **Prerequisites:** Routes mounted; `QueryTable` plus per-table Gauge `spectra.query.{table}`
+//! via [`require_spectra_query`]; table names must pass `spectra_backend::validate_spectra_query_name`.
+//!
+//! ```rust,ignore
+//! use chrono::Utc;
+//! use spectra_app::{query_events, query_event_aggregate, EventExplorePage};
+//! use spectra_core::{EventQuery, EventAggregateRequest, GridPaginationModel};
+//!
+//! let query = EventQuery {
+//!     table: "ops.events".into(),
+//!     start: Utc::now() - chrono::Duration::hours(24),
+//!     end: Utc::now(),
+//!     partition: None,
+//!     pagination: GridPaginationModel::default(),
+//!     sort: vec![],
+//!     filter: Default::default(),
+//! };
+//! let rows = query_events(query).await?;
+//! assert_eq!(rows.row_count, 0);
+//!
+//! let agg = EventAggregateRequest {
+//!     table: "ops.events".into(),
+//!     start: Utc::now() - chrono::Duration::hours(24),
+//!     end: Utc::now(),
+//!     aggregation: Default::default(),
+//!     view: Default::default(),
+//! };
+//! let chart = query_event_aggregate(agg).await?;
+//! assert!(matches!(chart, spectra_core::EventAggregateResult::TimeSeries { .. }));
+//! ```
+//!
+//! On success `rows` carries column definitions and a page of grid rows (empty until the host
+//! wires a live backend); chart queries return an aggregate payload shape the Orbital charts
+//! can render. Denied Gauge permissions surface as `ServerFnError` before query stubs run.
+//!
+//! ## Explore metrics
+//!
+//! Metric explore pages chart time-series and headline stats for one metric family.
+//! [`MetricExplorePage`] calls [`query_metrics`] with a [`spectra_core::MetricsQuery`] describing the
+//! metric name, time range, and label matchers. Open this route when operators inspect
+//! throughput, latency, or custom counters registered in Spectra.
+//!
+//! **Prerequisites:** Routes mounted; `QueryTable` plus per-metric Gauge `spectra.query.{metric}`
+//! via [`require_spectra_query`]; metric names must pass `spectra_backend::validate_spectra_query_name`.
+//!
+//! ```rust,ignore
+//! use chrono::Utc;
+//! use spectra_app::{query_metrics, MetricExplorePage};
+//! use spectra_core::MetricsQuery;
+//!
+//! let query = MetricsQuery {
+//!     metric: "ops.request.duration".into(),
+//!     start: Utc::now() - chrono::Duration::hours(1),
+//!     end: Utc::now(),
+//!     step_secs: Some(60),
+//!     label_matchers: vec![],
+//! };
+//! let result = query_metrics(query).await?;
+//! assert_eq!(result.series.len(), 0);
+//! ```
+//!
+//! On success `result` carries `series` and `headline` vectors (empty until the host injects
+//! a live metrics backend). Oversized or path-unsafe metric names are rejected before permission
+//! checks.
+//!
+//! ## Feature flags
+//!
+//! | Flag | Effect |
+//! |------|--------|
+//! | `ssr` | Server-side Leptos split; required for `#[server]` fns and Higgs/Gauge IO. |
+//! | `hydrate` | Client-side hydration for routed pages and Orbital shell components. |
+//!
+//! ## Routes
+//!
+//! Mounted under `/spectra` by [`SpectraRoutes`]. Every server fn requires an authenticated
+//! session and [`SPECTRA_QUERY_PERMISSION`]. Explore queries additionally call
 //! [`server::require_spectra_query`] for Gauge `spectra.query.{table}` before the
 //! (currently stubbed, host-injected) query backend runs.
 //!
@@ -53,48 +173,23 @@
 //! | `/spectra` | [`SpectraHomePage`] | [`list_schema_metadata`] |
 //! | `/spectra/schema` | [`SchemaIndexPage`] | [`list_schema_metadata`] |
 //! | `/spectra/schema/:name` | [`SchemaDetailPage`] | [`get_schema_metadata`] |
-//! | `/spectra/schema/:name/explore` | [`EventExplorePage`] | [`query_events`] → [`server::require_spectra_query`], [`query_event_aggregate`] → [`server::require_spectra_query`] |
-//! | `/spectra/metric/:name/explore` | [`MetricExplorePage`] | [`query_metrics`] → [`server::require_spectra_query`] |
-//!
-//! ## Getting started
-//!
-//! Mount [`SpectraRoutes`] inside your host's `<Routes>`; it registers the `/spectra`
-//! subtree (auth-gated) and, via `uf_app!`, its launcher metadata:
-//!
-//! ```rust,ignore
-//! use leptos::prelude::*;
-//! use leptos_router::components::Routes;
-//! use spectra_app::SpectraRoutes;
-//!
-//! #[component]
-//! fn App() -> impl IntoView {
-//!     view! {
-//!         <Routes fallback=|| "not found">
-//!             <SpectraRoutes />
-//!         </Routes>
-//!     }
-//! }
-//! ```
+//! | `/spectra/schema/:name/explore` | [`EventExplorePage`] | [`query_events`], [`query_event_aggregate`] |
+//! | `/spectra/metric/:name/explore` | [`MetricExplorePage`] | [`query_metrics`] |
 //!
 //! ## Examples ladder
 //!
 //! | Level | Where |
 //! |-------|--------|
-//! | Highlight | Getting started above |
+//! | Highlight | [Mount Spectra routes](#mount-spectra-routes) |
 //! | Mid | `spectra-backend` unit + integ suites (`docs/VERIFICATION.md`) |
-//! | Detailed | `examples/protected-spectra-host` (deny/allow + schema index; inventory `spectra` / `/spectra`; copy README) |
+//! | Detailed | `examples/protected-spectra-host` (deny/allow + schema index; inventory `spectra` / `/spectra`) |
 //!
 //! ## Where to look next
 //!
-//! - [`SpectraRoutes`] — the route entrypoint mounted by hosts.
-//! - [`SpectraLayout`] — the shared app bar / nav shell wrapping every route.
-//! - [`pages`] — the page components listed under Organized by task above.
-//! - [`mod@server`] — server functions backing the UI, including the
-//!   [`server::require_spectra_query`] permission gate.
-//! - [`SpectraPermission`] / [`SPECTRA_QUERY_PERMISSION`] — permission enum and
-//!   QueryTable name for host manifest wiring.
-//! - `spectra_backend::SpectraQueryNameError` — typed blank-name rejection before
-//!   Gauge / explore stubs.
+//! - [`SpectraLayout`] — shared app bar / nav shell wrapping every route.
+//! - [`mod@server`] — server functions backing the UI, including [`require_spectra_query`].
+//! - [`SpectraPermission`] / [`SPECTRA_QUERY_PERMISSION`] — permission enum and QueryTable name.
+//! - `spectra_backend` — name validation, catalog helpers, and explore stub payloads.
 
 #![allow(missing_docs)]
 #![cfg_attr(
