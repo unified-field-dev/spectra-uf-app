@@ -95,5 +95,4 @@ cargo run -p protected-spectra-host
 
 Out of gate for this host. Full ops UI needs a product binary with
 `cargo-leptos`, `wasm32`, session chrome, Spectra query backends, and a working
-Orbital / `uf-product` graph. Prefer the oneshot above for local gates; treat
-`spectra-app` compile failures from a broken sibling graph as host-product debt.
+Orbital / `uf-product` graph. Prefer the oneshot above.

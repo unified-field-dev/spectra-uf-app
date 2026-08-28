@@ -3,7 +3,7 @@
 [![CI](https://github.com/unified-field-dev/spectra-uf-app/actions/workflows/ci.yml/badge.svg)](https://github.com/unified-field-dev/spectra-uf-app/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-[GitHub](https://github.com/unified-field-dev/spectra-uf-app) · `cargo doc -p spectra-backend --open` · distributed via git (not crates.io)
+[GitHub](https://github.com/unified-field-dev/spectra-uf-app) · `cargo doc -p spectra-backend --open`
 
 ## About
 
@@ -15,7 +15,7 @@ event/metric data.
 - **UI (`spectra-app`)** — pages, Higgs `#[server]` wrappers, `SpectraRoutes`,
   `uf_app!` registration
 - **Backend (`spectra-backend`)** — pure schema/query stub helpers (no Leptos);
-  preferred Layer 1 CI path
+  primary CI surface
 
 Hosts supply Spectra query backends and auth guard context. Enable `ssr` /
 hydrate to match your host. Crate-root rustdoc owns Concern → route → server fn
@@ -86,7 +86,7 @@ public issue for security-sensitive reports.
 
 ## Verify
 
-GitHub Actions (`.github/workflows/ci.yml`) runs the Layer 1 subset from
+GitHub Actions (`.github/workflows/ci.yml`) runs the CI subset from
 [`docs/VERIFICATION.md`](docs/VERIFICATION.md): fmt, clippy `-D warnings` on
 `spectra-backend` (+ teaching host), contract tests, `protected-spectra-host`
 check/run, and spectra-backend rustdoc with broken-intra-doc-link deny.
@@ -106,8 +106,6 @@ RUSTDOCFLAGS="-D rustdoc::broken-intra-doc-links" cargo doc -p spectra-backend -
 
 Teaching host success line:
 `protected_spectra_host: OK — /spectra deny/allow + schema index`.
-`spectra-app` compile/doc can fail when the sibling Orbital / host graph does
-not compile — treat that as host-product debt, not a Spectra mapping gap.
 Full command block: [`docs/VERIFICATION.md`](docs/VERIFICATION.md). Contribute:
 [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
