@@ -80,13 +80,11 @@
 //! On success catalog helpers return registered schema rows or `None` when a name is unknown;
 //! explore stubs return empty vectors with stable column metadata so pages load without error.
 //!
-//! ## Examples ladder
+//! ## Examples
 //!
-//! | Level | Where |
-//! |-------|--------|
-//! | Highlight | [Validate query names](#validate-query-names) |
-//! | Mid | This crate's unit + integ suites (`docs/VERIFICATION.md`) |
-//! | Detailed | `examples/protected-spectra-host` (inventory `spectra` / `/spectra`) |
+//! Start with [Validate query names](#validate-query-names). This crate's unit and integ suites
+//! are listed in `docs/VERIFICATION.md`. Runnable host: `examples/protected-spectra-host`
+//! (inventory `spectra` / `/spectra`).
 
 use spectra_core::{
     list_schemas, rows_to_event_result, schema_detail, EventAggregateResult, EventQueryResult,

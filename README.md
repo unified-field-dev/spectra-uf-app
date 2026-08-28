@@ -69,13 +69,7 @@ cargo test -p spectra-backend
 
 Copy table + product mount `Cargo.toml`:
 [`examples/protected-spectra-host/README.md`](examples/protected-spectra-host/README.md).
-Full ladder: [`examples/README.md`](examples/README.md).
-
-| Level | Where |
-|-------|--------|
-| Highlight | Mount snippet above; crate-root Getting started |
-| Mid | `spectra-backend` unit + integ suites (see `docs/VERIFICATION.md`) |
-| Detailed | `protected-spectra-host` (session gate + schema index; inventory `spectra` / `/spectra`) |
+More examples: [`examples/README.md`](examples/README.md).
 
 ## Security
 

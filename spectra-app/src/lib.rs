@@ -176,13 +176,11 @@
 //! | `/spectra/schema/:name/explore` | [`EventExplorePage`] | [`query_events`], [`query_event_aggregate`] |
 //! | `/spectra/metric/:name/explore` | [`MetricExplorePage`] | [`query_metrics`] |
 //!
-//! ## Examples ladder
+//! ## Examples
 //!
-//! | Level | Where |
-//! |-------|--------|
-//! | Highlight | [Mount Spectra routes](#mount-spectra-routes) |
-//! | Mid | `spectra-backend` unit + integ suites (`docs/VERIFICATION.md`) |
-//! | Detailed | `examples/protected-spectra-host` (deny/allow + schema index; inventory `spectra` / `/spectra`) |
+//! Start with [Mount Spectra routes](#mount-spectra-routes). The `spectra-backend` unit and integ
+//! suites in `docs/VERIFICATION.md` cover server-fn contracts. Runnable host:
+//! `examples/protected-spectra-host` (deny/allow + schema index; inventory `spectra` / `/spectra`).
 //!
 //! ## Where to look next
 //!
