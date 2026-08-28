@@ -36,9 +36,7 @@ lepton-shell = { workspace = true, default-features = false }
 orbital-macros = { workspace = true }
 uf-product-macros = { workspace = true }
 uf-product = { workspace = true, default-features = false, optional = true }
-uf-ssr = { workspace = true, optional = true }
 inventory = { workspace = true, optional = true }
-uf-app-registry = { workspace = true, optional = true }
 orbital-datatable = { workspace = true, default-features = false }
 orbital-charts = { workspace = true, default-features = false }
 
@@ -73,10 +71,7 @@ ssr = [
     "higgs/ssr",
     "dep:gauge",
     "gauge/ssr",
-    "dep:uf-ssr",
-    "uf-ssr/ssr",
     "dep:uf-product",
     "uf-product/ssr",
     "dep:inventory",
-    "dep:uf-app-registry",
 ]
