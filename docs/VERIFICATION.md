@@ -89,7 +89,10 @@ green.
 
 ## Layer 2 — Playwright E2E (IsolatedLab)
 
-Host crate: [`spectra-uf-app-e2e`](../spectra-uf-app-e2e/) on `127.0.0.1:3200`.
+Host crate: [`spectra-uf-app-e2e`](../spectra-uf-app-e2e/) on `127.0.0.1:3200`. Scenario IDs:
+[`spectra-uf-app-e2e/README.md`](../spectra-uf-app-e2e/README.md).
+
+GitHub Actions job **`e2e`** runs the same gate as local:
 
 ```bash
 export CARGO_BUILD_JOBS=1

@@ -22,10 +22,13 @@ pub fn TimeRangePicker(
             {PRESETS.iter().map(|(label, secs)| {
                 let secs = *secs;
                 let label = *label;
+                let test_id = format!("spectra-time-range-{label}");
                 view! {
-                    <Button on:click=move |_| on_change.run(secs)>
-                        {label}
-                    </Button>
+                    <span data-testid=test_id>
+                        <Button on:click=move |_| on_change.run(secs)>
+                            {label}
+                        </Button>
+                    </span>
                 }
             }).collect_view()}
         </Flex>

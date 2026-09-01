@@ -21,3 +21,4 @@ spectra-core = { workspace = true }
 spectra = { workspace = true, features = ["mem"] }
 tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
 chrono = { workspace = true, features = ["clock", "std", "serde"] }
+serde_json = { workspace = true }

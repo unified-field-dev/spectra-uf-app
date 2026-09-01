@@ -20,8 +20,10 @@ pub const E2E_UNVERIFIED_USER: &str = "user:unverified";
 pub enum E2eAuthKind {
     /// Signed out.
     Anonymous,
-    /// QueryTable holder (verified email).
+    /// QueryTable holder (verified email) with per-table query grants.
     Admin,
+    /// Admin session without per-table `spectra.query.{table}` grants.
+    AdminNoPerms,
     /// Verified user without QueryTable.
     Outsider,
     /// Authenticated but email unverified.
@@ -33,6 +35,7 @@ impl E2eAuthKind {
         match self {
             Self::Anonymous => "anonymous",
             Self::Admin => "admin",
+            Self::AdminNoPerms => "admin_noperms",
             Self::Outsider => "outsider",
             Self::Unverified => "unverified",
         }
@@ -41,6 +44,7 @@ impl E2eAuthKind {
     pub fn parse(raw: &str) -> Self {
         match raw {
             "admin" | "authenticated_verified" => Self::Admin,
+            "admin_noperms" => Self::AdminNoPerms,
             "outsider" => Self::Outsider,
             "unverified" | "authenticated_unverified" => Self::Unverified,
             _ => Self::Anonymous,
@@ -51,7 +55,7 @@ impl E2eAuthKind {
     pub const fn session_user_id(self) -> Option<&'static str> {
         match self {
             Self::Anonymous => None,
-            Self::Admin => Some(E2E_ADMIN_USER),
+            Self::Admin | Self::AdminNoPerms => Some(E2E_ADMIN_USER),
             Self::Outsider => Some(E2E_OUTSIDER_USER),
             Self::Unverified => Some(E2E_UNVERIFIED_USER),
         }
@@ -60,7 +64,7 @@ impl E2eAuthKind {
     pub fn to_session(self) -> AuthSession {
         match self {
             Self::Anonymous => AuthSession::Anonymous(AnonymousUser { reason: None }),
-            Self::Admin => AuthSession::Authenticated(AuthenticatedUser {
+            Self::Admin | Self::AdminNoPerms => AuthSession::Authenticated(AuthenticatedUser {
                 user_id: "admin".into(),
                 email: Some("admin@example.com".into()),
                 display_name: Some("Admin".into()),

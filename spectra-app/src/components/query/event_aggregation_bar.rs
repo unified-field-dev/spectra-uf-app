@@ -6,14 +6,11 @@ use spectra_core::{EventAggregationSpec, EventExploreView, EventMeasure};
 #[component]
 pub fn EventAggregationBar(
     /// Current view selection.
-    view: EventExploreView,
+    #[prop(into)]
+    view: Signal<EventExploreView>,
     /// Two-way signal holding the spec describing what to render.
     spec: RwSignal<EventAggregationSpec>,
 ) -> impl IntoView {
-    if view == EventExploreView::EventLog {
-        return view! { <span></span> }.into_any();
-    }
-
     let bucket = RwSignal::new(
         spec.get_untracked()
             .time_bucket_secs
@@ -46,25 +43,39 @@ pub fn EventAggregationBar(
     });
 
     view! {
-        <Flex vertical=true>
-            <Caption1>"Measure"</Caption1>
-            <Select bind=measure_str>
-                <option value="count">"Count"</option>
-                <option value="sum">"Sum"</option>
-            </Select>
-            {(view == EventExploreView::TimeSeries || view == EventExploreView::LineChart).then(|| view! {
-                <>
-                    <Caption1>"Time bucket (seconds)"</Caption1>
-                    <Input bind=bucket />
-                </>
-            })}
-            {(view == EventExploreView::PieChart || view == EventExploreView::BarChart).then(|| view! {
-                <>
-                    <Caption1>"Group by field"</Caption1>
-                    <Input bind=group_by />
-                </>
-            })}
-        </Flex>
+        {move || {
+            if view.get() == EventExploreView::EventLog {
+                return view! { <span></span> }.into_any();
+            }
+            let current = view.get();
+            view! {
+                <Flex vertical=true>
+                    <Caption1>"Measure"</Caption1>
+                    <div data-testid="spectra-aggregation-measure">
+                        <Select bind=measure_str>
+                            <option value="count">"Count"</option>
+                            <option value="sum">"Sum"</option>
+                        </Select>
+                    </div>
+                    {(current == EventExploreView::TimeSeries || current == EventExploreView::LineChart).then(|| view! {
+                        <>
+                            <Caption1>"Time bucket (seconds)"</Caption1>
+                            <div data-testid="spectra-aggregation-bucket">
+                                <Input bind=bucket />
+                            </div>
+                        </>
+                    })}
+                    {(current == EventExploreView::PieChart || current == EventExploreView::BarChart).then(|| view! {
+                        <>
+                            <Caption1>"Group by field"</Caption1>
+                            <div data-testid="spectra-aggregation-group-by">
+                                <Input bind=group_by />
+                            </div>
+                        </>
+                    })}
+                </Flex>
+            }
+            .into_any()
+        }}
     }
-    .into_any()
 }

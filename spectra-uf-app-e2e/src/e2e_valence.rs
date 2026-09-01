@@ -28,15 +28,23 @@ struct E2eState {
 #[derive(Clone, Debug, Default)]
 pub struct FixtureIds {
     pub event_table: String,
+    pub empty_event_table: String,
     pub metric_name: String,
+    pub empty_metric_name: String,
+    /// Recent events written for admin seed (excludes stale row).
+    pub seeded_event_count: u32,
 }
 
 static E2E_STATE: OnceLock<Arc<E2eState>> = OnceLock::new();
 
-/// Lab event table seeded by `/api/test/seed-data`.
-pub const E2E_EVENT_TABLE: &str = "e2e.events";
-/// Lab metric family seeded by `/api/test/seed-data`.
-pub const E2E_METRIC_NAME: &str = "e2e.cpu";
+/// Lab event table seeded by `/api/test/seed-data` (registered in Spectra catalog).
+pub const E2E_EVENT_TABLE: &str = "platform_smoke_event";
+/// Event table left empty for empty-table explore scenarios.
+pub const E2E_EMPTY_EVENT_TABLE: &str = "e2e.empty_events";
+/// Lab metric family seeded by `/api/test/seed-data` (registered in Spectra catalog).
+pub const E2E_METRIC_NAME: &str = "platform_smoke_counter";
+/// Unseeded metric for empty metric explore scenarios.
+pub const E2E_EMPTY_METRIC_NAME: &str = "e2e.empty_metric";
 
 struct HiggsFactory(RouterValenceFactory);
 
@@ -165,7 +173,10 @@ async fn grant_query_table(admin_ctx: &Valence, user_id: &str) {
 fn bootstrap_spectra_fixtures() -> FixtureIds {
     FixtureIds {
         event_table: E2E_EVENT_TABLE.into(),
+        empty_event_table: E2E_EMPTY_EVENT_TABLE.into(),
         metric_name: E2E_METRIC_NAME.into(),
+        empty_metric_name: E2E_EMPTY_METRIC_NAME.into(),
+        seeded_event_count: 3,
     }
 }
 

@@ -25,6 +25,8 @@ pub fn SchemaCard(
     };
     let detail_href = spectra_schema_path(&name);
     let test_id = format!("spectra-schema-card-{name}");
+    let detail_test_id = format!("spectra-schema-card-{name}-details");
+    let explore_test_id = format!("spectra-schema-card-{name}-explore");
     view! {
         <div data-testid=test_id>
             <Card>
@@ -37,8 +39,12 @@ pub fn SchemaCard(
                 <CardContent>
                     <Flex vertical=true gap=SpacingSize::Size80.flex_gap()>
                         {(!description.is_empty()).then(|| view! { <p>{description}</p> })}
-                        <A href=detail_href>"Details"</A>
-                        <A href=href>"Explore"</A>
+                        <span data-testid=detail_test_id>
+                            <A href=detail_href>"Details"</A>
+                        </span>
+                        <span data-testid=explore_test_id>
+                            <A href=href>"Explore"</A>
+                        </span>
                     </Flex>
                 </CardContent>
             </Card>

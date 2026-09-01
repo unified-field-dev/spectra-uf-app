@@ -51,12 +51,22 @@ fn DashboardBody(
     let activity = summary.activity_24h_event_rows;
     view! {
         <Flex gap=SpacingSize::Size160.flex_gap() wrap=FlexWrap::Wrap>
-            <StatCard label="Schemas" value=Signal::derive(move || summary.schema_count.to_string()) />
-            <StatCard label="Event tables" value=Signal::derive(move || summary.event_table_count.to_string()) />
-            <StatCard label="Metrics" value=Signal::derive(move || summary.metric_count.to_string()) />
+            <div data-testid="spectra-stat-schemas">
+                <StatCard label="Schemas" value=Signal::derive(move || summary.schema_count.to_string()) />
+            </div>
+            <div data-testid="spectra-stat-event-tables">
+                <StatCard label="Event tables" value=Signal::derive(move || summary.event_table_count.to_string()) />
+            </div>
+            <div data-testid="spectra-stat-metrics">
+                <StatCard label="Metrics" value=Signal::derive(move || summary.metric_count.to_string()) />
+            </div>
             {activity.map(|n| {
                 let value = Signal::derive(move || n.to_string());
-                view! { <StatCard label="24h event rows" value=value /> }
+                view! {
+                    <div data-testid="spectra-stat-24h-events">
+                        <StatCard label="24h event rows" value=value />
+                    </div>
+                }
             })}
         </Flex>
         <Flex vertical=true gap=SpacingSize::Size240.flex_gap()>
@@ -107,13 +117,23 @@ fn QuickOpenCard() -> impl IntoView {
             </CardHeader>
             <CardContent>
                 <Flex vertical=true gap=SpacingSize::Size160.flex_gap()>
-                    <SearchBox
-                        bind=SearchBoxBind::from(query)
-                        appearance=SearchBoxAppearance::with_placeholder("Search schema name…")
-                    />
+                    <div data-testid="spectra-quick-open-search">
+                        <SearchBox
+                            bind=SearchBoxBind::from(query)
+                            appearance=SearchBoxAppearance::with_placeholder("Search schema name…")
+                        />
+                    </div>
                     <Flex gap=SpacingSize::Size80.flex_gap()>
-                        <Button appearance=ButtonAppearance::Secondary on:click=open_detail>"Open detail"</Button>
-                        <Button appearance=ButtonAppearance::Primary on:click=open_explore>"Open explore"</Button>
+                        <span data-testid="spectra-quick-open-detail">
+                            <Button appearance=ButtonAppearance::Secondary on:click=open_detail>
+                                "Open detail"
+                            </Button>
+                        </span>
+                        <span data-testid="spectra-quick-open-explore">
+                            <Button appearance=ButtonAppearance::Primary on:click=open_explore>
+                                "Open explore"
+                            </Button>
+                        </span>
                     </Flex>
                 </Flex>
             </CardContent>

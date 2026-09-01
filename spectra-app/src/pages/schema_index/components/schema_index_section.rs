@@ -33,10 +33,12 @@ pub fn SchemaIndexSection(
                                 .into_any()
                             } else {
                                 view! {
-                                    <EmptyState
-                                        message="No schemas match your search"
-                                        description="Try a different search term."
-                                    />
+                                    <div data-testid="spectra-schema-search-empty">
+                                        <EmptyState
+                                            message="No schemas match your search"
+                                            description="Try a different search term."
+                                        />
+                                    </div>
                                 }
                                 .into_any()
                             }

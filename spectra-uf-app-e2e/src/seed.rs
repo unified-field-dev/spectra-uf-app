@@ -16,9 +16,12 @@ use crate::gate_demos::{write_e2e_auth_kind, E2eAuthKind};
 
 #[derive(Debug, Deserialize)]
 pub struct SeedRequest {
-    /// `anonymous` | `admin` | `outsider` | `unverified`
+    /// `anonymous` | `admin` | `admin_noperms` | `outsider` | `unverified`
     #[serde(default = "default_auth")]
     pub auth: String,
+    /// When `true`, skip writing Spectra rows (auth/session still applied).
+    #[serde(default)]
+    pub skip_data: bool,
 }
 
 fn default_auth() -> String {
@@ -62,28 +65,86 @@ async fn ensure_and_grant_table_query_perm(
     Ok(())
 }
 
-async fn seed_spectra_rows(kind: E2eAuthKind) -> Result<(), StatusCode> {
-    if !matches!(kind, E2eAuthKind::Admin) {
+async fn revoke_table_query_perm(
+    admin: &valence::Valence,
+    user_id: &str,
+    table: &str,
+) -> Result<(), StatusCode> {
+    let perm_name = spectra_query_permission_name(table);
+    let perms = service::list_permissions(admin, None)
+        .await
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+    let Some(perm) = perms.iter().find(|p| p.name == perm_name) else {
+        return Ok(());
+    };
+    service::revoke_permission_from_user(&perm.id, user_id, admin)
+        .await
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+    Ok(())
+}
+
+async fn seed_spectra_rows(kind: E2eAuthKind, skip_data: bool) -> Result<(), StatusCode> {
+    if matches!(kind, E2eAuthKind::Admin | E2eAuthKind::AdminNoPerms) {
+        let admin = e2e_admin_valence();
+        if matches!(kind, E2eAuthKind::Admin) {
+            ensure_and_grant_table_query_perm(&admin, "admin", E2E_EVENT_TABLE).await?;
+            ensure_and_grant_table_query_perm(&admin, "admin", E2E_METRIC_NAME).await?;
+        } else if matches!(kind, E2eAuthKind::AdminNoPerms) {
+            revoke_table_query_perm(&admin, "admin", E2E_EVENT_TABLE).await?;
+            revoke_table_query_perm(&admin, "admin", E2E_METRIC_NAME).await?;
+        }
+    }
+
+    if skip_data || !matches!(kind, E2eAuthKind::Admin | E2eAuthKind::AdminNoPerms) {
         return Ok(());
     }
 
-    let admin = e2e_admin_valence();
-    ensure_and_grant_table_query_perm(&admin, "admin", E2E_EVENT_TABLE).await?;
-    ensure_and_grant_table_query_perm(&admin, "admin", E2E_METRIC_NAME).await?;
-
     let _ = e2e_spectra();
     let now = Utc::now();
-    let event_ts = now - chrono::Duration::minutes(5);
+    let recent = now - chrono::Duration::minutes(5);
+    let stale = now - chrono::Duration::days(8);
+
     try_log_event_at(
         E2E_EVENT_TABLE,
         &json!({
             "id": "e2e-event-1",
             "message": "Playwright seed row",
             "severity": "info",
+            "value": 10,
         }),
-        event_ts,
+        recent,
     );
-    try_record_gauge_at(E2E_METRIC_NAME, &[("host", "e2e")], 42.0, event_ts);
+    try_log_event_at(
+        E2E_EVENT_TABLE,
+        &json!({
+            "id": "e2e-event-2",
+            "message": "Second info row",
+            "severity": "info",
+            "value": 5,
+        }),
+        recent - chrono::Duration::minutes(2),
+    );
+    try_log_event_at(
+        E2E_EVENT_TABLE,
+        &json!({
+            "id": "e2e-event-warn",
+            "message": "Warn severity row",
+            "severity": "warn",
+            "value": 3,
+        }),
+        recent - chrono::Duration::minutes(1),
+    );
+    try_log_event_at(
+        E2E_EVENT_TABLE,
+        &json!({
+            "id": "e2e-event-stale",
+            "message": "Stale row outside 1h window",
+            "severity": "info",
+            "value": 1,
+        }),
+        stale,
+    );
+    try_record_gauge_at(E2E_METRIC_NAME, &[("host", "e2e")], 42.0, recent);
 
     e2e_spectra().flush_persist().await.map_err(|err| {
         log::error!("e2e seed: spectra flush_persist failed: {err}");
@@ -101,7 +162,7 @@ pub async fn seed_data(
         .await
         .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 
-    seed_spectra_rows(kind).await?;
+    seed_spectra_rows(kind, body.skip_data).await?;
 
     let fixtures = e2e_fixtures();
     Ok(Json(serde_json::json!({
@@ -109,7 +170,12 @@ pub async fn seed_data(
         "auth": kind.as_str(),
         "fixtures": {
             "event_table": fixtures.event_table,
+            "empty_event_table": fixtures.empty_event_table,
             "metric_name": fixtures.metric_name,
+            "empty_metric_name": fixtures.empty_metric_name,
+            "seeded_event_count": fixtures.seeded_event_count,
+            "seed_message": "Playwright seed row",
+            "seed_metric_value": 42.0,
         }
     })))
 }

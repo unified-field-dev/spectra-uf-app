@@ -24,7 +24,7 @@ pub fn EventToolbar(
         <QueryToolbarMaterial>
             <TimeRangePicker selected_secs=range_secs on_change=on_range />
             <EventViewPicker view=view on_change=on_view />
-            <EventAggregationBar view=view.get_untracked() spec=aggregation />
+            <EventAggregationBar view=view spec=aggregation />
         </QueryToolbarMaterial>
     }
 }

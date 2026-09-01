@@ -108,7 +108,7 @@ wasm-bindgen = "=0.2.126"
 web-sys = { version = "=0.3.103", features = ["CssStyleDeclaration", "Document", "DomRect", "Element", "EventTarget", "HtmlElement", "MediaQueryList", "Node", "Storage", "Window"] }
 uuid = { version = "1", features = ["v4"] }
 
-spectra-core = { package = "uf-spectra-core", git = "https://github.com/unified-field-dev/Spectra", branch = "main", default-features = false }
+spectra-core = { package = "uf-spectra-core", path = "../../L0-upstream-cores/spectra/spectra-core", default-features = false }
 spectra = { package = "uf-spectra", git = "https://github.com/unified-field-dev/Spectra", branch = "main", default-features = false, features = ["mem"] }
 gauge = { git = "https://github.com/deathbreakfast/gauge", branch = "main", default-features = false }
 higgs = { git = "https://github.com/unified-field-dev/higgs", branch = "main", default-features = false }
@@ -175,3 +175,6 @@ orbital-style = { git = "https://github.com/unified-field-dev/orbital", branch =
 orbital-tree = { git = "https://github.com/unified-field-dev/orbital", branch = "main" }
 orbital-scheduler = { git = "https://github.com/unified-field-dev/orbital", branch = "main" }
 orbital-date-pickers = { git = "https://github.com/unified-field-dev/orbital", branch = "main" }
+
+[patch."https://github.com/unified-field-dev/Spectra"]
+uf-spectra-core = { path = "../../L0-upstream-cores/spectra/spectra-core" }
