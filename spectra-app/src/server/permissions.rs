@@ -1,6 +1,8 @@
 //! Spectra query permission gate.
 
-pub use spectra_backend::{spectra_query_permission_name, validate_spectra_query_name, SpectraOpsError};
+pub use spectra_backend::{
+    spectra_query_permission_name, validate_spectra_query_name, SpectraOpsError,
+};
 
 /// Table/metric query permission check via Gauge `spectra.query.{table}`.
 ///
@@ -21,13 +23,13 @@ pub async fn require_spectra_query(table: &str) -> Result<(), SpectraOpsError> {
     {
         validate_spectra_query_name(table)?;
 
-        let ctx = higgs::Higgs::from_request()
-            .await
-            .map_err(|e| SpectraOpsError::ContextResolution(format!("Failed to resolve request context: {e}")))?;
+        let ctx = higgs::Higgs::from_request().await.map_err(|e| {
+            SpectraOpsError::ContextResolution(format!("Failed to resolve request context: {e}"))
+        })?;
 
-        let valence = ctx
-            .valence()
-            .map_err(|e| SpectraOpsError::ContextResolution(format!("Failed to resolve valence: {e}")))?;
+        let valence = ctx.valence().map_err(|e| {
+            SpectraOpsError::ContextResolution(format!("Failed to resolve valence: {e}"))
+        })?;
 
         let permission = spectra_query_permission_name(table);
         let allowed = gauge::service::actor_can(&valence, &permission)
