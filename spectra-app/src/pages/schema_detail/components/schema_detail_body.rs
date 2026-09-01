@@ -1,6 +1,6 @@
 use leptos::prelude::*;
-use orbital::components::{Body1, Card};
-use orbital::primitives::Flex;
+use orbital::components::{Body1, Card, EmptyState};
+use orbital::primitives::{Flex, MessageBar, MessageBarIntent};
 
 use crate::server::get_schema_metadata;
 
@@ -34,8 +34,15 @@ pub fn SchemaDetailBody(
                         <QuickActionsCard name=table_or_metric kind=logging_kind />
                     }.into_any()
                 }
-                Some(Ok(None)) => view! { <p>"Schema not found."</p> }.into_any(),
-                Some(Err(_)) => view! { <p>"Error loading schema."</p> }.into_any(),
+                Some(Ok(None)) => view! {
+                    <EmptyState
+                        message="Schema not found"
+                        description="No schema is registered with that name."
+                    />
+                }.into_any(),
+                Some(Err(_)) => view! {
+                    <MessageBar intent=MessageBarIntent::Error>"Error loading schema."</MessageBar>
+                }.into_any(),
                 None => view! { <p>"Loading…"</p> }.into_any(),
             }}
         </Suspense>

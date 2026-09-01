@@ -80,9 +80,11 @@ fn layout_auth_gate_and_nav_happy_path() {
         "spectra-app-root",
         "RequireAuthenticated",
         "Outlet",
+        "nav-spectra-home",
         "nav-spectra-schemas",
         "AppBarUserMenu",
         "UnifiedFieldShellLayout",
+        "Breadcrumb",
     ] {
         assert!(
             layout.contains(needle),
@@ -109,21 +111,39 @@ fn layout_missing_nav_sad_path() {
     );
 }
 
+fn read_server_sources() -> String {
+    [
+        read_app("server/mod.rs"),
+        read_app("server/dashboard.rs"),
+        read_app("server/permissions.rs"),
+    ]
+    .join("\n")
+}
+
 #[test]
 fn ops_reads_require_query_table_happy_path() {
-    let server = read_app("server/mod.rs");
+    let server = read_server_sources();
     for fn_name in [
         "list_schema_metadata",
         "get_schema_metadata",
+        "get_spectra_dashboard_summary",
         "query_metrics",
         "query_events",
         "query_event_aggregate",
     ] {
         assert!(server.contains(fn_name), "server missing `{fn_name}`");
     }
+    assert!(
+        server.contains("SpectraRouter::try_global"),
+        "explore server fns must read the installed global Spectra router"
+    );
+    assert!(
+        server.contains("execute_event_query"),
+        "query_events must delegate to spectra-backend live helper"
+    );
     let query_attr = r#"permission = "QueryTable""#;
     assert!(
-        server.matches(query_attr).count() >= 5,
+        server.matches(query_attr).count() >= 6,
         "catalog + explore server fns must carry QueryTable permission attribute"
     );
     assert!(
@@ -134,10 +154,10 @@ fn ops_reads_require_query_table_happy_path() {
 
 #[test]
 fn ops_reads_drop_query_table_sad_path() {
-    let server = read_app("server/mod.rs");
+    let server = read_server_sources();
     let query_attr = r#"permission = "QueryTable""#;
     assert!(
-        server.matches(query_attr).count() >= 5,
+        server.matches(query_attr).count() >= 6,
         "dropping QueryTable from any server fn opens Spectra ops without the query gate"
     );
     assert!(
@@ -250,6 +270,16 @@ fn explore_drop_require_spectra_query_sad_path() {
 
 #[test]
 fn index_pages_testid_and_list_bindings_happy_path() {
+    let home = read_app("pages/home.rs");
+    assert!(
+        home.contains("spectra-home-page"),
+        "SpectraHomePage missing spectra-home-page testid"
+    );
+    let detail = read_app("pages/schema_detail/mod.rs");
+    assert!(
+        detail.contains("spectra-schema-detail-page"),
+        "SchemaDetailPage missing spectra-schema-detail-page testid"
+    );
     let index = read_app("pages/schema_index/mod.rs");
     assert!(
         index.contains("schema-index-page"),

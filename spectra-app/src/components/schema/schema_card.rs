@@ -1,7 +1,7 @@
 use leptos::prelude::*;
 use leptos_router::components::A;
-use orbital::components::{Card, SpacingSize, Title3};
-use orbital::primitives::Flex;
+use orbital::components::{SpacingSize, Title3};
+use orbital::primitives::{Card, CardContent, CardHeader, Flex};
 use spectra_backend::{
     spectra_metric_explore_path, spectra_schema_explore_path, spectra_schema_path,
 };
@@ -16,7 +16,8 @@ pub fn SchemaCard(
     item: SchemaListItem,
 ) -> impl IntoView {
     let name = item.table_or_metric.clone();
-    let kind = item.logging_kind;
+    let kind = item.logging_kind.clone();
+    let description = item.description.clone().unwrap_or_default();
     let href = if kind == "metric" {
         spectra_metric_explore_path(&name)
     } else {
@@ -27,12 +28,19 @@ pub fn SchemaCard(
     view! {
         <div data-testid=test_id>
             <Card>
-                <Flex vertical=true gap=SpacingSize::Size80.flex_gap()>
-                    <Title3>{name.clone()}</Title3>
-                    <KindBadge kind=kind />
-                    <A href=detail_href>"Details"</A>
-                    <A href=href>"Explore"</A>
-                </Flex>
+                <CardHeader>
+                    <Flex vertical=true gap=SpacingSize::Size80.flex_gap()>
+                        <Title3>{name.clone()}</Title3>
+                        <KindBadge kind=kind />
+                    </Flex>
+                </CardHeader>
+                <CardContent>
+                    <Flex vertical=true gap=SpacingSize::Size80.flex_gap()>
+                        {(!description.is_empty()).then(|| view! { <p>{description}</p> })}
+                        <A href=detail_href>"Details"</A>
+                        <A href=href>"Explore"</A>
+                    </Flex>
+                </CardContent>
             </Card>
         </div>
     }

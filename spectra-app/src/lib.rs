@@ -220,8 +220,9 @@ pub use pages::{
     EventExplorePage, MetricExplorePage, SchemaDetailPage, SchemaIndexPage, SpectraHomePage,
 };
 pub use server::{
-    get_schema_metadata, list_schema_metadata, query_event_aggregate, query_events, query_metrics,
-    require_spectra_query, SPECTRA_QUERY_PERMISSION,
+    get_schema_metadata, get_spectra_dashboard_summary, list_schema_metadata,
+    query_event_aggregate, query_events, query_metrics, require_spectra_query,
+    SpectraDashboardSummary, SPECTRA_QUERY_PERMISSION,
 };
 
 uf_app! {

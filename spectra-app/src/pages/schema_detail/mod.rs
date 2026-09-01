@@ -13,7 +13,7 @@ pub fn SchemaDetailPage() -> impl IntoView {
     let params = use_params_map();
     let name = Memo::new(move |_| params.with(|p| p.get("name").unwrap_or_default()));
     view! {
-        <ContentContainer>
+        <ContentContainer data_testid="spectra-schema-detail-page">
             <Flex vertical=true gap=SpacingSize::Size240.flex_gap()>
                 <Title3>{move || name.get()}</Title3>
                 <SchemaDetailBody name=name />

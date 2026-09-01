@@ -1,5 +1,5 @@
 use leptos::prelude::*;
-use orbital::components::{AutoGrid, EmptyState, SpacingSize};
+use orbital::components::{AutoGrid, EmptyState};
 use orbital::primitives::{MessageBar, MessageBarIntent};
 
 use crate::components::schema::SchemaCard;

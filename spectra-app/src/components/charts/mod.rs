@@ -1,3 +1,4 @@
+mod chart_series;
 mod chart_surface_material;
 mod event_aggregate_stat_row;
 mod event_bar_chart;

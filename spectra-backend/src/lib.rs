@@ -86,6 +86,14 @@
 //! are listed in `docs/VERIFICATION.md`. Runnable host: `examples/protected-spectra-host`
 //! (inventory `spectra` / `/spectra`).
 
+mod dashboard;
+mod query_live;
+
+pub use dashboard::{
+    dashboard_catalog_summary, DashboardCatalogSummary, DEFAULT_RECENT_SCHEMA_LIMIT,
+};
+pub use query_live::{execute_event_aggregate, execute_event_query, execute_metrics_query};
+
 use spectra_core::{
     list_schemas, rows_to_event_result, schema_detail, EventAggregateResult, EventQueryResult,
     MetricsQueryResult, SchemaDetailDto, SchemaListItem,

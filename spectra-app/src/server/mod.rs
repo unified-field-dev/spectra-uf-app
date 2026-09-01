@@ -31,11 +31,14 @@ mod permissions;
 use leptos::prelude::*;
 pub use permissions::require_spectra_query;
 pub use spectra_backend::{
-    empty_event_aggregate_result, empty_event_query_result, empty_metrics_query_result,
-    encode_ops_path_segment, schema_metadata_detail, schema_metadata_list,
-    spectra_metric_explore_path, spectra_query_permission_name, spectra_schema_explore_path,
-    spectra_schema_path, validate_spectra_query_name, MAX_SPECTRA_QUERY_NAME_CHARS,
+    encode_ops_path_segment, execute_event_aggregate, execute_event_query, execute_metrics_query,
+    schema_metadata_detail, schema_metadata_list, spectra_metric_explore_path,
+    spectra_query_permission_name, spectra_schema_explore_path, spectra_schema_path,
+    validate_spectra_query_name, MAX_SPECTRA_QUERY_NAME_CHARS,
 };
+
+mod dashboard;
+pub use dashboard::{get_spectra_dashboard_summary, SpectraDashboardSummary};
 use spectra_core::{
     EventAggregateRequest, EventAggregateResult, EventQuery, EventQueryResult, MetricsQuery,
     MetricsQueryResult, SchemaDetailDto, SchemaListItem,
@@ -88,9 +91,11 @@ pub async fn query_metrics(
     require_spectra_query(&query.metric)
         .await
         .map_err(ServerFnError::new)?;
-    // Host-injected Spectra router wiring lands with deployment composition; return an
-    // empty result shape until the host registers a live query backend.
-    Ok(empty_metrics_query_result())
+    let router = spectra_core::SpectraRouter::try_global()
+        .ok_or_else(|| ServerFnError::new("Spectra query backend not installed"))?;
+    execute_metrics_query(&router, &query)
+        .await
+        .map_err(|e| ServerFnError::new(e.to_string()))
 }
 
 /// Run an event query against a table and return matching rows.
@@ -104,7 +109,11 @@ pub async fn query_events(
     require_spectra_query(&query.table)
         .await
         .map_err(ServerFnError::new)?;
-    Ok(empty_event_query_result(&query.table))
+    let router = spectra_core::SpectraRouter::try_global()
+        .ok_or_else(|| ServerFnError::new("Spectra query backend not installed"))?;
+    execute_event_query(&router, &query)
+        .await
+        .map_err(|e| ServerFnError::new(e.to_string()))
 }
 
 /// Run an aggregate query (time series or headline) over events in a table.
@@ -118,5 +127,9 @@ pub async fn query_event_aggregate(
     require_spectra_query(&request.table)
         .await
         .map_err(ServerFnError::new)?;
-    Ok(empty_event_aggregate_result())
+    let router = spectra_core::SpectraRouter::try_global()
+        .ok_or_else(|| ServerFnError::new("Spectra query backend not installed"))?;
+    execute_event_aggregate(&router, &request)
+        .await
+        .map_err(|e| ServerFnError::new(e.to_string()))
 }

@@ -42,7 +42,7 @@ pub fn MetricExplorePanel(
             {move || match query_res.get() {
                 Some(Ok(data)) => view! {
                     <MetricStatCardRow headline=data.headline />
-                    <MetricTimeSeriesChart />
+                    <MetricTimeSeriesChart series=data.series />
                 }.into_any(),
                 Some(Err(e)) if e.to_string().contains("Permission denied") => {
                     view! { <PermissionDeniedState /> }.into_any()

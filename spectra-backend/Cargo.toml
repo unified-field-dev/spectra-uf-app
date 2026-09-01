@@ -14,4 +14,10 @@ readme = "README.md"
 workspace = true
 
 [dependencies]
+serde = { workspace = true, features = ["derive"] }
 spectra-core = { workspace = true }
+
+[dev-dependencies]
+spectra = { workspace = true, features = ["mem"] }
+tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
+chrono = { workspace = true, features = ["clock", "std", "serde"] }

@@ -7,6 +7,7 @@ const VIEWS: &[(EventExploreView, &str)] = &[
     (EventExploreView::EventLog, "Event log"),
     (EventExploreView::TimeSeries, "Time series"),
     (EventExploreView::LineChart, "Line chart"),
+    (EventExploreView::BarChart, "Bar chart"),
     (EventExploreView::PieChart, "Pie chart"),
 ];
 

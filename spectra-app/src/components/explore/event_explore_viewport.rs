@@ -22,7 +22,9 @@ pub fn EventExploreViewport(
                     aggregate_result.map(|r| view! { <EventSeriesPanel result=r /> }.into_any())
                 }
                 EventExploreView::PieChart | EventExploreView::BarChart => {
-                    aggregate_result.map(|r| view! { <EventPiePanel result=r /> }.into_any())
+                    aggregate_result.map(|r| view! {
+                        <EventPiePanel view=view result=r />
+                    }.into_any())
                 }
             }}
         </div>

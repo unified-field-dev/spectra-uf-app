@@ -1,13 +1,21 @@
 use leptos::prelude::*;
 use orbital_charts::BarChart;
+use spectra_core::SliceDto;
 
+use super::chart_series::chart_from_slices;
 use super::chart_surface_material::ChartSurfaceMaterial;
 
 #[component]
-pub fn EventBarChart() -> impl IntoView {
+pub fn EventBarChart(
+    /// Category slices to render.
+    slices: Vec<SliceDto>,
+) -> impl IntoView {
+    let (x_axis, chart_series) = chart_from_slices(&slices, orbital_charts::ChartType::Bar);
     view! {
-        <ChartSurfaceMaterial>
-            <BarChart />
-        </ChartSurfaceMaterial>
+        <div data-testid="spectra-event-bar-chart">
+            <ChartSurfaceMaterial>
+                <BarChart x_axis=x_axis series=chart_series />
+            </ChartSurfaceMaterial>
+        </div>
     }
 }

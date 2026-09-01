@@ -1,11 +1,9 @@
 mod event_explore_skeleton;
 mod event_explore_viewport;
 mod event_log_panel;
-mod event_pie_panel;
 mod event_series_panel;
 
 pub use event_explore_skeleton::EventExploreSkeleton;
 pub use event_explore_viewport::EventExploreViewport;
 pub use event_log_panel::EventLogPanel;
-pub use event_pie_panel::EventPiePanel;
-pub use event_series_panel::EventSeriesPanel;
+pub use event_series_panel::{EventPiePanel, EventSeriesPanel};

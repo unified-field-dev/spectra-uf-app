@@ -1,11 +1,10 @@
 # spectra-uf-app verification
 
 Re-run after code or doc changes. This workspace is the Spectra operations app
-(`spectra-app` Leptos UI + `spectra-backend` pure server contracts). Layer 1 unit +
-integration tests cover schema catalog and explore-query stub helpers, plus
-sibling-source UI surface contracts for `spectra-app`. No Leptos UI e2e, `*-e2e`
-crate, or cloud fleet is required for this workspace. Spectra core owns
-storage/query IsolatedLab; this repo verifies the UF app mapping layer.
+(`spectra-app` Leptos UI + `spectra-backend` pure server contracts + `spectra-uf-app-e2e`
+Playwright host). Layer 1 unit + integration tests cover schema catalog, live query
+helpers, and sibling-source UI surface contracts. Layer 2 runs browser E2E against
+mem Spectra seed data on port 3200.
 
 ## Environment
 
@@ -88,17 +87,31 @@ Hard CI job deferred: `spectra-app` hydrate still depends on the Orbital / host
 graph (same pin risk as UI compile in Layer 1). Run locally when that graph is
 green.
 
-## Layer 2 — E2E
+## Layer 2 — Playwright E2E (IsolatedLab)
 
-**Waived.** Schema list/detail and explore-query stub shapes are exercised by Layer 1
-integration tests named below. A Leptos/UI browser suite or IsolatedLab `*-e2e` crate
-is out of scope for this backend-first remediation; live query backends belong in the
-product host / Spectra core workspace.
+Host crate: [`spectra-uf-app-e2e`](../spectra-uf-app-e2e/) on `127.0.0.1:3200`.
 
-Covering integ tests for the e2e waiver:
+```bash
+export CARGO_BUILD_JOBS=1
+export CARGO_TARGET_DIR=target-spectra-uf-app
+cd L4-composers/spectra-uf-app
+cargo leptos end-to-end --project spectra-uf-app-e2e
+```
+
+Do not interrupt the run — it exits when Playwright finishes.
+
+Specs cover auth gate, home dashboard, schema list/detail, and event/metric explore
+with mem Spectra seed data (`POST /api/test/seed-data`).
+
+Layer 1 still holds stub-shape regression tests (`empty_*` helpers) and live-query
+helper contracts (`query_live_contract.rs`).
+
+Covering integ tests (Layer 1):
 
 - `schema_metadata_list_returns_valid_items_happy_path` / `schema_metadata_detail_unknown_name_is_none_sad`
 - `schema_metadata_detail_matches_list_entry_happy_path`
+- `execute_event_query_empty_table_happy_path` / `execute_metrics_query_empty_happy_path`
+- `dashboard_catalog_summary_counts_happy_path`
 - `empty_metrics_query_result_shape_happy_path` / `empty_event_query_result_unknown_table_happy_path`
 - `empty_event_aggregate_result_timeseries_stub_happy_path`
 - `validate_spectra_query_name_accepts_table_happy_path` / `validate_spectra_query_name_rejects_blank_sad`
@@ -109,8 +122,8 @@ Covering integ tests for the e2e waiver:
 ## Layer 3 — Cloud + performance
 
 **Waived.** This application workspace; no cloud resources or Criterion benches.
-Correctness is in-process against the Spectra schema registry and stub query
-payloads only.
+Correctness is in-process against the Spectra schema registry, live router helpers,
+and Playwright E2E on the lab host.
 
 ## Rustdoc policy
 

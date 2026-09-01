@@ -3,8 +3,32 @@ resolver = "2"
 members = [
     "spectra-app",
     "spectra-backend",
+    "spectra-uf-app-e2e",
     "examples/protected-spectra-host",
 ]
+
+[[workspace.metadata.leptos]]
+name = "spectra-uf-app-e2e"
+output-name = "spectra-uf-app-e2e"
+bin-package = "spectra-uf-app-e2e"
+lib-package = "spectra-uf-app-e2e"
+site-root = "spectra-uf-app-e2e/site"
+site-pkg-dir = "pkg"
+style-file = "spectra-uf-app-e2e/style/main.scss"
+assets-dir = "spectra-uf-app-e2e/public"
+end2end-dir = "spectra-uf-app-e2e/end2end"
+end2end-cmd = "npm test"
+# Clear of lepton kit (:3120), lepton-uf-app (:3140), gauge (:3150), neutrino (:3160),
+# boson (:3170), chronon (:3180), photon (:3190).
+site-addr = "127.0.0.1:3200"
+reload-port = 3201
+bin-features = ["ssr"]
+lib-features = ["hydrate"]
+bin-default-features = false
+lib-default-features = false
+disable-erase-components = true
+lib-profile-dev = "wasm-release"
+lib-profile-release = "wasm-release"
 
 [workspace.package]
 version = "0.1.0"
@@ -44,6 +68,17 @@ missing_errors_doc = "allow"
 missing_panics_doc = "allow"
 return_self_not_must_use = "allow"
 
+[profile.wasm-release]
+inherits = "release"
+opt-level = "z"
+lto = "thin"
+codegen-units = 1
+debug = false
+
+# Avoid rust-lld R_X86_64_32 out-of-range on ring debug sections during cargo-leptos host link.
+[profile.dev]
+debug = 1
+
 [workspace.dependencies]
 leptos = { version = "0.8.20", default-features = false, features = ["nightly"] }
 leptos_meta = { version = "0.8", default-features = false }
@@ -60,6 +95,18 @@ serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 turf = "0.10"
 chrono = { version = "0.4", default-features = false, features = ["clock", "std", "wasmbind", "serde"] }
+tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
+axum = { version = "0.8.4", default-features = false }
+anyhow = "1"
+async-trait = "0.1"
+log = "0.4"
+tower-sessions = "0.14.0"
+tower-http = { version = "0.6", features = ["fs"] }
+simple_logger = "5"
+any_spawner = { version = "0.3", features = ["tokio"] }
+wasm-bindgen = "=0.2.126"
+web-sys = { version = "=0.3.103", features = ["CssStyleDeclaration", "Document", "DomRect", "Element", "EventTarget", "HtmlElement", "MediaQueryList", "Node", "Storage", "Window"] }
+uuid = { version = "1", features = ["v4"] }
 
 spectra-core = { package = "uf-spectra-core", git = "https://github.com/unified-field-dev/Spectra", branch = "main", default-features = false }
 spectra = { package = "uf-spectra", git = "https://github.com/unified-field-dev/Spectra", branch = "main", default-features = false, features = ["mem"] }
@@ -79,10 +126,23 @@ uf-integrations = { git = "https://github.com/unified-field-dev/unified-field-pr
 uf-product-macros = { git = "https://github.com/unified-field-dev/unified-field-product", branch = "main" }
 uf-product = { git = "https://github.com/unified-field-dev/unified-field-product", branch = "main", default-features = false }
 lepton-shell = { git = "https://github.com/unified-field-dev/lepton-uf-app", branch = "main", default-features = false }
+lepton = { git = "https://github.com/unified-field-dev/lepton", branch = "main", default-features = false }
 inventory = "0.3"
 
-# crates.io uf-valence family — local tree
-[patch."https://github.com/unified-field-dev/valence"]
+# Latest deathbreakfast/gauge main uses monorepo-relative path deps that do not
+# resolve when consumed as a git crate. Prefer the L2 checkout.
+[patch."https://github.com/deathbreakfast/gauge"]
+gauge = { path = "../../L2-product-platform/gauge/gauge" }
+
+# Unify chronon-coordinator (higgs/gauge pin vs workspace git) onto the monorepo path.
+[patch."https://github.com/unified-field-dev/chronon-coordinator"]
+chronon-coordinator = { path = "../../L1-host-stack-kits/chronon-coordinator" }
+
+[patch."https://github.com/deathbreakfast/chronon-coordinator"]
+chronon-coordinator = { path = "../../L1-host-stack-kits/chronon-coordinator" }
+
+# Unify crates.io uf-valence / chronon / orbital onto the git tree.
+[patch.crates-io]
 uf-valence = { git = "https://github.com/unified-field-dev/valence", branch = "main" }
 uf-valence-core = { git = "https://github.com/unified-field-dev/valence", branch = "main" }
 uf-valence-codegen = { git = "https://github.com/unified-field-dev/valence", branch = "main" }
@@ -92,5 +152,26 @@ uf-valence-backend-mem = { git = "https://github.com/unified-field-dev/valence",
 uf-valence-backend-sqlite = { git = "https://github.com/unified-field-dev/valence", branch = "main" }
 uf-valence-backend-sql = { git = "https://github.com/unified-field-dev/valence", branch = "main" }
 uf-valence-schema-dsl = { git = "https://github.com/unified-field-dev/valence", branch = "main" }
-
-# Unify git Chronon pulls (gauge ssr) onto monorepo path crates.
+chronon-core = { git = "https://github.com/unified-field-dev/chronon", branch = "main" }
+chronon-executor = { git = "https://github.com/unified-field-dev/chronon", branch = "main" }
+chronon-scheduler = { git = "https://github.com/unified-field-dev/chronon", branch = "main" }
+chronon-telemetry = { git = "https://github.com/unified-field-dev/chronon", branch = "main" }
+orbital-ui = { git = "https://github.com/unified-field-dev/orbital", branch = "main" }
+orbital-macros = { git = "https://github.com/unified-field-dev/orbital", branch = "main" }
+orbital-datatable = { git = "https://github.com/unified-field-dev/orbital", branch = "main" }
+orbital-charts = { git = "https://github.com/unified-field-dev/orbital", branch = "main" }
+orbital-data = { git = "https://github.com/unified-field-dev/orbital", branch = "main" }
+orbital-shell = { git = "https://github.com/unified-field-dev/orbital", branch = "main" }
+orbital-core-components = { git = "https://github.com/unified-field-dev/orbital", branch = "main" }
+orbital-base-components = { git = "https://github.com/unified-field-dev/orbital", branch = "main" }
+orbital-primitives = { git = "https://github.com/unified-field-dev/orbital", branch = "main" }
+orbital-theme = { git = "https://github.com/unified-field-dev/orbital", branch = "main" }
+orbital-paging = { git = "https://github.com/unified-field-dev/orbital", branch = "main" }
+orbital-motion = { git = "https://github.com/unified-field-dev/orbital", branch = "main" }
+orbital-discussion = { git = "https://github.com/unified-field-dev/orbital", branch = "main" }
+orbital-history = { git = "https://github.com/unified-field-dev/orbital", branch = "main" }
+orbital-markdown = { git = "https://github.com/unified-field-dev/orbital", branch = "main" }
+orbital-style = { git = "https://github.com/unified-field-dev/orbital", branch = "main" }
+orbital-tree = { git = "https://github.com/unified-field-dev/orbital", branch = "main" }
+orbital-scheduler = { git = "https://github.com/unified-field-dev/orbital", branch = "main" }
+orbital-date-pickers = { git = "https://github.com/unified-field-dev/orbital", branch = "main" }
