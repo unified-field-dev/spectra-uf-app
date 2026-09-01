@@ -12,8 +12,8 @@ use spectra_backend::{
     DEFAULT_RECENT_SCHEMA_LIMIT,
 };
 use spectra_core::{
-    EventQuery, EventStorageBackend, GridPaginationModel, MetricsQuery, MetricsStorageBackend,
-    SpectraRouter,
+    EventQuery, EventStorageBackend, GridFilterModel, GridPaginationModel, MetricsQuery,
+    MetricsStorageBackend, SpectraRouter,
 };
 
 const SEED_TABLE: &str = "integ.events";
@@ -88,7 +88,7 @@ async fn execute_event_query_empty_table_happy_path() {
             partition: None,
             pagination: GridPaginationModel::default(),
             sort: vec![],
-            filter: Default::default(),
+            filter: GridFilterModel::default(),
         },
     )
     .await
@@ -109,7 +109,7 @@ async fn execute_event_query_seeded_row_happy_path() {
             partition: None,
             pagination: GridPaginationModel::default(),
             sort: vec![],
-            filter: Default::default(),
+            filter: GridFilterModel::default(),
         },
     )
     .await

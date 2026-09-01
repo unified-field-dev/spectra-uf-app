@@ -189,10 +189,15 @@
 //! - [`SpectraPermission`] / [`SPECTRA_QUERY_PERMISSION`] — permission enum and QueryTable name.
 //! - `spectra_backend` — name validation, catalog helpers, and explore stub payloads.
 
-#![allow(missing_docs)]
+#![allow(missing_docs)] // uf_app! / orbital_routes_extract emit undocumented associated items.
 #![cfg_attr(
     feature = "ssr",
-    allow(dead_code, unused_imports, unused_variables, unknown_lints)
+    allow(
+        dead_code,
+        unused_imports,
+        unused_variables,
+        unknown_lints
+    ) // SSR-only cfg branches leave hydrate-only imports unused; keep compile green without masking client warnings.
 )]
 use leptos::prelude::*;
 use leptos_router::{
@@ -222,7 +227,7 @@ pub use pages::{
 pub use server::{
     get_schema_metadata, get_spectra_dashboard_summary, list_schema_metadata,
     query_event_aggregate, query_events, query_metrics, require_spectra_query,
-    SpectraDashboardSummary, SPECTRA_QUERY_PERMISSION,
+    server_fn_is_permission_denied, SpectraDashboardSummary, SPECTRA_QUERY_PERMISSION,
 };
 
 uf_app! {

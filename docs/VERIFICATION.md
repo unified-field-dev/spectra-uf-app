@@ -29,23 +29,28 @@ Orbital / `uf-product` belong to a composite product host).
 
 ## Layer 1 — Unit + integration (CI)
 
-GitHub Actions (`.github/workflows/ci.yml`) covers this Layer 1 subset plus the
-teaching host and spectra-backend rustdoc gate below. It does not build
-`spectra-app` (Leptos UI / SSR).
+GitHub Actions (`.github/workflows/ci.yml`) runs **fmt**, **clippy**, **test**,
+**e2e**, and **docs**. The **test** job includes backend contracts, spectra-app
+SSR unit tests, spectra-uf-app-e2e boundary contract tests, SSR compile checks,
+and the teaching host run.
 
-Sibling-source UI contracts (no Orbital / `spectra-app` compile):
+Sibling-source UI contracts (no full Orbital compile for needles):
 
 ```bash
 cargo test -p spectra-backend --test workspace_members --test product_surface
 ```
 
-Backend contracts (preferred path; no UI graph):
+Backend + app SSR unit tests:
 
 ```bash
 cargo fmt -p spectra-backend -p spectra-app -p protected-spectra-host -- --check
 cargo clippy -p spectra-backend --all-targets -- -D warnings
 cargo clippy -p protected-spectra-host --all-targets -- -D warnings
 cargo test -p spectra-backend
+cargo test -p spectra-app --features ssr
+cargo test -p spectra-uf-app-e2e --features ssr --test boundary_contract
+cargo check -p spectra-app --features ssr
+cargo check -p spectra-uf-app-e2e --features ssr
 ```
 
 `cargo fmt --all` can fail when a sibling checkout sits outside this workspace;
@@ -83,9 +88,10 @@ export RUSTFLAGS="-D warnings -Zcrate-attr=feature(stdarch_x86_avx512)"
 cargo dylint --all -p spectra-app --no-deps -- --features hydrate
 ```
 
-Hard CI job deferred: `spectra-app` hydrate still depends on the Orbital / host
-graph (same pin risk as UI compile in Layer 1). Run locally when that graph is
-green.
+Hard CI job deferred: `spectra-app` hydrate dylint and required clippy still
+depend on the Orbital / host graph (same pin risk as full workspace clippy).
+CI runs `cargo clippy -p spectra-app --features ssr` as a **non-blocking**
+signal until warnings are zero — run locally when the graph is green.
 
 ## Layer 2 — Playwright E2E (IsolatedLab)
 
@@ -147,8 +153,9 @@ rustdoc with deny flags is pin-dependent on Orbital / host graphs.
 - Prefer `cargo test -p spectra-backend` for backend contract CI when the UI
   dependency graph (`uf-product` via `uf-integrations` / `lepton-shell`) fails to
   compile — report that separately from Spectra contract results.
-- Tests may `unwrap`/`expect`; production server fns map failures to `ServerFnError`
-  (no ordinary-path unwrap).
+- Tests may `unwrap`/`expect`; production server fns map failures to
+  [`SpectraOpsError`](../spectra-backend/src/ops_error.rs) then `ServerFnError`
+  via [`to_server_fn_error`](../spectra-app/src/server/error.rs) (no ordinary-path unwrap).
 - Sad-path assertions check message content or `None` — stronger than `is_err()` alone.
 - Happy-path tests are named `*_happy_path` so audits detect them.
 - `SpectraRoutes` data loaders call the `#[server]` fns; those fns are thin Higgs

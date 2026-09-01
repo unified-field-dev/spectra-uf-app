@@ -10,7 +10,7 @@ use spectra_core::{
 use crate::components::explore::{EventExploreSkeleton, EventExploreViewport};
 use crate::components::query::PermissionDeniedState;
 use crate::explore_time::range_from_secs;
-use crate::server::{query_event_aggregate, query_events};
+use crate::server::{query_event_aggregate, query_events, server_fn_is_permission_denied};
 
 use super::event_toolbar::EventToolbar;
 
@@ -97,7 +97,7 @@ pub fn EventExplorePanel(
                         aggregate_result=Some(agg)
                     />
                 }.into_any(),
-                Some(Err(e)) if e.to_string().contains("Permission denied") => {
+                Some(Err(e)) if server_fn_is_permission_denied(&e) => {
                     view! { <PermissionDeniedState /> }.into_any()
                 }
                 Some(Err(e)) => view! {

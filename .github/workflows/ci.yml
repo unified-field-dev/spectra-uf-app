@@ -105,6 +105,12 @@ jobs:
         run: |
           cargo clippy -p spectra-backend --all-targets -- -D warnings
           cargo clippy -p protected-spectra-host --all-targets -- -D warnings
+      # Tracked debt: spectra-app clippy depends on the full Orbital / uf-product graph in CI.
+      # Run locally when the UI graph is green; promote to required when warnings are zero.
+      - name: cargo clippy (spectra-app SSR, non-blocking)
+        continue-on-error: true
+        working-directory: ${{ env.APP_WD }}
+        run: cargo clippy -p spectra-app --features ssr --all-targets -- -D warnings
 
   test:
     runs-on: ubuntu-latest
@@ -145,6 +151,12 @@ jobs:
       - name: cargo test (spectra-backend contracts)
         working-directory: ${{ env.APP_WD }}
         run: cargo test -p spectra-backend
+      - name: cargo test (spectra-app SSR unit tests)
+        working-directory: ${{ env.APP_WD }}
+        run: cargo test -p spectra-app --features ssr
+      - name: cargo test (spectra-uf-app-e2e boundary)
+        working-directory: ${{ env.APP_WD }}
+        run: cargo test -p spectra-uf-app-e2e --features ssr --test boundary_contract
       - name: cargo check (spectra-app + e2e host SSR)
         working-directory: ${{ env.APP_WD }}
         run: |

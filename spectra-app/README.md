@@ -3,6 +3,13 @@
 Leptos operations UI for Spectra: schema browsing and event/metric explore under
 `/spectra`.
 
+## Quickstart
+
+1. **Mount routes** — nest [`SpectraRoutes`] in the host `<Routes>` tree with `ssr` enabled.
+2. **Wire backends** — host bootstrap installs Spectra query backends and session extractors.
+3. **Verify** — teaching host (`cargo run -p protected-spectra-host`) or full E2E
+   (`cargo leptos end-to-end --project spectra-uf-app-e2e`).
+
 ```toml
 # Pin tag or rev — do not use branch = "main".
 spectra-app = { git = "https://github.com/unified-field-dev/spectra-uf-app", package = "spectra-app", rev = "REPLACE_WITH_PIN", default-features = false }
@@ -19,8 +26,17 @@ view! {
 }
 ```
 
-Crate-root rustdoc owns Organized-by-task, Owns / does not own, the route table,
-and the Examples. Mapping helpers live in `spectra-backend`.
+## Where to look
 
-Compose into a host that supplies Spectra query backends and the auth/context
-extractors the app expects. Enable `ssr` / hydrate to match your host.
+| Topic | Location |
+|-------|----------|
+| Crate docs (routes, server fns, examples) | `cargo doc -p spectra-app --open` — [`src/lib.rs`](src/lib.rs) |
+| Server functions + errors | [`src/server/`](src/server/) |
+| Mapping / validation contracts | [`spectra-backend`](../spectra-backend/) |
+| Contributor map | [`../docs/DEVELOPMENT.md`](../docs/DEVELOPMENT.md) |
+| CI / verify layers | [`../docs/VERIFICATION.md`](../docs/VERIFICATION.md) |
+
+Prefer crate-root re-exports (`use spectra_app::{SpectraRoutes, list_schema_metadata, …}`).
+Import mapping helpers from `spectra-backend`, not via `spectra_app::server::execute_*`.
+
+[`SpectraRoutes`]: https://docs.rs/spectra-app/latest/spectra_app/fn.SpectraRoutes.html

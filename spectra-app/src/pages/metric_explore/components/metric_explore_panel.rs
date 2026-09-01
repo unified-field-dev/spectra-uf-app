@@ -5,7 +5,7 @@ use spectra_core::MetricsQuery;
 use crate::components::charts::{MetricStatCardRow, MetricTimeSeriesChart};
 use crate::components::query::{ChartSkeleton, PermissionDeniedState};
 use crate::explore_time::range_from_secs;
-use crate::server::query_metrics;
+use crate::server::{query_metrics, server_fn_is_permission_denied};
 
 use super::metric_toolbar::MetricToolbar;
 
@@ -44,7 +44,7 @@ pub fn MetricExplorePanel(
                     <MetricStatCardRow headline=data.headline />
                     <MetricTimeSeriesChart series=data.series />
                 }.into_any(),
-                Some(Err(e)) if e.to_string().contains("Permission denied") => {
+                Some(Err(e)) if server_fn_is_permission_denied(&e) => {
                     view! { <PermissionDeniedState /> }.into_any()
                 }
                 Some(Err(e)) => view! {

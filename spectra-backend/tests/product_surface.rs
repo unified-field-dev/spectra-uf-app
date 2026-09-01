@@ -174,7 +174,8 @@ fn server_require_session_happy_path() {
     let server = read_app("server/mod.rs");
     assert!(
         server.contains("fn require_session")
-            && server.contains("Authentication is required")
+            && (server.contains("Authentication is required")
+                || server.contains("SpectraOpsError::AuthRequired"))
             && server.contains("session_user_id()"),
         "server must fail closed without a session"
     );
@@ -182,7 +183,7 @@ fn server_require_session_happy_path() {
     let perms = read_app("server/permissions.rs");
     assert!(
         perms.contains("fn require_spectra_query")
-            && perms.contains("Permission denied:")
+            && perms.contains("SpectraOpsError::PermissionDenied")
             && perms.contains("spectra_query_permission_name"),
         "require_spectra_query must deny when Gauge spectra.query.{{table}} is missing"
     );

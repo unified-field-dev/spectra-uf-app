@@ -13,7 +13,8 @@ use spectra_core::{
 
 #[cfg(feature = "ssr")]
 use super::require_session;
-use super::require_spectra_query;
+use super::{require_spectra_query, to_server_fn_error};
+use spectra_backend::SpectraOpsError;
 
 /// Home dashboard payload for `/spectra`.
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -27,6 +28,10 @@ pub struct SpectraDashboardSummary {
     /// Recent schemas for the home list.
     pub recent_schemas: Vec<SchemaListItem>,
     /// Sum of 24h event row counts when router + permissions allow.
+    ///
+    /// `None` when no Spectra query backend is installed. `Some(0)` when the backend
+    /// is present but every recent event table was skipped (permission denied or query
+    /// failure). Individual table errors are omitted from the aggregate by design.
     pub activity_24h_event_rows: Option<u64>,
 }
 

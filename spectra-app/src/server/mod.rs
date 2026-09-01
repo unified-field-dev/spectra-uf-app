@@ -13,10 +13,9 @@
 //! Fallible ops return [`ServerFnError`] (Leptos boundary). Blank, oversized, or
 //! path-unsafe table/metric names are rejected by
 //! [`spectra_backend::validate_spectra_query_name`] as
-//! [`spectra_backend::SpectraQueryNameError`] and mapped via `to_string()` (explore
-//! via [`require_spectra_query`]; schema detail at the server fn). Missing session,
-//! Higgs/valence resolution failures, and Gauge denials are also `ServerFnError`
-//! strings at this boundary.
+//! [`spectra_backend::SpectraOpsError::Validation`]. Missing session,
+//! Higgs/valence resolution failures, and Gauge denials map from
+//! [`spectra_backend::SpectraOpsError`] via [`to_server_fn_error`].
 //!
 //! ## Security note
 //!
@@ -34,11 +33,13 @@ pub use spectra_backend::{
     encode_ops_path_segment, execute_event_aggregate, execute_event_query, execute_metrics_query,
     schema_metadata_detail, schema_metadata_list, spectra_metric_explore_path,
     spectra_query_permission_name, spectra_schema_explore_path, spectra_schema_path,
-    validate_spectra_query_name, MAX_SPECTRA_QUERY_NAME_CHARS,
+    validate_spectra_query_name, SpectraOpsError, MAX_SPECTRA_QUERY_NAME_CHARS,
 };
 
 mod dashboard;
+mod error;
 pub use dashboard::{get_spectra_dashboard_summary, SpectraDashboardSummary};
+pub use error::{server_fn_is_permission_denied, to_server_fn_error};
 use spectra_core::{
     EventAggregateRequest, EventAggregateResult, EventQuery, EventQueryResult, MetricsQuery,
     MetricsQueryResult, SchemaDetailDto, SchemaListItem,
@@ -54,9 +55,7 @@ fn require_session(ctx: &higgs::Higgs) -> Result<(), ServerFnError> {
     if ctx.session_user_id().is_some() {
         Ok(())
     } else {
-        Err(ServerFnError::new(
-            "Authentication is required for this action",
-        ))
+        Err(to_server_fn_error(SpectraOpsError::AuthRequired))
     }
 }
 
@@ -76,7 +75,7 @@ pub async fn get_schema_metadata(
 ) -> Result<Option<SchemaDetailDto>, ServerFnError> {
     let ctx = higgs::Higgs::from_request().await?;
     require_session(&ctx)?;
-    validate_spectra_query_name(&name).map_err(|e| ServerFnError::new(e.to_string()))?;
+    validate_spectra_query_name(&name).map_err(|e| to_server_fn_error(e.into()))?;
     Ok(schema_metadata_detail(&name))
 }
 
@@ -90,12 +89,12 @@ pub async fn query_metrics(
     require_session(&ctx)?;
     require_spectra_query(&query.metric)
         .await
-        .map_err(ServerFnError::new)?;
+        .map_err(to_server_fn_error)?;
     let router = spectra_core::SpectraRouter::try_global()
-        .ok_or_else(|| ServerFnError::new("Spectra query backend not installed"))?;
+        .ok_or_else(|| to_server_fn_error(SpectraOpsError::BackendNotInstalled))?;
     execute_metrics_query(&router, &query)
         .await
-        .map_err(|e| ServerFnError::new(e.to_string()))
+        .map_err(|e| to_server_fn_error(SpectraOpsError::QueryFailed(e.to_string())))
 }
 
 /// Run an event query against a table and return matching rows.
@@ -108,12 +107,12 @@ pub async fn query_events(
     require_session(&ctx)?;
     require_spectra_query(&query.table)
         .await
-        .map_err(ServerFnError::new)?;
+        .map_err(to_server_fn_error)?;
     let router = spectra_core::SpectraRouter::try_global()
-        .ok_or_else(|| ServerFnError::new("Spectra query backend not installed"))?;
+        .ok_or_else(|| to_server_fn_error(SpectraOpsError::BackendNotInstalled))?;
     execute_event_query(&router, &query)
         .await
-        .map_err(|e| ServerFnError::new(e.to_string()))
+        .map_err(|e| to_server_fn_error(SpectraOpsError::QueryFailed(e.to_string())))
 }
 
 /// Run an aggregate query (time series or headline) over events in a table.
@@ -126,10 +125,10 @@ pub async fn query_event_aggregate(
     require_session(&ctx)?;
     require_spectra_query(&request.table)
         .await
-        .map_err(ServerFnError::new)?;
+        .map_err(to_server_fn_error)?;
     let router = spectra_core::SpectraRouter::try_global()
-        .ok_or_else(|| ServerFnError::new("Spectra query backend not installed"))?;
+        .ok_or_else(|| to_server_fn_error(SpectraOpsError::BackendNotInstalled))?;
     execute_event_aggregate(&router, &request)
         .await
-        .map_err(|e| ServerFnError::new(e.to_string()))
+        .map_err(|e| to_server_fn_error(SpectraOpsError::QueryFailed(e.to_string())))
 }

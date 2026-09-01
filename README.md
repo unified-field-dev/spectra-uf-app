@@ -1,6 +1,6 @@
 # Spectra UF App
 
-[![CI](https://github.com/unified-field-dev/spectra-uf-app/actions/workflows/ci.yml/badge.svg)](https://github.com/unified-field-dev/spectra-uf-app/actions/workflows/ci.yml)
+[![CI](https://github.com/deathbreakfast/spectra-uf-app/actions/workflows/ci.yml/badge.svg)](https://github.com/deathbreakfast/spectra-uf-app/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 [GitHub](https://github.com/unified-field-dev/spectra-uf-app) · `cargo doc -p spectra-backend --open`
@@ -14,8 +14,9 @@ event/metric data.
 
 - **UI (`spectra-app`)** — pages, Higgs `#[server]` wrappers, `SpectraRoutes`,
   `uf_app!` registration
-- **Backend (`spectra-backend`)** — pure schema/query stub helpers (no Leptos);
-  primary CI surface
+- **Backend (`spectra-backend`)** — pure schema/query helpers and [`SpectraOpsError`](spectra-backend/src/ops_error.rs); primary contract CI surface
+
+Repository map and contributor paths: [`docs/DEVELOPMENT.md`](docs/DEVELOPMENT.md).
 
 Hosts supply Spectra query backends and auth guard context. Enable `ssr` /
 hydrate to match your host. Crate-root rustdoc owns Concern → route → server fn
@@ -58,8 +59,12 @@ cargo test -p spectra-backend
 | Crate | Role |
 |-------|------|
 | [`spectra-app`](spectra-app/) | Leptos ops UI + `SpectraRoutes` + app registration |
-| [`spectra-backend`](spectra-backend/) | Pure schema catalog + explore-query stub helpers |
+| [`spectra-backend`](spectra-backend/) | Pure schema catalog + explore-query helpers + [`SpectraOpsError`](spectra-backend/src/ops_error.rs) |
+| [`spectra-uf-app-e2e`](spectra-uf-app-e2e/) | Playwright lab host + SSR boundary contract tests |
 | [`protected-spectra-host`](examples/protected-spectra-host/) | Teaching host: deny/allow + schema index |
+
+Edit only this workspace tree — an archive copy may exist under
+`L5-hosts/web-app-template-archive-only/spectra-app/`.
 
 ## Examples
 
@@ -80,22 +85,31 @@ public issue for security-sensitive reports.
 
 ## Verify
 
-GitHub Actions (`.github/workflows/ci.yml`) runs the CI subset from
-[`docs/VERIFICATION.md`](docs/VERIFICATION.md): fmt, clippy `-D warnings` on
-`spectra-backend` (+ teaching host), contract tests, `protected-spectra-host`
-check/run, and spectra-backend rustdoc with broken-intra-doc-link deny.
+GitHub Actions (`.github/workflows/ci.yml`) runs five jobs aligned with
+[`docs/VERIFICATION.md`](docs/VERIFICATION.md): **fmt**, **clippy** (backend +
+teaching host; spectra-app SSR tracked non-blocking), **test** (backend contracts,
+spectra-app SSR unit tests, e2e boundary contract, SSR compile check, teaching
+host run), **e2e** (Playwright via `cargo leptos end-to-end`), and **docs**
+(spectra-backend rustdoc with broken-link deny).
 
 ```bash
 export CARGO_BUILD_JOBS=1
 export CARGO_TARGET_DIR=target-spectra-uf-app
+export RUSTFLAGS="-D warnings"
 cargo fmt -p spectra-backend -p spectra-app -p protected-spectra-host -- --check
 cargo clippy -p spectra-backend --all-targets -- -D warnings
 cargo clippy -p protected-spectra-host --all-targets -- -D warnings
 cargo test -p spectra-backend --test workspace_members --test product_surface
 cargo test -p spectra-backend
+cargo test -p spectra-app --features ssr
+cargo test -p spectra-uf-app-e2e --features ssr --test boundary_contract
+cargo check -p spectra-app --features ssr
+cargo check -p spectra-uf-app-e2e --features ssr
 cargo check -p protected-spectra-host
 cargo run -p protected-spectra-host
 RUSTDOCFLAGS="-D rustdoc::broken-intra-doc-links" cargo doc -p spectra-backend --no-deps
+# Layer 2 (local or CI e2e job):
+cargo leptos end-to-end --project spectra-uf-app-e2e
 ```
 
 Teaching host success line:

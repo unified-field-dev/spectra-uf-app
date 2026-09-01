@@ -94,6 +94,10 @@ name = "spectra-uf-app-e2e"
 path = "src/main.rs"
 required-features = ["ssr"]
 
+[[test]]
+name = "boundary_contract"
+required-features = ["ssr"]
+
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 getrandom = { version = "0.2", features = ["js"] }
 getrandom_03 = { package = "getrandom", version = "0.3", features = ["wasm_js"] }
