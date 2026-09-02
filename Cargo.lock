@@ -474,6 +474,7 @@ dependencies = [
 [[package]]
 name = "chronon-coordinator"
 version = "0.1.0"
+source = "git+https://github.com/unified-field-dev/chronon-coordinator?branch=main#a51787d11f6e19ed407d3c64f0e51aa1cc41da9e"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -484,7 +485,7 @@ dependencies = [
  "log",
  "serde",
  "serde_json",
- "uf-quark 0.1.3 (git+https://github.com/unified-field-dev/quark?branch=main)",
+ "uf-quark 0.1.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "uf-valence",
 ]
 
@@ -1099,7 +1100,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "39cab71617ae0d63f51a36d69f866391735b51691dbda63cf6f96d042b63efeb"
 dependencies = [
  "libc",
- "windows-sys 0.52.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -1289,6 +1290,7 @@ dependencies = [
 [[package]]
 name = "gauge"
 version = "0.1.0"
+source = "git+https://github.com/unified-field-dev/gauge?branch=main#5c0e9dca0bd948947cc2744282c70635f0daeca2"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -3852,7 +3854,7 @@ dependencies = [
  "once_cell",
  "socket2",
  "tracing",
- "windows-sys 0.52.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -5847,6 +5849,7 @@ dependencies = [
 [[package]]
 name = "uf-spectra-core"
 version = "0.1.3"
+source = "git+https://github.com/unified-field-dev/Spectra?branch=main#0a603cea0388840f81f246e216eb3204bd819783"
 dependencies = [
  "async-trait",
  "chrono",

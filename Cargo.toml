@@ -108,9 +108,9 @@ wasm-bindgen = "=0.2.126"
 web-sys = { version = "=0.3.103", features = ["CssStyleDeclaration", "Document", "DomRect", "Element", "EventTarget", "HtmlElement", "MediaQueryList", "Node", "Storage", "Window"] }
 uuid = { version = "1", features = ["v4"] }
 
-spectra-core = { package = "uf-spectra-core", path = "../../L0-upstream-cores/spectra/spectra-core", default-features = false }
+spectra-core = { package = "uf-spectra-core", git = "https://github.com/unified-field-dev/Spectra", branch = "main", default-features = false }
 spectra = { package = "uf-spectra", git = "https://github.com/unified-field-dev/Spectra", branch = "main", default-features = false, features = ["mem"] }
-gauge = { git = "https://github.com/deathbreakfast/gauge", branch = "main", default-features = false }
+gauge = { git = "https://github.com/unified-field-dev/gauge", branch = "main", default-features = false }
 higgs = { git = "https://github.com/unified-field-dev/higgs", branch = "main", default-features = false }
 higgs-host = { git = "https://github.com/unified-field-dev/higgs", branch = "main", default-features = false }
 higgs-identity = { git = "https://github.com/unified-field-dev/higgs", branch = "main" }
@@ -129,17 +129,9 @@ lepton-shell = { git = "https://github.com/unified-field-dev/lepton-uf-app", bra
 lepton = { git = "https://github.com/unified-field-dev/lepton", branch = "main", default-features = false }
 inventory = "0.3"
 
-# Latest deathbreakfast/gauge main uses monorepo-relative path deps that do not
-# resolve when consumed as a git crate. Prefer the L2 checkout.
-[patch."https://github.com/deathbreakfast/gauge"]
-gauge = { path = "../../L2-product-platform/gauge/gauge" }
-
-# Unify chronon-coordinator (higgs/gauge pin vs workspace git) onto the monorepo path.
-[patch."https://github.com/unified-field-dev/chronon-coordinator"]
-chronon-coordinator = { path = "../../L1-host-stack-kits/chronon-coordinator" }
-
+# Unify deathbreakfast chronon-coordinator pins onto uf-dev git.
 [patch."https://github.com/deathbreakfast/chronon-coordinator"]
-chronon-coordinator = { path = "../../L1-host-stack-kits/chronon-coordinator" }
+chronon-coordinator = { git = "https://github.com/unified-field-dev/chronon-coordinator", branch = "main" }
 
 # Unify crates.io uf-valence / chronon / orbital onto the git tree.
 [patch.crates-io]
@@ -175,6 +167,3 @@ orbital-style = { git = "https://github.com/unified-field-dev/orbital", branch =
 orbital-tree = { git = "https://github.com/unified-field-dev/orbital", branch = "main" }
 orbital-scheduler = { git = "https://github.com/unified-field-dev/orbital", branch = "main" }
 orbital-date-pickers = { git = "https://github.com/unified-field-dev/orbital", branch = "main" }
-
-[patch."https://github.com/unified-field-dev/Spectra"]
-uf-spectra-core = { path = "../../L0-upstream-cores/spectra/spectra-core" }
