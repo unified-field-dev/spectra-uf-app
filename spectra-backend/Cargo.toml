@@ -1,0 +1,24 @@
+[package]
+name = "spectra-backend"
+version = "0.1.0"
+edition = "2021"
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+homepage.workspace = true
+documentation.workspace = true
+description = "Pure schema/query contracts backing spectra-app server functions"
+readme = "README.md"
+
+[lints]
+workspace = true
+
+[dependencies]
+serde = { workspace = true, features = ["derive"] }
+spectra-core = { workspace = true }
+
+[dev-dependencies]
+spectra = { workspace = true, features = ["mem"] }
+tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
+chrono = { workspace = true, features = ["clock", "std", "serde"] }
+serde_json = { workspace = true }
