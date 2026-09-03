@@ -67,6 +67,8 @@ must_use_candidate = "allow"
 missing_errors_doc = "allow"
 missing_panics_doc = "allow"
 return_self_not_must_use = "allow"
+# TypedBuilder (Leptos props) emits empty enums under clippy --all-targets.
+empty_enums = "allow"
 
 [profile.wasm-release]
 inherits = "release"
