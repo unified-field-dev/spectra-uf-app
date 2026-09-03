@@ -607,7 +607,7 @@ version = "3.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "faf9468729b8cbcea668e36183cb69d317348c2e08e994829fb56ebfdfbaac34"
 dependencies = [
- "windows-sys 0.52.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -619,7 +619,7 @@ dependencies = [
  "convert_case 0.6.0",
  "pathdiff",
  "serde_core",
- "toml 1.1.4+spec-1.1.0",
+ "toml 1.1.5+spec-1.1.0",
  "winnow 1.0.4",
 ]
 
@@ -1100,7 +1100,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "39cab71617ae0d63f51a36d69f866391735b51691dbda63cf6f96d042b63efeb"
 dependencies = [
  "libc",
- "windows-sys 0.52.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -1290,7 +1290,7 @@ dependencies = [
 [[package]]
 name = "gauge"
 version = "0.1.0"
-source = "git+https://github.com/unified-field-dev/gauge?branch=main#5c0e9dca0bd948947cc2744282c70635f0daeca2"
+source = "git+https://github.com/unified-field-dev/gauge?branch=main#cd974829382821fd9b0d3e470bfa14292be09589"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -2479,9 +2479,9 @@ checksum = "b6d2cec3eae94f9f509c767b45932f1ada8350c4bdb85af2fcab4a3c14807981"
 
 [[package]]
 name = "libredox"
-version = "0.1.21"
+version = "0.1.23"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d7955dfc218a8afb29dfeffd540e3a6e96baeb94fe7138228dd7cc6937fbbf96"
+checksum = "8d8f1ea3f21fd3405dcaf6c9b5c1630af9afc422d9073ea39c5f6d6c772e08ed"
 dependencies = [
  "bitflags",
  "libc",
@@ -2669,9 +2669,9 @@ dependencies = [
 
 [[package]]
 name = "mio"
-version = "1.2.2"
+version = "1.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "30d65c71f1ce40ab09135ce117d742b9f8a19ff91a41a8b57ed50bc2de59c427"
+checksum = "4b18443e9c262bfe8fa82f51666e2642c53393f7e5c27b3e1aeab922cff5b9d8"
 dependencies = [
  "libc",
  "wasi",
@@ -3854,7 +3854,7 @@ dependencies = [
  "once_cell",
  "socket2",
  "tracing",
- "windows-sys 0.52.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -4072,7 +4072,7 @@ dependencies = [
 [[package]]
 name = "record-history"
 version = "0.1.0"
-source = "git+https://github.com/unified-field-dev/record-history?branch=main#d5a8063dd2a02d12ac65bef4abe97cee582a41db"
+source = "git+https://github.com/unified-field-dev/record-history?branch=main#baa0327c479eae114d5c00d562154a3a23af8ed5"
 dependencies = [
  "async-trait",
  "chrono",
@@ -4574,9 +4574,9 @@ dependencies = [
 
 [[package]]
 name = "smallvec"
-version = "1.15.2"
+version = "1.16.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8ed6a63f02c8539c91a8685a86f4099661ba3da017932f6ebbea6de3f0fa7c90"
+checksum = "b9be42f50aa861c555654aa3a37f52f4b1074bacf4e48fe0ef7fa584e80f1f0f"
 dependencies = [
  "serde",
 ]
@@ -4640,7 +4640,7 @@ dependencies = [
 [[package]]
 name = "spectra-backend-mem"
 version = "0.1.3"
-source = "git+https://github.com/deathbreakfast/spectra?rev=cd705d145eccaa2b1b96acefa1aed301b89bc0be#cd705d145eccaa2b1b96acefa1aed301b89bc0be"
+source = "git+https://github.com/unified-field-dev/Spectra?branch=main#0a603cea0388840f81f246e216eb3204bd819783"
 dependencies = [
  "async-trait",
  "chrono",
@@ -4653,7 +4653,7 @@ dependencies = [
 [[package]]
 name = "spectra-macros"
 version = "0.1.3"
-source = "git+https://github.com/deathbreakfast/spectra?rev=cd705d145eccaa2b1b96acefa1aed301b89bc0be#cd705d145eccaa2b1b96acefa1aed301b89bc0be"
+source = "git+https://github.com/unified-field-dev/Spectra?branch=main#0a603cea0388840f81f246e216eb3204bd819783"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -4663,7 +4663,7 @@ dependencies = [
 [[package]]
 name = "spectra-runtime"
 version = "0.1.3"
-source = "git+https://github.com/deathbreakfast/spectra?rev=cd705d145eccaa2b1b96acefa1aed301b89bc0be#cd705d145eccaa2b1b96acefa1aed301b89bc0be"
+source = "git+https://github.com/unified-field-dev/Spectra?branch=main#0a603cea0388840f81f246e216eb3204bd819783"
 dependencies = [
  "chrono",
  "serde_json",
@@ -5282,9 +5282,9 @@ dependencies = [
 
 [[package]]
 name = "toml"
-version = "1.1.4+spec-1.1.0"
+version = "1.1.5+spec-1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3aace63f4bbcdfc2c965b059de67119c89c4017a70d633be6c104910f67056f5"
+checksum = "12c0ba9680044b4ce98d391a62094047eada0d64860b80166c39f4a6b5640785"
 dependencies = [
  "serde_core",
  "serde_spanned 1.1.1",
@@ -5838,7 +5838,7 @@ dependencies = [
 [[package]]
 name = "uf-spectra"
 version = "0.1.3"
-source = "git+https://github.com/deathbreakfast/spectra?rev=cd705d145eccaa2b1b96acefa1aed301b89bc0be#cd705d145eccaa2b1b96acefa1aed301b89bc0be"
+source = "git+https://github.com/unified-field-dev/Spectra?branch=main#0a603cea0388840f81f246e216eb3204bd819783"
 dependencies = [
  "chrono",
  "serde",
@@ -5852,7 +5852,7 @@ dependencies = [
 [[package]]
 name = "uf-spectra-core"
 version = "0.1.3"
-source = "git+https://github.com/deathbreakfast/spectra?rev=cd705d145eccaa2b1b96acefa1aed301b89bc0be#cd705d145eccaa2b1b96acefa1aed301b89bc0be"
+source = "git+https://github.com/unified-field-dev/Spectra?branch=main#0a603cea0388840f81f246e216eb3204bd819783"
 dependencies = [
  "async-trait",
  "chrono",
@@ -6288,7 +6288,7 @@ version = "0.1.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c2a7b1c03c876122aa43f3020e6c3c3ee5c05081c9a00739faf7503aeba10d22"
 dependencies = [
- "windows-sys 0.52.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]

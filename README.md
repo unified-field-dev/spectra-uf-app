@@ -1,6 +1,6 @@
 # Spectra UF App
 
-[![CI](https://github.com/deathbreakfast/spectra-uf-app/actions/workflows/ci.yml/badge.svg)](https://github.com/deathbreakfast/spectra-uf-app/actions/workflows/ci.yml)
+[![CI](https://github.com/unified-field-dev/spectra-uf-app/actions/workflows/ci.yml/badge.svg)](https://github.com/unified-field-dev/spectra-uf-app/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 [GitHub](https://github.com/unified-field-dev/spectra-uf-app) · `cargo doc -p spectra-backend --open`

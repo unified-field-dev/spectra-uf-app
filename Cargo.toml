@@ -170,11 +170,3 @@ orbital-tree = { git = "https://github.com/unified-field-dev/orbital", branch = 
 orbital-scheduler = { git = "https://github.com/unified-field-dev/orbital", branch = "main" }
 orbital-date-pickers = { git = "https://github.com/unified-field-dev/orbital", branch = "main" }
 
-# uf-dev Spectra main lacks #[serde(default)] on GridFilterModel.items /
-# MetricsQuery.label_matchers; Leptos WASM omits empty vecs and explore refetch fails.
-# Pin deathbreakfast until that commit lands on unified-field-dev/Spectra.
-[patch."https://github.com/unified-field-dev/Spectra"]
-uf-spectra-core = { git = "https://github.com/deathbreakfast/spectra", rev = "cd705d145eccaa2b1b96acefa1aed301b89bc0be" }
-uf-spectra = { git = "https://github.com/deathbreakfast/spectra", rev = "cd705d145eccaa2b1b96acefa1aed301b89bc0be" }
-spectra-backend-mem = { git = "https://github.com/deathbreakfast/spectra", rev = "cd705d145eccaa2b1b96acefa1aed301b89bc0be" }
-spectra-runtime = { git = "https://github.com/deathbreakfast/spectra", rev = "cd705d145eccaa2b1b96acefa1aed301b89bc0be" }
