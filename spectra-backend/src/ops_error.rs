@@ -69,7 +69,7 @@ impl From<SpectraQueryNameError> for SpectraOpsError {
 /// Returns true when `message` is a classified permission denial from [`SpectraOpsError::PermissionDenied`].
 #[must_use]
 pub fn is_permission_denied_message(message: &str) -> bool {
-    message.starts_with(PERMISSION_DENIED_PREFIX)
+    message.contains(PERMISSION_DENIED_PREFIX)
 }
 
 #[cfg(test)]
@@ -96,5 +96,13 @@ mod tests {
     #[test]
     fn auth_required_is_not_permission_denied_sad() {
         assert!(!is_permission_denied_message(AUTH_REQUIRED_MESSAGE));
+    }
+
+    #[test]
+    fn server_fn_wrapped_permission_denied_is_detected_happy_path() {
+        let wrapped = format!(
+            "error running server function: {PERMISSION_DENIED_PREFIX} `spectra.query.t` is required"
+        );
+        assert!(is_permission_denied_message(&wrapped));
     }
 }

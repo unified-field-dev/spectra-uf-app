@@ -62,7 +62,10 @@ pub fn EventExplorePanel(
                         start,
                         end,
                         partition: None,
-                        filter: GridFilterModel::default(),
+                        filter: GridFilterModel {
+                            items: Vec::new(),
+                            ..GridFilterModel::default()
+                        },
                         view: other,
                         aggregation: agg,
                     })

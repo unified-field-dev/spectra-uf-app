@@ -26,11 +26,17 @@ view! {
 }
 ```
 
+Compose into a host that supplies Spectra query backends and the auth/context
+extractors the app expects. Enable `ssr` / `hydrate` to match your host. For
+Help spotlight tours, enable `uf-integrations` `offering-help` (or `full`) and
+call `spectra_app::ensure_help_steps_linked()` (also called from `SpectraRoutes`).
+
 ## Where to look
 
 | Topic | Location |
 |-------|----------|
 | Crate docs (routes, server fns, examples) | `cargo doc -p spectra-app --open` — [`src/lib.rs`](src/lib.rs) |
+| Help spotlight inventory | [`src/help_steps/`](src/help_steps/) |
 | Server functions + errors | [`src/server/`](src/server/) |
 | Mapping / validation contracts | [`spectra-backend`](../spectra-backend/) |
 | Contributor map | [`../docs/DEVELOPMENT.md`](../docs/DEVELOPMENT.md) |

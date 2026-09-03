@@ -607,7 +607,7 @@ version = "3.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "faf9468729b8cbcea668e36183cb69d317348c2e08e994829fb56ebfdfbaac34"
 dependencies = [
- "windows-sys 0.48.0",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -1100,7 +1100,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "39cab71617ae0d63f51a36d69f866391735b51691dbda63cf6f96d042b63efeb"
 dependencies = [
  "libc",
- "windows-sys 0.61.2",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -2823,7 +2823,7 @@ checksum = "8c04f5d74368e4d0dfe06c45c8627c81bd7c317d52762d118fb9b3076f6420fd"
 [[package]]
 name = "orbital-base-components"
 version = "0.1.4"
-source = "git+https://github.com/unified-field-dev/orbital?branch=main#dc3a0606879ff164d7995467e0418bb5b87a7d39"
+source = "git+https://github.com/unified-field-dev/orbital?branch=main#ae050dc0740bd96317fff4a01e7a6210a82df332"
 dependencies = [
  "chrono",
  "icondata",
@@ -2846,7 +2846,7 @@ dependencies = [
 [[package]]
 name = "orbital-charts"
 version = "0.1.4"
-source = "git+https://github.com/unified-field-dev/orbital?branch=main#dc3a0606879ff164d7995467e0418bb5b87a7d39"
+source = "git+https://github.com/unified-field-dev/orbital?branch=main#ae050dc0740bd96317fff4a01e7a6210a82df332"
 dependencies = [
  "bitflags",
  "chrono",
@@ -2871,7 +2871,7 @@ dependencies = [
 [[package]]
 name = "orbital-core-components"
 version = "0.1.4"
-source = "git+https://github.com/unified-field-dev/orbital?branch=main#dc3a0606879ff164d7995467e0418bb5b87a7d39"
+source = "git+https://github.com/unified-field-dev/orbital?branch=main#ae050dc0740bd96317fff4a01e7a6210a82df332"
 dependencies = [
  "chrono",
  "icondata",
@@ -2894,7 +2894,7 @@ dependencies = [
 [[package]]
 name = "orbital-data"
 version = "0.1.4"
-source = "git+https://github.com/unified-field-dev/orbital?branch=main#dc3a0606879ff164d7995467e0418bb5b87a7d39"
+source = "git+https://github.com/unified-field-dev/orbital?branch=main#ae050dc0740bd96317fff4a01e7a6210a82df332"
 dependencies = [
  "chrono",
  "serde",
@@ -2903,7 +2903,7 @@ dependencies = [
 [[package]]
 name = "orbital-datatable"
 version = "0.1.4"
-source = "git+https://github.com/unified-field-dev/orbital?branch=main#dc3a0606879ff164d7995467e0418bb5b87a7d39"
+source = "git+https://github.com/unified-field-dev/orbital?branch=main#ae050dc0740bd96317fff4a01e7a6210a82df332"
 dependencies = [
  "bitflags",
  "chrono",
@@ -2930,7 +2930,7 @@ dependencies = [
 [[package]]
 name = "orbital-date-pickers"
 version = "0.1.4"
-source = "git+https://github.com/unified-field-dev/orbital?branch=main#dc3a0606879ff164d7995467e0418bb5b87a7d39"
+source = "git+https://github.com/unified-field-dev/orbital?branch=main#ae050dc0740bd96317fff4a01e7a6210a82df332"
 dependencies = [
  "bitflags",
  "chrono",
@@ -2951,7 +2951,7 @@ dependencies = [
 [[package]]
 name = "orbital-discussion"
 version = "0.1.4"
-source = "git+https://github.com/unified-field-dev/orbital?branch=main#dc3a0606879ff164d7995467e0418bb5b87a7d39"
+source = "git+https://github.com/unified-field-dev/orbital?branch=main#ae050dc0740bd96317fff4a01e7a6210a82df332"
 dependencies = [
  "ammonia",
  "bitflags",
@@ -2977,7 +2977,7 @@ dependencies = [
 [[package]]
 name = "orbital-history"
 version = "0.1.4"
-source = "git+https://github.com/unified-field-dev/orbital?branch=main#dc3a0606879ff164d7995467e0418bb5b87a7d39"
+source = "git+https://github.com/unified-field-dev/orbital?branch=main#ae050dc0740bd96317fff4a01e7a6210a82df332"
 dependencies = [
  "bitflags",
  "chrono",
@@ -3003,7 +3003,7 @@ dependencies = [
 [[package]]
 name = "orbital-macros"
 version = "0.1.5"
-source = "git+https://github.com/unified-field-dev/orbital?branch=main#dc3a0606879ff164d7995467e0418bb5b87a7d39"
+source = "git+https://github.com/unified-field-dev/orbital?branch=main#ae050dc0740bd96317fff4a01e7a6210a82df332"
 dependencies = [
  "darling",
  "proc-macro2",
@@ -3014,7 +3014,7 @@ dependencies = [
 [[package]]
 name = "orbital-markdown"
 version = "0.1.4"
-source = "git+https://github.com/unified-field-dev/orbital?branch=main#dc3a0606879ff164d7995467e0418bb5b87a7d39"
+source = "git+https://github.com/unified-field-dev/orbital?branch=main#ae050dc0740bd96317fff4a01e7a6210a82df332"
 dependencies = [
  "ammonia",
  "pulldown-cmark",
@@ -3024,7 +3024,7 @@ dependencies = [
 [[package]]
 name = "orbital-motion"
 version = "0.1.4"
-source = "git+https://github.com/unified-field-dev/orbital?branch=main#dc3a0606879ff164d7995467e0418bb5b87a7d39"
+source = "git+https://github.com/unified-field-dev/orbital?branch=main#ae050dc0740bd96317fff4a01e7a6210a82df332"
 dependencies = [
  "icondata",
  "icondata_core",
@@ -3044,7 +3044,7 @@ dependencies = [
 [[package]]
 name = "orbital-paging"
 version = "0.1.4"
-source = "git+https://github.com/unified-field-dev/orbital?branch=main#dc3a0606879ff164d7995467e0418bb5b87a7d39"
+source = "git+https://github.com/unified-field-dev/orbital?branch=main#ae050dc0740bd96317fff4a01e7a6210a82df332"
 dependencies = [
  "leptos",
  "leptos-use",
@@ -3055,7 +3055,7 @@ dependencies = [
 [[package]]
 name = "orbital-primitives"
 version = "0.1.4"
-source = "git+https://github.com/unified-field-dev/orbital?branch=main#dc3a0606879ff164d7995467e0418bb5b87a7d39"
+source = "git+https://github.com/unified-field-dev/orbital?branch=main#ae050dc0740bd96317fff4a01e7a6210a82df332"
 dependencies = [
  "icondata",
  "icondata_core",
@@ -3080,7 +3080,7 @@ dependencies = [
 [[package]]
 name = "orbital-scheduler"
 version = "0.1.4"
-source = "git+https://github.com/unified-field-dev/orbital?branch=main#dc3a0606879ff164d7995467e0418bb5b87a7d39"
+source = "git+https://github.com/unified-field-dev/orbital?branch=main#ae050dc0740bd96317fff4a01e7a6210a82df332"
 dependencies = [
  "bitflags",
  "chrono",
@@ -3105,7 +3105,7 @@ dependencies = [
 [[package]]
 name = "orbital-shell"
 version = "0.1.4"
-source = "git+https://github.com/unified-field-dev/orbital?branch=main#dc3a0606879ff164d7995467e0418bb5b87a7d39"
+source = "git+https://github.com/unified-field-dev/orbital?branch=main#ae050dc0740bd96317fff4a01e7a6210a82df332"
 dependencies = [
  "icondata",
  "icondata_core",
@@ -3126,7 +3126,7 @@ dependencies = [
 [[package]]
 name = "orbital-style"
 version = "0.1.4"
-source = "git+https://github.com/unified-field-dev/orbital?branch=main#dc3a0606879ff164d7995467e0418bb5b87a7d39"
+source = "git+https://github.com/unified-field-dev/orbital?branch=main#ae050dc0740bd96317fff4a01e7a6210a82df332"
 dependencies = [
  "cfg-if",
  "leptos",
@@ -3137,7 +3137,7 @@ dependencies = [
 [[package]]
 name = "orbital-theme"
 version = "0.1.4"
-source = "git+https://github.com/unified-field-dev/orbital?branch=main#dc3a0606879ff164d7995467e0418bb5b87a7d39"
+source = "git+https://github.com/unified-field-dev/orbital?branch=main#ae050dc0740bd96317fff4a01e7a6210a82df332"
 dependencies = [
  "getset",
  "leptos",
@@ -3149,7 +3149,7 @@ dependencies = [
 [[package]]
 name = "orbital-tree"
 version = "0.1.4"
-source = "git+https://github.com/unified-field-dev/orbital?branch=main#dc3a0606879ff164d7995467e0418bb5b87a7d39"
+source = "git+https://github.com/unified-field-dev/orbital?branch=main#ae050dc0740bd96317fff4a01e7a6210a82df332"
 dependencies = [
  "icondata_core",
  "inventory",
@@ -3160,7 +3160,7 @@ dependencies = [
 [[package]]
 name = "orbital-ui"
 version = "0.1.4"
-source = "git+https://github.com/unified-field-dev/orbital?branch=main#dc3a0606879ff164d7995467e0418bb5b87a7d39"
+source = "git+https://github.com/unified-field-dev/orbital?branch=main#ae050dc0740bd96317fff4a01e7a6210a82df332"
 dependencies = [
  "axum",
  "cfg-if",
@@ -3854,7 +3854,7 @@ dependencies = [
  "once_cell",
  "socket2",
  "tracing",
- "windows-sys 0.61.2",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -4617,6 +4617,8 @@ dependencies = [
  "serde",
  "serde_json",
  "spectra-backend",
+ "uf-help",
+ "uf-help-macros",
  "uf-integrations",
  "uf-product",
  "uf-product-macros",
@@ -4638,7 +4640,7 @@ dependencies = [
 [[package]]
 name = "spectra-backend-mem"
 version = "0.1.3"
-source = "git+https://github.com/unified-field-dev/Spectra?branch=main#0a603cea0388840f81f246e216eb3204bd819783"
+source = "git+https://github.com/deathbreakfast/spectra?rev=cd705d145eccaa2b1b96acefa1aed301b89bc0be#cd705d145eccaa2b1b96acefa1aed301b89bc0be"
 dependencies = [
  "async-trait",
  "chrono",
@@ -4651,7 +4653,7 @@ dependencies = [
 [[package]]
 name = "spectra-macros"
 version = "0.1.3"
-source = "git+https://github.com/unified-field-dev/Spectra?branch=main#0a603cea0388840f81f246e216eb3204bd819783"
+source = "git+https://github.com/deathbreakfast/spectra?rev=cd705d145eccaa2b1b96acefa1aed301b89bc0be#cd705d145eccaa2b1b96acefa1aed301b89bc0be"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -4661,7 +4663,7 @@ dependencies = [
 [[package]]
 name = "spectra-runtime"
 version = "0.1.3"
-source = "git+https://github.com/unified-field-dev/Spectra?branch=main#0a603cea0388840f81f246e216eb3204bd819783"
+source = "git+https://github.com/deathbreakfast/spectra?rev=cd705d145eccaa2b1b96acefa1aed301b89bc0be#cd705d145eccaa2b1b96acefa1aed301b89bc0be"
 dependencies = [
  "chrono",
  "serde_json",
@@ -4702,6 +4704,7 @@ dependencies = [
  "tokio",
  "tower-http",
  "tower-sessions",
+ "uf-help",
  "uf-integrations",
  "uf-product",
  "uf-spectra",
@@ -5623,7 +5626,7 @@ checksum = "b6f5e870be6c3b371b77fe0ee0bafb859fa4964b4404c27de1d380043c4dda20"
 [[package]]
 name = "uf-appearance"
 version = "0.3.0"
-source = "git+https://github.com/unified-field-dev/unified-field-product?branch=main#3c40b7e21f06034175945267253b44f7545c9843"
+source = "git+https://github.com/unified-field-dev/unified-field-product?branch=main#c78c488101c5310222dd7bfeaa50b97182da5edd"
 dependencies = [
  "icondata",
  "inventory",
@@ -5635,7 +5638,7 @@ dependencies = [
 [[package]]
 name = "uf-help"
 version = "0.3.0"
-source = "git+https://github.com/unified-field-dev/unified-field-product?branch=main#3c40b7e21f06034175945267253b44f7545c9843"
+source = "git+https://github.com/unified-field-dev/unified-field-product?branch=main#c78c488101c5310222dd7bfeaa50b97182da5edd"
 dependencies = [
  "async-trait",
  "chrono",
@@ -5657,7 +5660,7 @@ dependencies = [
 [[package]]
 name = "uf-help-macros"
 version = "0.3.0"
-source = "git+https://github.com/unified-field-dev/unified-field-product?branch=main#3c40b7e21f06034175945267253b44f7545c9843"
+source = "git+https://github.com/unified-field-dev/unified-field-product?branch=main#c78c488101c5310222dd7bfeaa50b97182da5edd"
 dependencies = [
  "darling",
  "proc-macro2",
@@ -5668,7 +5671,7 @@ dependencies = [
 [[package]]
 name = "uf-integrations"
 version = "0.3.0"
-source = "git+https://github.com/unified-field-dev/unified-field-product?branch=main#3c40b7e21f06034175945267253b44f7545c9843"
+source = "git+https://github.com/unified-field-dev/unified-field-product?branch=main#c78c488101c5310222dd7bfeaa50b97182da5edd"
 dependencies = [
  "icondata",
  "inventory",
@@ -5759,7 +5762,7 @@ dependencies = [
 [[package]]
 name = "uf-product"
 version = "0.3.0"
-source = "git+https://github.com/unified-field-dev/unified-field-product?branch=main#3c40b7e21f06034175945267253b44f7545c9843"
+source = "git+https://github.com/unified-field-dev/unified-field-product?branch=main#c78c488101c5310222dd7bfeaa50b97182da5edd"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -5796,7 +5799,7 @@ dependencies = [
 [[package]]
 name = "uf-product-macros"
 version = "0.1.0"
-source = "git+https://github.com/unified-field-dev/unified-field-product?branch=main#3c40b7e21f06034175945267253b44f7545c9843"
+source = "git+https://github.com/unified-field-dev/unified-field-product?branch=main#c78c488101c5310222dd7bfeaa50b97182da5edd"
 dependencies = [
  "darling",
  "proc-macro2",
@@ -5824,7 +5827,7 @@ dependencies = [
 [[package]]
 name = "uf-search-core"
 version = "0.1.0"
-source = "git+https://github.com/unified-field-dev/unified-field-product?branch=main#3c40b7e21f06034175945267253b44f7545c9843"
+source = "git+https://github.com/unified-field-dev/unified-field-product?branch=main#c78c488101c5310222dd7bfeaa50b97182da5edd"
 dependencies = [
  "anyhow",
  "serde",
@@ -5835,7 +5838,7 @@ dependencies = [
 [[package]]
 name = "uf-spectra"
 version = "0.1.3"
-source = "git+https://github.com/unified-field-dev/Spectra?branch=main#0a603cea0388840f81f246e216eb3204bd819783"
+source = "git+https://github.com/deathbreakfast/spectra?rev=cd705d145eccaa2b1b96acefa1aed301b89bc0be#cd705d145eccaa2b1b96acefa1aed301b89bc0be"
 dependencies = [
  "chrono",
  "serde",
@@ -5849,7 +5852,7 @@ dependencies = [
 [[package]]
 name = "uf-spectra-core"
 version = "0.1.3"
-source = "git+https://github.com/unified-field-dev/Spectra?branch=main#0a603cea0388840f81f246e216eb3204bd819783"
+source = "git+https://github.com/deathbreakfast/spectra?rev=cd705d145eccaa2b1b96acefa1aed301b89bc0be#cd705d145eccaa2b1b96acefa1aed301b89bc0be"
 dependencies = [
  "async-trait",
  "chrono",
@@ -6285,7 +6288,7 @@ version = "0.1.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c2a7b1c03c876122aa43f3020e6c3c3ee5c05081c9a00739faf7503aeba10d22"
 dependencies = [
- "windows-sys 0.48.0",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]

@@ -14,6 +14,12 @@ use super::KindBadge;
 pub fn SchemaCard(
     /// Item to render.
     item: SchemaListItem,
+    /// Spotlight DOM id for the Details link (empty = omit).
+    #[prop(optional)]
+    details_spotlight_id: &'static str,
+    /// Spotlight DOM id for the Explore link (empty = omit).
+    #[prop(optional)]
+    explore_spotlight_id: &'static str,
 ) -> impl IntoView {
     let name = item.table_or_metric.clone();
     let kind = item.logging_kind.clone();
@@ -27,6 +33,8 @@ pub fn SchemaCard(
     let test_id = format!("spectra-schema-card-{name}");
     let detail_test_id = format!("spectra-schema-card-{name}-details");
     let explore_test_id = format!("spectra-schema-card-{name}-explore");
+    let details_id = (!details_spotlight_id.is_empty()).then_some(details_spotlight_id);
+    let explore_id = (!explore_spotlight_id.is_empty()).then_some(explore_spotlight_id);
     view! {
         <div data-testid=test_id>
             <Card>
@@ -39,10 +47,10 @@ pub fn SchemaCard(
                 <CardContent>
                     <Flex vertical=true gap=SpacingSize::Size80.flex_gap()>
                         {(!description.is_empty()).then(|| view! { <p>{description}</p> })}
-                        <span data-testid=detail_test_id>
+                        <span id=details_id data-testid=detail_test_id>
                             <A href=detail_href>"Details"</A>
                         </span>
-                        <span data-testid=explore_test_id>
+                        <span id=explore_id data-testid=explore_test_id>
                             <A href=href>"Explore"</A>
                         </span>
                     </Flex>

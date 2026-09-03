@@ -42,6 +42,7 @@ tower-sessions = { workspace = true, optional = true }
 any_spawner = { workspace = true, optional = true }
 uf-integrations = { workspace = true, default-features = false }
 uf-product = { workspace = true, default-features = false }
+uf-help = { workspace = true, default-features = false }
 valence = { workspace = true, optional = true }
 wasm-bindgen = { workspace = true, optional = true }
 
@@ -52,6 +53,8 @@ hydrate = [
     "spectra-app/hydrate",
     "uf-product/hydrate",
     "uf-integrations/hydrate",
+    "uf-integrations/offering-help",
+    "uf-help/hydrate",
     "orbital/hydrate",
     "dep:console_error_panic_hook",
     "dep:console_log",
@@ -65,6 +68,8 @@ ssr = [
     "spectra-app/ssr",
     "uf-product/ssr",
     "uf-integrations/ssr",
+    "uf-integrations/offering-help",
+    "uf-help/ssr",
     "orbital/ssr",
     "dep:axum",
     "dep:leptos_axum",

@@ -22,7 +22,9 @@ pub fn EventToolbar(
 ) -> impl IntoView {
     view! {
         <QueryToolbarMaterial>
-            <TimeRangePicker selected_secs=range_secs on_change=on_range />
+            <div id="spectra-event-time-range">
+                <TimeRangePicker selected_secs=range_secs on_change=on_range />
+            </div>
             <EventViewPicker view=view on_change=on_view />
             <EventAggregationBar view=view spec=aggregation />
         </QueryToolbarMaterial>

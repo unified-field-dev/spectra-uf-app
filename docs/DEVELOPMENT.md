@@ -17,6 +17,7 @@ Do not edit the archive copy under `L5-hosts/web-app-template-archive-only/spect
 ```text
 spectra-app/src/
 ├── lib.rs              # SpectraRoutes, uf_app!, public re-exports, crate docs
+├── help_steps/         # Help spotlight tour inventory (ensure_help_steps_linked)
 ├── server/             # Higgs #[server] fns, permission gate, error mapping
 ├── pages/              # Route pages (home, schema index/detail, explore)
 ├── components/         # Private UI (charts, explore, query, schema, tables)
@@ -26,6 +27,7 @@ spectra-app/src/
 ```
 
 Import from crate-root re-exports (`use spectra_app::{SpectraRoutes, list_schema_metadata, …}`).
+For Help tours, call `ensure_help_steps_linked()` and enable `uf-integrations` `offering-help`.
 Mapping and validation helpers live in `spectra-backend`; avoid reaching into
 `spectra_app::server::execute_*` unless you extend server functions in this crate.
 

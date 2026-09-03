@@ -45,13 +45,21 @@ pub fn EventAggregationBar(
     view! {
         {move || {
             if view.get() == EventExploreView::EventLog {
-                return view! { <span></span> }.into_any();
+                // Keep spotlight anchors mounted when chart controls are hidden.
+                return view! {
+                    <>
+                        <div id="spectra-aggregation-measure" data-testid="spectra-aggregation-measure"></div>
+                        <div id="spectra-aggregation-bucket" data-testid="spectra-aggregation-bucket"></div>
+                        <div id="spectra-aggregation-group-by" data-testid="spectra-aggregation-group-by"></div>
+                    </>
+                }
+                .into_any();
             }
             let current = view.get();
             view! {
                 <Flex vertical=true>
                     <Caption1>"Measure"</Caption1>
-                    <div data-testid="spectra-aggregation-measure">
+                    <div id="spectra-aggregation-measure" data-testid="spectra-aggregation-measure">
                         <Select bind=measure_str>
                             <option value="count">"Count"</option>
                             <option value="sum">"Sum"</option>
@@ -60,7 +68,7 @@ pub fn EventAggregationBar(
                     {(current == EventExploreView::TimeSeries || current == EventExploreView::LineChart).then(|| view! {
                         <>
                             <Caption1>"Time bucket (seconds)"</Caption1>
-                            <div data-testid="spectra-aggregation-bucket">
+                            <div id="spectra-aggregation-bucket" data-testid="spectra-aggregation-bucket">
                                 <Input bind=bucket />
                             </div>
                         </>
@@ -68,7 +76,7 @@ pub fn EventAggregationBar(
                     {(current == EventExploreView::PieChart || current == EventExploreView::BarChart).then(|| view! {
                         <>
                             <Caption1>"Group by field"</Caption1>
-                            <div data-testid="spectra-aggregation-group-by">
+                            <div id="spectra-aggregation-group-by" data-testid="spectra-aggregation-group-by">
                                 <Input bind=group_by />
                             </div>
                         </>

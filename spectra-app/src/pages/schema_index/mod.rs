@@ -14,7 +14,7 @@ pub fn SchemaIndexPage() -> impl IntoView {
         <ContentContainer data_testid="schema-index-page">
             <Flex vertical=true gap=SpacingSize::Size240.flex_gap()>
                 <Title3>"Schemas"</Title3>
-                <div data-testid="spectra-schema-search">
+                <div id="spectra-schema-search" data-testid="spectra-schema-search">
                     <SearchBox
                         bind=SearchBoxBind::from(query)
                         appearance=SearchBoxAppearance::with_placeholder("Search schemas…")

@@ -25,12 +25,14 @@ pub fn SchemaDetailBody(
                     let logging_kind = d.logging_kind.clone();
                     let logging_kind_display = logging_kind.clone();
                     view! {
-                        <Card>
-                            <Flex vertical=true>
-                                <Body1>{d.description.unwrap_or_else(|| "No description".into())}</Body1>
-                                <Body1>{format!("Kind: {logging_kind_display}")}</Body1>
-                            </Flex>
-                        </Card>
+                        <div id="spectra-detail-meta">
+                            <Card>
+                                <Flex vertical=true>
+                                    <Body1>{d.description.unwrap_or_else(|| "No description".into())}</Body1>
+                                    <Body1>{format!("Kind: {logging_kind_display}")}</Body1>
+                                </Flex>
+                            </Card>
+                        </div>
                         <QuickActionsCard name=table_or_metric kind=logging_kind />
                     }.into_any()
                 }

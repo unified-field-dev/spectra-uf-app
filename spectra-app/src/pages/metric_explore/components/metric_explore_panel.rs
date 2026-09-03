@@ -41,8 +41,10 @@ pub fn MetricExplorePanel(
         <Transition fallback=ChartSkeleton>
             {move || match query_res.get() {
                 Some(Ok(data)) => view! {
-                    <MetricStatCardRow headline=data.headline />
-                    <MetricTimeSeriesChart series=data.series />
+                    <div id="spectra-metric-results">
+                        <MetricStatCardRow headline=data.headline />
+                        <MetricTimeSeriesChart series=data.series />
+                    </div>
                 }.into_any(),
                 Some(Err(e)) if server_fn_is_permission_denied(&e) => {
                     view! { <PermissionDeniedState /> }.into_any()

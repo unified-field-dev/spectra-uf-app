@@ -125,6 +125,8 @@ orbital-charts = { git = "https://github.com/unified-field-dev/orbital", branch 
 uf-integrations = { git = "https://github.com/unified-field-dev/unified-field-product", branch = "main", default-features = false }
 uf-product-macros = { git = "https://github.com/unified-field-dev/unified-field-product", branch = "main" }
 uf-product = { git = "https://github.com/unified-field-dev/unified-field-product", branch = "main", default-features = false }
+uf-help = { git = "https://github.com/unified-field-dev/unified-field-product", branch = "main", default-features = false }
+uf-help-macros = { git = "https://github.com/unified-field-dev/unified-field-product", branch = "main" }
 lepton-shell = { git = "https://github.com/unified-field-dev/lepton-uf-app", branch = "main", default-features = false }
 lepton = { git = "https://github.com/unified-field-dev/lepton", branch = "main", default-features = false }
 inventory = "0.3"
@@ -167,3 +169,12 @@ orbital-style = { git = "https://github.com/unified-field-dev/orbital", branch =
 orbital-tree = { git = "https://github.com/unified-field-dev/orbital", branch = "main" }
 orbital-scheduler = { git = "https://github.com/unified-field-dev/orbital", branch = "main" }
 orbital-date-pickers = { git = "https://github.com/unified-field-dev/orbital", branch = "main" }
+
+# uf-dev Spectra main lacks #[serde(default)] on GridFilterModel.items /
+# MetricsQuery.label_matchers; Leptos WASM omits empty vecs and explore refetch fails.
+# Pin deathbreakfast until that commit lands on unified-field-dev/Spectra.
+[patch."https://github.com/unified-field-dev/Spectra"]
+uf-spectra-core = { git = "https://github.com/deathbreakfast/spectra", rev = "cd705d145eccaa2b1b96acefa1aed301b89bc0be" }
+uf-spectra = { git = "https://github.com/deathbreakfast/spectra", rev = "cd705d145eccaa2b1b96acefa1aed301b89bc0be" }
+spectra-backend-mem = { git = "https://github.com/deathbreakfast/spectra", rev = "cd705d145eccaa2b1b96acefa1aed301b89bc0be" }
+spectra-runtime = { git = "https://github.com/deathbreakfast/spectra", rev = "cd705d145eccaa2b1b96acefa1aed301b89bc0be" }

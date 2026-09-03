@@ -27,6 +27,10 @@
 //!   checks via [`require_spectra_query`], and re-exports of [`spectra_backend`] helpers.
 //! - **Permission manifest** — [`SpectraPermission`] and [`SPECTRA_QUERY_PERMISSION`] for
 //!   host manifest wiring.
+//! - **Help spotlight tours** — Route-scoped ELI5 tours via [`mod@help_steps`]. Call
+//!   [`ensure_help_steps_linked`] so inventory links into the host; enable
+//!   `uf-integrations` `offering-help` (or `full`) so `HelpTourPlayer` mounts.
+//!   [Get started](#link-spectra-spotlight-tours)
 //!
 //! ## Mount Spectra routes
 //!
@@ -182,9 +186,31 @@
 //! suites in `docs/VERIFICATION.md` cover server-fn contracts. Runnable host:
 //! `examples/protected-spectra-host` (deny/allow + schema index; inventory `spectra` / `/spectra`).
 //!
+//! ## Link Spectra spotlight tours
+//!
+//! [`ensure_help_steps_linked`] force-links `#[help_spotlight_step]` inventory into the
+//! host binary. Call it when mounting [`SpectraRoutes`] (already done inside
+//! [`SpectraRoutes`]) or from the host boot path. Enable `uf-integrations`
+//! `offering-help` (or `full`) so `HelpTourPlayer` mounts.
+//!
+//! **Prerequisites:** `ssr` / `hydrate` features on this crate; host shell with Help
+//! offering enabled.
+//!
+//! ```rust,ignore
+//! use spectra_app::{ensure_help_steps_linked, SpectraRoutes};
+//!
+//! ensure_help_steps_linked();
+//! // Mount <SpectraRoutes /> inside the host <Routes> tree.
+//! ```
+//!
+//! On success, visiting `/spectra` (and other Spectra routes) auto-plays pending
+//! spotlight steps unless the operator already finished them. Missing
+//! `offering-help` leaves the player unmounted — no tour, no panic.
+//!
 //! ## Where to look next
 //!
 //! - [`SpectraLayout`] — shared app bar / nav shell wrapping every route.
+//! - [`mod@help_steps`] — Help spotlight tour inventory; call [`ensure_help_steps_linked`].
 //! - [`mod@server`] — server functions backing the UI, including [`require_spectra_query`].
 //! - [`SpectraPermission`] / [`SPECTRA_QUERY_PERMISSION`] — permission enum and QueryTable name.
 //! - `spectra_backend` — name validation, catalog helpers, and explore stub payloads.
@@ -208,12 +234,14 @@ use uf_product_macros::uf_app;
 
 mod components;
 mod explore_time;
+pub mod help_steps;
 mod layout;
 mod lazy_routes;
 pub mod pages;
 mod permissions;
 pub mod server;
 
+pub use help_steps::ensure_help_steps_linked;
 pub use permissions::SpectraPermission;
 
 pub use layout::SpectraLayout;
@@ -251,6 +279,7 @@ uf_app! {
 #[orbital_macros::orbital_routes_extract]
 #[component(transparent)]
 pub fn SpectraRoutes() -> impl leptos_router::MatchNestedRoutes + Clone {
+    crate::help_steps::ensure_help_steps_linked();
     view! {
         <ParentRoute path=path!("spectra") view=SpectraLayoutRouteView>
             <Route path=path!("") view={Lazy::<SpectraHomeRoute>::new()} />

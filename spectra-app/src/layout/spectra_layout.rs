@@ -10,10 +10,10 @@ use orbital::components::{
     Navigation, NavigationBody, NavigationConfig, NavigationLink, NavigationMaterial,
 };
 use orbital::primitives::{Breadcrumb, BreadcrumbItem, Flex};
-use orbital::routes::RequireAuthenticated;
 use uf_integrations::{
     ShellAppBar, ShellAuthMenu, ShellLeftNav, UnifiedFieldAppBar, UnifiedFieldShellLayout,
 };
+use uf_product::routes::RequireAuthenticated;
 
 use crate::AppMetadata;
 
@@ -41,8 +41,10 @@ pub fn SpectraLayout() -> impl IntoView {
                     <Navigation config=NavigationConfig::new().with_selected_value(selected_value).with_open_categories(open_categories)>
                         <NavigationMaterial slot />
                         <NavigationBody slot>
-                            <NavigationLink path="/spectra" value="/spectra" icon=icondata::AiHomeOutlined test_id="nav-spectra-home">"Home"</NavigationLink>
-                            <NavigationLink path="/spectra/schema" value="/spectra/schema" icon=icondata::AiDatabaseOutlined test_id="nav-spectra-schemas">"Schemas"</NavigationLink>
+                            <div id="spectra-nav">
+                                <NavigationLink path="/spectra" value="/spectra" icon=icondata::AiHomeOutlined test_id="nav-spectra-home">"Home"</NavigationLink>
+                                <NavigationLink path="/spectra/schema" value="/spectra/schema" icon=icondata::AiDatabaseOutlined test_id="nav-spectra-schemas">"Schemas"</NavigationLink>
+                            </div>
                         </NavigationBody>
                     </Navigation>
                 </ShellLeftNav>

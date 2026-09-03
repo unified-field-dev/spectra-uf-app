@@ -40,7 +40,7 @@ pub fn EventViewPicker(
     on_change: Callback<EventExploreView>,
 ) -> impl IntoView {
     view! {
-        <div data-testid="spectra-event-view-picker">
+        <div id="spectra-event-view-picker" data-testid="spectra-event-view-picker">
             <Caption1>"View"</Caption1>
             <Flex>
                 {VIEWS.iter().map(|(v, label, test_id)| {

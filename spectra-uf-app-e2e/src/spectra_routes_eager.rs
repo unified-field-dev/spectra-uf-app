@@ -18,6 +18,7 @@ use spectra_app::{
 /// Same paths as [`spectra_app::SpectraRoutes`], without Lazy route views.
 #[component(transparent)]
 pub fn SpectraRoutesEager() -> impl leptos_router::MatchNestedRoutes + Clone {
+    spectra_app::ensure_help_steps_linked();
     view! {
         <ParentRoute path=path!("spectra") view=SpectraLayout>
             <Route path=path!("") view=SpectraHomePage />

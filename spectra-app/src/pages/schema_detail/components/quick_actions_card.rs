@@ -22,7 +22,7 @@ pub fn QuickActionsCard(
             <Flex vertical=true>
                 <Title3>"Explore"</Title3>
                 <A href=href>
-                    <span data-testid="spectra-detail-open-explore">
+                    <span id="spectra-detail-open-explore" data-testid="spectra-detail-open-explore">
                         <Button appearance=ButtonAppearance::Primary>
                             "Open explore"
                         </Button>

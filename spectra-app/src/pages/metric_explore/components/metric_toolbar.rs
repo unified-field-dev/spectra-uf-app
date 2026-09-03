@@ -12,7 +12,9 @@ pub fn MetricToolbar(
 ) -> impl IntoView {
     view! {
         <QueryToolbarMaterial>
-            <TimeRangePicker selected_secs=range_secs on_change=on_range />
+            <div id="spectra-metric-time-range">
+                <TimeRangePicker selected_secs=range_secs on_change=on_range />
+            </div>
         </QueryToolbarMaterial>
     }
 }

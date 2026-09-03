@@ -7,11 +7,11 @@
 
 use chrono::Utc;
 use serde_json::json;
+use spectra::spectra_core::{EventQuery, GridFilterModel, GridPaginationModel, MetricsQuery};
 use spectra_backend::{
     dashboard_catalog_summary, execute_event_query, execute_metrics_query, schema_metadata_list,
     validate_spectra_query_name, SpectraOpsError, SpectraQueryNameError,
 };
-use spectra::spectra_core::{EventQuery, GridFilterModel, GridPaginationModel, MetricsQuery};
 use spectra_uf_app_e2e::{e2e_fixtures, e2e_spectra, init_e2e_valence};
 
 #[tokio::test]

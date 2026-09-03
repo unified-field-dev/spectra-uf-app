@@ -23,11 +23,197 @@ export type SeedResponse = {
   fixtures: SeedFixtures;
 };
 
+/** All Spectra Help inventory keys — seed as seen so non-tour specs stay quiet. */
+const SPECTRA_HELP_STEPS_SEEN = [
+  { route: "/spectra", feature_highlight: "spectra-intro", spotlight: null, replay: false },
+  {
+    route: "/spectra",
+    feature_highlight: "spectra-dashboard-stats",
+    spotlight: "spectra-dashboard-stats",
+    replay: false,
+  },
+  {
+    route: "/spectra",
+    feature_highlight: "spectra-home-recent",
+    spotlight: "spectra-home-recent",
+    replay: false,
+  },
+  {
+    route: "/spectra",
+    feature_highlight: "spectra-home-view-all",
+    spotlight: "spectra-home-view-all",
+    replay: false,
+  },
+  {
+    route: "/spectra",
+    feature_highlight: "spectra-quick-open-search",
+    spotlight: "spectra-quick-open-search",
+    replay: false,
+  },
+  {
+    route: "/spectra",
+    feature_highlight: "spectra-quick-open-detail",
+    spotlight: "spectra-quick-open-detail",
+    replay: false,
+  },
+  {
+    route: "/spectra",
+    feature_highlight: "spectra-quick-open-explore",
+    spotlight: "spectra-quick-open-explore",
+    replay: false,
+  },
+  {
+    route: "/spectra",
+    feature_highlight: "spectra-nav",
+    spotlight: "spectra-nav",
+    replay: false,
+  },
+  {
+    route: "/spectra/schema",
+    feature_highlight: "spectra-schema-search",
+    spotlight: "spectra-schema-search",
+    replay: false,
+  },
+  {
+    route: "/spectra/schema",
+    feature_highlight: "spectra-schema-grid",
+    spotlight: "spectra-schema-grid",
+    replay: false,
+  },
+  {
+    route: "/spectra/schema",
+    feature_highlight: "spectra-schema-open-details",
+    spotlight: "spectra-schema-open-details",
+    replay: false,
+  },
+  {
+    route: "/spectra/schema",
+    feature_highlight: "spectra-schema-open-explore",
+    spotlight: "spectra-schema-open-explore",
+    replay: false,
+  },
+  {
+    route: "/spectra/schema",
+    feature_highlight: "spectra-schema-nav",
+    spotlight: "spectra-nav",
+    replay: false,
+  },
+  {
+    route: "/spectra/schema/:name",
+    feature_highlight: "spectra-detail-meta",
+    spotlight: "spectra-detail-meta",
+    replay: false,
+  },
+  {
+    route: "/spectra/schema/:name",
+    feature_highlight: "spectra-detail-open-explore",
+    spotlight: "spectra-detail-open-explore",
+    replay: false,
+  },
+  {
+    route: "/spectra/schema/:name",
+    feature_highlight: "spectra-detail-nav",
+    spotlight: "spectra-nav",
+    replay: false,
+  },
+  {
+    route: "/spectra/schema/:name/explore",
+    feature_highlight: "spectra-event-intro",
+    spotlight: null,
+    replay: false,
+  },
+  {
+    route: "/spectra/schema/:name/explore",
+    feature_highlight: "spectra-event-time-range",
+    spotlight: "spectra-event-time-range",
+    replay: false,
+  },
+  {
+    route: "/spectra/schema/:name/explore",
+    feature_highlight: "spectra-event-view-picker",
+    spotlight: "spectra-event-view-picker",
+    replay: false,
+  },
+  {
+    route: "/spectra/schema/:name/explore",
+    feature_highlight: "spectra-aggregation-measure",
+    spotlight: "spectra-aggregation-measure",
+    replay: false,
+  },
+  {
+    route: "/spectra/schema/:name/explore",
+    feature_highlight: "spectra-aggregation-bucket",
+    spotlight: "spectra-aggregation-bucket",
+    replay: false,
+  },
+  {
+    route: "/spectra/schema/:name/explore",
+    feature_highlight: "spectra-aggregation-group-by",
+    spotlight: "spectra-aggregation-group-by",
+    replay: false,
+  },
+  {
+    route: "/spectra/schema/:name/explore",
+    feature_highlight: "spectra-event-viewport",
+    spotlight: "spectra-event-explore-viewport",
+    replay: false,
+  },
+  {
+    route: "/spectra/schema/:name/explore",
+    feature_highlight: "spectra-event-nav",
+    spotlight: "spectra-nav",
+    replay: false,
+  },
+  {
+    route: "/spectra/metric/:name/explore",
+    feature_highlight: "spectra-metric-intro",
+    spotlight: null,
+    replay: false,
+  },
+  {
+    route: "/spectra/metric/:name/explore",
+    feature_highlight: "spectra-metric-time-range",
+    spotlight: "spectra-metric-time-range",
+    replay: false,
+  },
+  {
+    route: "/spectra/metric/:name/explore",
+    feature_highlight: "spectra-metric-results",
+    spotlight: "spectra-metric-results",
+    replay: false,
+  },
+  {
+    route: "/spectra/metric/:name/explore",
+    feature_highlight: "spectra-metric-nav",
+    spotlight: "spectra-nav",
+    replay: false,
+  },
+] as const;
+
 export async function seedAuth(
   page: Page,
   auth: SeedAuthKind,
-  opts?: { skipData?: boolean },
+  opts?: { skipData?: boolean; help_tour?: boolean },
 ) {
+  const helpTour = opts?.help_tour ?? false;
+  await page.addInitScript(
+    ([enableTour, seenSteps]) => {
+      try {
+        if (enableTour) {
+          if (!sessionStorage.getItem("uf.help.e2e_tour_cleared")) {
+            localStorage.removeItem("uf.help.tour_steps");
+            sessionStorage.setItem("uf.help.e2e_tour_cleared", "1");
+          }
+          return;
+        }
+        localStorage.setItem("uf.help.tour_steps", JSON.stringify(seenSteps));
+      } catch {
+        /* ignore */
+      }
+    },
+    [helpTour, SPECTRA_HELP_STEPS_SEEN] as const,
+  );
+
   const res = await page.request.post("/api/test/seed-data", {
     data: { auth, skip_data: opts?.skipData ?? false },
   });
@@ -110,7 +296,9 @@ export async function selectEventView(page: Page, label: string) {
   expect(testId, `unknown event view label: ${label}`).toBeTruthy();
   await page.getByTestId(testId).getByRole("button").click();
   if (label !== "Event log") {
-    await expect(page.getByTestId("spectra-aggregation-measure")).toBeVisible({
+    await expect(
+      page.getByTestId("spectra-aggregation-measure").locator("select"),
+    ).toBeVisible({
       timeout: 60_000,
     });
   }

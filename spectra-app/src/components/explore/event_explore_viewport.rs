@@ -13,7 +13,7 @@ pub fn EventExploreViewport(
     aggregate_result: Option<EventAggregateResult>,
 ) -> impl IntoView {
     view! {
-        <div data-testid="spectra-event-explore-viewport">
+        <div id="spectra-event-explore-viewport" data-testid="spectra-event-explore-viewport">
             {match view {
                 EventExploreView::EventLog => {
                     row_result.map(|r| view! { <EventLogPanel result=r /> }.into_any())

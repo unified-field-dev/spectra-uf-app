@@ -65,5 +65,13 @@ npm run test:headed
 | `pw-spectra-metric-permission-denied-sad` | `metric_explore.spec.ts` | Permission denied |
 | `pw-spectra-breadcrumbs-explore-happy` | `navigation.spec.ts` | Breadcrumbs show table name |
 | `pw-spectra-direct-explore-url-happy` | `navigation.spec.ts` | Direct URL loads grid |
+| `pw-spectra-help-spotlight-skips-when-seeded` | `help_spotlight.spec.ts` | Quiet UI when `uf.help.tour_steps` seeded |
+| `pw-spectra-help-spotlight-skips-auth-gate` | `help_spotlight.spec.ts` | No tour over sign-in |
+| `pw-spectra-help-spotlight-home-green` | `help_spotlight.spec.ts` | Home tour Next→Finish |
+| `pw-spectra-help-spotlight-schema-index-green` | `help_spotlight.spec.ts` | Schema index tour |
+| `pw-spectra-help-spotlight-schema-detail-green` | `help_spotlight.spec.ts` | Schema detail tour |
+| `pw-spectra-help-spotlight-event-explore-green` | `help_spotlight.spec.ts` | Event explore tour |
+| `pw-spectra-help-spotlight-metric-explore-green` | `help_spotlight.spec.ts` | Metric explore tour |
 
 Seed profiles via `POST /api/test/seed-data`: `admin`, `admin_noperms`, `outsider`, `unverified`, `anonymous`; optional `skip_data: true`.
+Pass `{ help_tour: true }` to `seedAuth` to clear Help seen-steps once per tab for the green-path tour specs.

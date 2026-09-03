@@ -110,7 +110,8 @@ cargo leptos end-to-end --project spectra-uf-app-e2e
 
 Do not interrupt the run — it exits when Playwright finishes.
 
-Specs cover auth gate, home dashboard, schema list/detail, and event/metric explore
+Specs cover auth gate, home dashboard, schema list/detail, event/metric explore,
+and Help spotlight tours (`help_spotlight.spec.ts`: skip-by-default + all-routes green path)
 with mem Spectra seed data (`POST /api/test/seed-data`).
 
 Layer 1 still holds stub-shape regression tests (`empty_*` helpers) and live-query

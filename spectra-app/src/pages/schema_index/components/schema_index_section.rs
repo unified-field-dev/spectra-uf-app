@@ -44,11 +44,27 @@ pub fn SchemaIndexSection(
                             }
                         } else {
                             view! {
-                                <AutoGrid min=Signal::derive(|| "270px".to_string())>
-                                    {filtered.into_iter().map(|item| view! {
-                                        <SchemaCard item=item />
-                                    }).collect_view()}
-                                </AutoGrid>
+                                <div id="spectra-schema-grid">
+                                    <AutoGrid min=Signal::derive(|| "270px".to_string())>
+                                        {filtered.into_iter().enumerate().map(|(idx, item)| {
+                                            let (details_id, explore_id) = if idx == 0 {
+                                                (
+                                                    "spectra-schema-open-details",
+                                                    "spectra-schema-open-explore",
+                                                )
+                                            } else {
+                                                ("", "")
+                                            };
+                                            view! {
+                                                <SchemaCard
+                                                    item=item
+                                                    details_spotlight_id=details_id
+                                                    explore_spotlight_id=explore_id
+                                                />
+                                            }
+                                        }).collect_view()}
+                                    </AutoGrid>
+                                </div>
                             }
                             .into_any()
                         }
