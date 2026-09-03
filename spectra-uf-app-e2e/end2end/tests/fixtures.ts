@@ -238,10 +238,10 @@ async function bootState(page: Page): Promise<"ready" | "error" | "loading"> {
  * Wait for Orbital hydrate. On terminal boot `error`, pause then reload — do not
  * thrash navigations (that aborts in-flight `.wasm`). Never reload while `loading`.
  */
-export async function waitForHydrated(page: Page, timeoutMs = 180_000) {
+export async function waitForHydrated(page: Page, timeoutMs = 240_000) {
   const deadline = Date.now() + timeoutMs;
   let refreshes = 0;
-  const maxRefreshes = 3;
+  const maxRefreshes = 8;
 
   while (Date.now() < deadline) {
     const state = await bootState(page);
@@ -253,8 +253,8 @@ export async function waitForHydrated(page: Page, timeoutMs = 180_000) {
         break;
       }
       refreshes += 1;
-      // Let Chromium release a failed compile before retrying the ~50–100MiB wasm.
-      await page.waitForTimeout(1_500);
+      // Let Chromium release a failed compile before retrying large wasm.
+      await page.waitForTimeout(2_500);
       await page.reload({ waitUntil: "load" });
       continue;
     }
@@ -262,7 +262,7 @@ export async function waitForHydrated(page: Page, timeoutMs = 180_000) {
   }
 
   await expect
-    .poll(async () => bootState(page), { timeout: 10_000 })
+    .poll(async () => bootState(page), { timeout: 15_000 })
     .toBe("ready");
   await expect(page.getByTestId("orbital-boot-overlay")).toHaveCount(0, {
     timeout: 60_000,

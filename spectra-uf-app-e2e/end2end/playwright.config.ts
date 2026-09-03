@@ -16,7 +16,11 @@ export default defineConfig({
     navigationTimeout: 120_000,
     ...devices["Desktop Chrome"],
     launchOptions: {
-      args: ["--disable-dev-shm-usage"],
+      args: [
+        "--disable-dev-shm-usage",
+        "--disable-gpu",
+        "--js-flags=--max-old-space-size=8192",
+      ],
       ...(headed
         ? { slowMo: Number(process.env.PW_SLOW_MO ?? 250) }
         : {}),
