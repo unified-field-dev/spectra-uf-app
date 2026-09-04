@@ -1313,8 +1313,8 @@ dependencies = [
  "uf-product-macros",
  "uf-quark 0.1.3 (git+https://github.com/unified-field-dev/quark?branch=main)",
  "uf-search-core",
- "uf-spectra 0.1.3 (git+https://github.com/unified-field-dev/Spectra?branch=main)",
- "uf-spectra-core 0.1.3 (git+https://github.com/unified-field-dev/Spectra?branch=main)",
+ "uf-spectra",
+ "uf-spectra-core",
  "uf-valence",
  "uf-valence-codegen",
  "uuid",
@@ -4622,7 +4622,7 @@ dependencies = [
  "uf-integrations",
  "uf-product",
  "uf-product-macros",
- "uf-spectra-core 0.1.3 (git+https://github.com/unified-field-dev/Spectra?branch=ship%2Fserde-default-empty-filters)",
+ "uf-spectra-core",
 ]
 
 [[package]]
@@ -4633,50 +4633,27 @@ dependencies = [
  "serde",
  "serde_json",
  "tokio",
- "uf-spectra 0.1.3 (git+https://github.com/unified-field-dev/Spectra?branch=ship%2Fserde-default-empty-filters)",
- "uf-spectra-core 0.1.3 (git+https://github.com/unified-field-dev/Spectra?branch=ship%2Fserde-default-empty-filters)",
+ "uf-spectra",
+ "uf-spectra-core",
 ]
 
 [[package]]
 name = "spectra-backend-mem"
 version = "0.1.3"
-source = "git+https://github.com/unified-field-dev/Spectra?branch=main#0a603cea0388840f81f246e216eb3204bd819783"
+source = "git+https://github.com/unified-field-dev/Spectra?branch=main#5e6e5100f39806f7dee58c380764cafbaf0e07bc"
 dependencies = [
  "async-trait",
  "chrono",
  "parking_lot",
  "serde_json",
  "tokio",
- "uf-spectra-core 0.1.3 (git+https://github.com/unified-field-dev/Spectra?branch=main)",
-]
-
-[[package]]
-name = "spectra-backend-mem"
-version = "0.1.3"
-source = "git+https://github.com/unified-field-dev/Spectra?branch=ship%2Fserde-default-empty-filters#03fe9fe502734a6132e0cb648c95b5d30e3e983e"
-dependencies = [
- "async-trait",
- "chrono",
- "parking_lot",
- "serde_json",
- "tokio",
- "uf-spectra-core 0.1.3 (git+https://github.com/unified-field-dev/Spectra?branch=ship%2Fserde-default-empty-filters)",
+ "uf-spectra-core",
 ]
 
 [[package]]
 name = "spectra-macros"
 version = "0.1.3"
-source = "git+https://github.com/unified-field-dev/Spectra?branch=main#0a603cea0388840f81f246e216eb3204bd819783"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn 2.0.119",
-]
-
-[[package]]
-name = "spectra-macros"
-version = "0.1.3"
-source = "git+https://github.com/unified-field-dev/Spectra?branch=ship%2Fserde-default-empty-filters#03fe9fe502734a6132e0cb648c95b5d30e3e983e"
+source = "git+https://github.com/unified-field-dev/Spectra?branch=main#5e6e5100f39806f7dee58c380764cafbaf0e07bc"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -4686,25 +4663,13 @@ dependencies = [
 [[package]]
 name = "spectra-runtime"
 version = "0.1.3"
-source = "git+https://github.com/unified-field-dev/Spectra?branch=main#0a603cea0388840f81f246e216eb3204bd819783"
+source = "git+https://github.com/unified-field-dev/Spectra?branch=main#5e6e5100f39806f7dee58c380764cafbaf0e07bc"
 dependencies = [
  "chrono",
  "serde_json",
  "tokio",
  "tracing",
- "uf-spectra-core 0.1.3 (git+https://github.com/unified-field-dev/Spectra?branch=main)",
-]
-
-[[package]]
-name = "spectra-runtime"
-version = "0.1.3"
-source = "git+https://github.com/unified-field-dev/Spectra?branch=ship%2Fserde-default-empty-filters#03fe9fe502734a6132e0cb648c95b5d30e3e983e"
-dependencies = [
- "chrono",
- "serde_json",
- "tokio",
- "tracing",
- "uf-spectra-core 0.1.3 (git+https://github.com/unified-field-dev/Spectra?branch=ship%2Fserde-default-empty-filters)",
+ "uf-spectra-core",
 ]
 
 [[package]]
@@ -4742,7 +4707,7 @@ dependencies = [
  "uf-help",
  "uf-integrations",
  "uf-product",
- "uf-spectra 0.1.3 (git+https://github.com/unified-field-dev/Spectra?branch=ship%2Fserde-default-empty-filters)",
+ "uf-spectra",
  "uf-valence",
  "wasm-bindgen",
 ]
@@ -5824,8 +5789,8 @@ dependencies = [
  "uf-product-macros",
  "uf-quark 0.1.3 (git+https://github.com/unified-field-dev/quark?branch=main)",
  "uf-search-core",
- "uf-spectra 0.1.3 (git+https://github.com/unified-field-dev/Spectra?branch=main)",
- "uf-spectra-core 0.1.3 (git+https://github.com/unified-field-dev/Spectra?branch=main)",
+ "uf-spectra",
+ "uf-spectra-core",
  "uf-valence",
  "uf-valence-codegen",
  "url",
@@ -5873,53 +5838,21 @@ dependencies = [
 [[package]]
 name = "uf-spectra"
 version = "0.1.3"
-source = "git+https://github.com/unified-field-dev/Spectra?branch=main#0a603cea0388840f81f246e216eb3204bd819783"
+source = "git+https://github.com/unified-field-dev/Spectra?branch=main#5e6e5100f39806f7dee58c380764cafbaf0e07bc"
 dependencies = [
  "chrono",
  "serde",
  "serde_json",
- "spectra-backend-mem 0.1.3 (git+https://github.com/unified-field-dev/Spectra?branch=main)",
- "spectra-macros 0.1.3 (git+https://github.com/unified-field-dev/Spectra?branch=main)",
- "spectra-runtime 0.1.3 (git+https://github.com/unified-field-dev/Spectra?branch=main)",
- "uf-spectra-core 0.1.3 (git+https://github.com/unified-field-dev/Spectra?branch=main)",
-]
-
-[[package]]
-name = "uf-spectra"
-version = "0.1.3"
-source = "git+https://github.com/unified-field-dev/Spectra?branch=ship%2Fserde-default-empty-filters#03fe9fe502734a6132e0cb648c95b5d30e3e983e"
-dependencies = [
- "chrono",
- "serde",
- "serde_json",
- "spectra-backend-mem 0.1.3 (git+https://github.com/unified-field-dev/Spectra?branch=ship%2Fserde-default-empty-filters)",
- "spectra-macros 0.1.3 (git+https://github.com/unified-field-dev/Spectra?branch=ship%2Fserde-default-empty-filters)",
- "spectra-runtime 0.1.3 (git+https://github.com/unified-field-dev/Spectra?branch=ship%2Fserde-default-empty-filters)",
- "uf-spectra-core 0.1.3 (git+https://github.com/unified-field-dev/Spectra?branch=ship%2Fserde-default-empty-filters)",
+ "spectra-backend-mem",
+ "spectra-macros",
+ "spectra-runtime",
+ "uf-spectra-core",
 ]
 
 [[package]]
 name = "uf-spectra-core"
 version = "0.1.3"
-source = "git+https://github.com/unified-field-dev/Spectra?branch=main#0a603cea0388840f81f246e216eb3204bd819783"
-dependencies = [
- "async-trait",
- "chrono",
- "dashmap 6.2.1",
- "parking_lot",
- "serde",
- "serde_json",
- "thiserror 2.0.20",
- "tokio",
- "toml 0.8.23",
- "tracing",
- "uf-quark 0.1.3 (registry+https://github.com/rust-lang/crates.io-index)",
-]
-
-[[package]]
-name = "uf-spectra-core"
-version = "0.1.3"
-source = "git+https://github.com/unified-field-dev/Spectra?branch=ship%2Fserde-default-empty-filters#03fe9fe502734a6132e0cb648c95b5d30e3e983e"
+source = "git+https://github.com/unified-field-dev/Spectra?branch=main#5e6e5100f39806f7dee58c380764cafbaf0e07bc"
 dependencies = [
  "async-trait",
  "chrono",
