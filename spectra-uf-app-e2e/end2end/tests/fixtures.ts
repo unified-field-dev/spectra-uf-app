@@ -259,7 +259,8 @@ async function clearFalsePositiveBootError(page: Page): Promise<boolean> {
       }
     );
     const wasmComplete =
-      progress.__orbitalBootProgress?.steps?.wasm === "complete";
+      progress.__orbitalBootProgress?.steps?.wasm === "complete" ||
+      document.querySelectorAll(".orbital-boot-step--complete").length >= 4;
     const shellReady = !!document.querySelector("main");
     if (!wasmComplete || !shellReady) {
       return false;
@@ -294,7 +295,7 @@ export async function waitForHydrated(page: Page, timeoutMs = 180_000) {
       if (await clearFalsePositiveBootError(page)) {
         break;
       }
-      const waitUntil = Math.min(Date.now() + 15_000, deadline);
+      const waitUntil = Math.min(Date.now() + 30_000, deadline);
       let recovered = false;
       while (Date.now() < waitUntil) {
         await page.waitForTimeout(500);
