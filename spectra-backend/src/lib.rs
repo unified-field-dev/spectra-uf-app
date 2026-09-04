@@ -142,8 +142,10 @@ impl std::fmt::Display for SpectraQueryNameError {
 
 impl std::error::Error for SpectraQueryNameError {}
 
+/// ASCII controls (C0 + DEL) plus path separators. Avoids `char::is_control`,
+/// which is not `const` on the leptos-lints pinned nightly.
 const fn is_unsafe_ops_id_char(c: char) -> bool {
-    c.is_control() || c == '/' || c == '\\'
+    c <= '\u{1f}' || c == '\u{7f}' || c == '/' || c == '\\'
 }
 
 /// Rejects blank, oversized, path-separating, control, or `.` / `..` table/metric

@@ -217,17 +217,17 @@
 
 #![allow(missing_docs)] // uf_app! / orbital_routes_extract emit undocumented associated items.
 #![cfg_attr(
-    feature = "ssr",
+    any(feature = "ssr", feature = "hydrate"),
     allow(
         dead_code,
         unused_imports,
         unused_variables,
         unknown_lints
-    ) // SSR-only cfg branches leave hydrate-only imports unused; keep compile green without masking client warnings.
+    ) // Server fn stubs and cfg(ssr) bodies leave the other feature's imports unused.
 )]
 use leptos::prelude::*;
 use leptos_router::{
-    components::{ParentRoute, Route, ToHref},
+    components::{ParentRoute, Route},
     path, Lazy,
 };
 use uf_product_macros::uf_app;
