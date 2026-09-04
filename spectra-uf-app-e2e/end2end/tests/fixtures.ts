@@ -294,7 +294,7 @@ export async function waitForHydrated(page: Page, timeoutMs = 180_000) {
       if (await clearFalsePositiveBootError(page)) {
         break;
       }
-      const waitUntil = Math.min(Date.now() + 45_000, deadline);
+      const waitUntil = Math.min(Date.now() + 15_000, deadline);
       let recovered = false;
       while (Date.now() < waitUntil) {
         await page.waitForTimeout(500);
