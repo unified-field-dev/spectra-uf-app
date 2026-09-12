@@ -1,6 +1,6 @@
 use leptos::prelude::*;
 use orbital::components::Caption1;
-use orbital::primitives::{Flex, Input, Select};
+use orbital::primitives::{Flex, FlexGap, Input, Select};
 use spectra_core::{EventAggregationSpec, EventExploreView, EventMeasure};
 
 use super::event_view_picker::normalize_view;
@@ -96,7 +96,7 @@ pub fn EventAggregationBar(
                 }
             }
             view! {
-                <Flex>
+                <Flex vertical=true gap=FlexGap::Small>
                     <Flex vertical=true>
                         <Caption1>"Measure"</Caption1>
                         <div id="spectra-aggregation-measure" data-testid="spectra-aggregation-measure">

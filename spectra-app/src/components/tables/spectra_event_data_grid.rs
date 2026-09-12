@@ -1,7 +1,7 @@
 use leptos::prelude::*;
 use orbital_datatable::{
     DataTable, DataTableEmptyView, DataTableEvents, DataTableFeatures, DataTableFilter,
-    DataTableFooterSlot, DataTableNoResultsView, PagingMode,
+    DataTableFooterSlot, DataTableHeaderChromeConfig, DataTableNoResultsView, PagingMode,
 };
 use spectra_core::EventQueryResult;
 
@@ -20,18 +20,19 @@ pub fn SpectraEventDataGrid(
     filter: RwSignal<Option<DataTableFilter>>,
     /// Fires when the operator changes structured filters (header or Filters panel).
     on_filter_change: Callback<DataTableFilter>,
-    /// When true, hide rows/footer; chart is rendered by the parent under this grid.
+    /// When true, toolbar only (no thead/tbody); chart is rendered by the parent.
     #[prop(default = false)]
     chart_mode: bool,
 ) -> impl IntoView {
-    let columns = if let Some(ref result) = result {
-        to_column_defs(&result.columns)
-    } else {
-        column_fields
-            .into_iter()
-            .map(|(field, header)| orbital_datatable::DataTableColumnDef::new(field, header))
-            .collect()
-    };
+    let columns = result.as_ref().map_or_else(
+        || {
+            column_fields
+                .into_iter()
+                .map(|(field, header)| orbital_datatable::DataTableColumnDef::new(field, header))
+                .collect()
+        },
+        |result| to_column_defs(&result.columns),
+    );
 
     let row_models = if chart_mode {
         Vec::new()
@@ -46,6 +47,11 @@ pub fn SpectraEventDataGrid(
         DataTableFeatures::empty()
     } else {
         DataTableFeatures::HEADER_FILTERS
+    };
+
+    let header_chrome = DataTableHeaderChromeConfig {
+        show_table_grid: !chart_mode,
+        ..Default::default()
     };
 
     let events = DataTableEvents {
@@ -67,6 +73,7 @@ pub fn SpectraEventDataGrid(
                     filter=Signal::derive(move || filter.get())
                     data_table_events=events
                     paging=PagingMode::None
+                    header_chrome=header_chrome
                 >
                     <DataTableFooterSlot slot>
                         <span></span>
@@ -92,6 +99,7 @@ pub fn SpectraEventDataGrid(
                     filter=Signal::derive(move || filter.get())
                     data_table_events=events
                     paging=PagingMode::Paged
+                    header_chrome=header_chrome
                 />
             </div>
         }

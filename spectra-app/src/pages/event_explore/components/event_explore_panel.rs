@@ -178,7 +178,10 @@ pub fn EventExplorePanel(
     });
 
     view! {
-        <div style="display: flex; flex-direction: column; min-height: 0; flex: 1 1 auto; gap: 0;">
+        <div
+            data-testid="spectra-event-explore-layout"
+            style="display: flex; flex-wrap: wrap; align-items: flex-start; gap: var(--orb-space-inline-md); min-height: 0; flex: 1 1 auto; width: 100%;"
+        >
             <EventToolbar
                 range=range
                 picker_view=Signal::derive(move || picker_view.get())
@@ -191,6 +194,10 @@ pub fn EventExplorePanel(
                 on_refresh=Callback::new(move |_| explore_res.refetch())
                 last_refreshed=Signal::derive(move || last_refreshed.get())
             />
+            <div
+                data-testid="spectra-event-explore-viewport-pane"
+                style="flex: 1 1 28rem; min-width: min(100%, 18rem); min-height: 0;"
+            >
             <Transition fallback=move || view! { <EventExploreSkeleton view=applied_view.get() /> }>
                 {move || match explore_res.get() {
                     Some(Ok(ExploreData::Rows(rows))) => view! {
@@ -224,6 +231,7 @@ pub fn EventExplorePanel(
                     None => view! { <EventExploreSkeleton view=applied_view.get() /> }.into_any(),
                 }}
             </Transition>
+            </div>
         </div>
     }
 }

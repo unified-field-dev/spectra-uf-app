@@ -13,6 +13,50 @@ import {
 } from "./fixtures";
 
 test.describe("pw-spectra-event-explore", () => {
+  test("pw-spectra-event-explore-layout-side-by-side-happy", async ({ page }) => {
+    const seeded = await seedAuth(page, "admin");
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await openEventExplore(page, seeded.fixtures.event_table);
+    const controls = page.getByTestId("spectra-event-explore-controls");
+    const viewport = page.getByTestId("spectra-event-explore-viewport-pane");
+    await expect(controls).toBeVisible({ timeout: 60_000 });
+    await expect(viewport).toBeVisible();
+    const c = await controls.boundingBox();
+    const v = await viewport.boundingBox();
+    expect(c).toBeTruthy();
+    expect(v).toBeTruthy();
+    // Desktop: controls left of viewport (same row), not stacked above.
+    expect(c!.x + c!.width).toBeLessThanOrEqual(v!.x + 8);
+    expect(Math.abs(c!.y - v!.y)).toBeLessThan(80);
+  });
+
+  test("pw-spectra-event-explore-layout-narrow-stack-happy", async ({ page }) => {
+    const seeded = await seedAuth(page, "admin");
+    await page.setViewportSize({ width: 480, height: 900 });
+    await openEventExplore(page, seeded.fixtures.event_table);
+    const controls = page.getByTestId("spectra-event-explore-controls");
+    const viewport = page.getByTestId("spectra-event-explore-viewport-pane");
+    await expect(controls).toBeVisible({ timeout: 60_000 });
+    await expect(viewport).toBeVisible();
+    const c = await controls.boundingBox();
+    const v = await viewport.boundingBox();
+    expect(c).toBeTruthy();
+    expect(v).toBeTruthy();
+    // Narrow: viewport sits under controls.
+    expect(v!.y).toBeGreaterThan(c!.y + c!.height - 24);
+  });
+
+  test("pw-spectra-event-chart-toolbar-no-thead-happy", async ({ page }) => {
+    const seeded = await seedAuth(page, "admin");
+    await openEventExplore(page, seeded.fixtures.event_table);
+    await selectEventView(page, "Time series");
+    await expectEventChartHasData(page, "time_series", { minTotal: 3 });
+    const grid = page.getByTestId("spectra-event-data-grid");
+    await expect(grid).toBeVisible();
+    await expect(grid.getByTestId("data-table-grid-focus")).toHaveCount(0);
+    await expect(grid.getByRole("columnheader")).toHaveCount(0);
+  });
+
   test("pw-spectra-event-log-empty-table-happy", async ({ page }) => {
     const seeded = await seedAuth(page, "admin", { skipData: true });
     await page.goto(

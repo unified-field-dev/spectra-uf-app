@@ -2,8 +2,9 @@ use chrono::{DateTime, Utc};
 use leptos::prelude::*;
 use orbital::components::Caption1;
 use orbital::primitives::{
-    Button, ButtonAppearance, DateTimeRange, DateTimeRangePicker, Flex, FlexGap, FlexWrap,
+    Button, ButtonAppearance, DateTimeRange, DateTimeRangePicker, Flex, FlexAlign, FlexGap,
 };
+
 use spectra_core::{EventAggregationSpec, EventExploreView};
 
 use crate::components::query::{
@@ -33,40 +34,52 @@ pub fn EventToolbar(
     last_refreshed: Signal<Option<DateTime<Utc>>>,
 ) -> impl IntoView {
     view! {
-        <QueryToolbarMaterial>
-            <Flex gap=FlexGap::Small wrap=FlexWrap::Wrap>
-                <div id="spectra-event-time-range" data-testid="spectra-event-time-range">
-                    <DateTimeRangePicker bind=range />
-                </div>
-                <EventViewPicker view=picker_view on_change=on_picker_view />
-                <span data-testid="spectra-event-see">
-                    <Button appearance=ButtonAppearance::Primary on:click=move |_| on_see.run(())>
+        <div
+            data-testid="spectra-event-explore-controls"
+            style="flex: 0 1 20rem; min-width: min(100%, 16rem); max-width: 24rem;"
+        >
+            <QueryToolbarMaterial>
+                <Flex vertical=true gap=FlexGap::Small align=FlexAlign::Stretch>
+                    <div id="spectra-event-time-range" data-testid="spectra-event-time-range">
+                        <DateTimeRangePicker bind=range />
+                    </div>
+                    <EventViewPicker view=picker_view on_change=on_picker_view />
+                    <span data-testid="spectra-event-see">
+                        <Button
+                            appearance=ButtonAppearance::Primary
+                            on:click=move |_| on_see.run(())
+                        >
+                            {move || {
+                                if normalize_view(picker_view.get()) == EventExploreView::EventLog {
+                                    "Show rows"
+                                } else {
+                                    "See"
+                                }
+                            }}
+                        </Button>
+                    </span>
+                    <EventAggregationBar
+                        view=picker_view
+                        spec=aggregation
+                        field_options=field_options
+                    />
+                    <span data-testid="spectra-refresh-data">
+                        <Button
+                            appearance=ButtonAppearance::Secondary
+                            on:click=move |_| on_refresh.run(())
+                        >
+                            "Refresh Data"
+                        </Button>
+                    </span>
+                    <Caption1>
                         {move || {
-                            if normalize_view(picker_view.get()) == EventExploreView::EventLog {
-                                "Show rows"
-                            } else {
-                                "See"
-                            }
+                            last_refreshed.get().map_or_else(String::new, |ts| {
+                                format!("Last refreshed {}", ts.format("%H:%M:%S UTC"))
+                            })
                         }}
-                    </Button>
-                </span>
-                <EventAggregationBar
-                    view=picker_view
-                    spec=aggregation
-                    field_options=field_options
-                />
-                <span data-testid="spectra-refresh-data">
-                    <Button appearance=ButtonAppearance::Secondary on:click=move |_| on_refresh.run(())>
-                        "Refresh Data"
-                    </Button>
-                </span>
-                <Caption1>
-                    {move || match last_refreshed.get() {
-                        Some(ts) => format!("Last refreshed {}", ts.format("%H:%M:%S UTC")),
-                        None => String::new(),
-                    }}
-                </Caption1>
-            </Flex>
-        </QueryToolbarMaterial>
+                    </Caption1>
+                </Flex>
+            </QueryToolbarMaterial>
+        </div>
     }
 }

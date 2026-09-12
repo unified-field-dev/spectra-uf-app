@@ -51,6 +51,9 @@ npm run test:headed
 | `pw-spectra-event-log-seeded-row-happy` | `event_explore.spec.ts` | Grid contains seed message |
 | `pw-spectra-event-log-empty-table-happy` | `event_explore.spec.ts` | Empty table grid mounts |
 | `pw-spectra-event-explore-time-range-happy` | `event_explore.spec.ts` | DateTime range + refresh |
+| `pw-spectra-event-explore-layout-side-by-side-happy` | `event_explore.spec.ts` | Wide: controls left of table |
+| `pw-spectra-event-explore-layout-narrow-stack-happy` | `event_explore.spec.ts` | Narrow: controls above table |
+| `pw-spectra-event-chart-toolbar-no-thead-happy` | `event_explore.spec.ts` | Chart mode: toolbar without thead |
 | `pw-spectra-event-view-timeseries-data-happy` | `event_explore.spec.ts` | Time series chart has data (headline + SVG marks) |
 | `pw-spectra-event-view-bar-chart-data-happy` | `event_explore.spec.ts` | Bar + severity → info/warn slices |
 | `pw-spectra-event-view-pie-chart-data-happy` | `event_explore.spec.ts` | Pie + severity → info/warn slices |
