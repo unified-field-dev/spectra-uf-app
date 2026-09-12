@@ -1,4 +1,5 @@
 use leptos::prelude::*;
+use orbital::components::EmptyState;
 use orbital_charts::LineChart;
 use spectra_core::TimeSeriesDto;
 
@@ -10,12 +11,29 @@ pub fn EventTimeSeriesChart(
     /// Time series payload to render.
     series: Vec<TimeSeriesDto>,
 ) -> impl IntoView {
+    if series.iter().all(|s| s.points.is_empty()) {
+        return view! {
+            <div data-testid="spectra-event-time-series-chart">
+                <div data-testid="spectra-event-empty-state">
+                    <EmptyState
+                        message="No series data"
+                        description="Nothing to chart for this event view and time range."
+                    />
+                </div>
+            </div>
+        }
+        .into_any();
+    }
+
     let (x_axis, chart_series) = chart_from_time_series(&series);
     view! {
-        <div data-testid="spectra-event-time-series-chart">
+        <div data-testid="spectra-event-time-series-chart" style="width: 100%;">
             <ChartSurfaceMaterial>
-                <LineChart x_axis=x_axis series=chart_series />
+                <div style="width: 100%; min-height: 320px;">
+                    <LineChart x_axis=x_axis series=chart_series width=960.0 height=360.0 />
+                </div>
             </ChartSurfaceMaterial>
         </div>
     }
+    .into_any()
 }

@@ -1,5 +1,5 @@
 use leptos::prelude::*;
-use orbital::components::Card;
+use orbital::components::{Card, CardContent};
 
 #[component]
 pub fn ChartSurfaceMaterial(
@@ -8,7 +8,9 @@ pub fn ChartSurfaceMaterial(
 ) -> impl IntoView {
     view! {
         <Card>
-            {children()}
+            <CardContent>
+                {children()}
+            </CardContent>
         </Card>
     }
 }

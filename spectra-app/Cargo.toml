@@ -47,6 +47,8 @@ spectra-backend = { path = "../spectra-backend" }
 higgs = { workspace = true, optional = true }
 gauge = { workspace = true, optional = true }
 
+valence = { workspace = true, optional = true }
+
 [features]
 default = []
 hydrate = [
@@ -76,6 +78,7 @@ ssr = [
     "higgs/ssr",
     "dep:gauge",
     "gauge/ssr",
+    "dep:valence",
     "dep:uf-product",
     "uf-product/ssr",
     "uf-help/ssr",

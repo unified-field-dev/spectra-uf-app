@@ -12,9 +12,11 @@ pub fn EventBarChart(
 ) -> impl IntoView {
     let (x_axis, chart_series) = chart_from_slices(&slices, orbital_charts::ChartType::Bar);
     view! {
-        <div data-testid="spectra-event-bar-chart">
+        <div data-testid="spectra-event-bar-chart" style="width: 100%;">
             <ChartSurfaceMaterial>
-                <BarChart x_axis=x_axis series=chart_series />
+                <div style="width: 100%; min-height: 320px;">
+                    <BarChart x_axis=x_axis series=chart_series width=960.0 height=360.0 />
+                </div>
             </ChartSurfaceMaterial>
         </div>
     }

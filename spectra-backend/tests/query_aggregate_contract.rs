@@ -88,7 +88,7 @@ async fn execute_event_aggregate_count_happy_path() {
 }
 
 #[tokio::test]
-async fn execute_event_aggregate_sum_mem_backend_empty_sad_path() {
+async fn execute_event_aggregate_sum_mem_backend_happy_path() {
     let router = seeded_router().await;
     let result = execute_event_aggregate(
         &router,
@@ -105,15 +105,15 @@ async fn execute_event_aggregate_sum_mem_backend_empty_sad_path() {
     .await
     .expect("aggregate sum");
     match result {
-        EventAggregateResult::TimeSeries { series, headline } => {
+        EventAggregateResult::TimeSeries { series, .. } => {
             let series_total: f64 = series
                 .iter()
                 .flat_map(|s| s.points.iter())
                 .map(|p| p.value)
                 .sum();
             assert!(
-                series.is_empty() && headline.is_empty() || series_total >= 18.0,
-                "mem backend returns empty sum unless implemented: series={series:?} headline={headline:?}"
+                (series_total - 18.0).abs() < f64::EPSILON,
+                "sum of seeded values should be 18: series={series:?}"
             );
         }
         EventAggregateResult::Slices { .. } => panic!("expected time series aggregate"),
@@ -143,12 +143,12 @@ async fn execute_event_aggregate_group_by_slices_happy_path() {
                 slices.len() >= 2,
                 "expected info and warn slices: {slices:?}"
             );
+            let labels: Vec<_> = slices.iter().map(|s| s.label.as_str()).collect();
+            assert!(labels.contains(&"info"), "{labels:?}");
+            assert!(labels.contains(&"warn"), "{labels:?}");
         }
         EventAggregateResult::TimeSeries { series, .. } => {
-            assert!(
-                !series.is_empty(),
-                "mem backend may return time series instead of slices: {series:?}"
-            );
+            panic!("expected Slices for PieChart group_by, got TimeSeries: {series:?}");
         }
     }
 }
@@ -180,7 +180,18 @@ async fn execute_event_aggregate_empty_table_count_sad_path() {
     .expect("empty aggregate");
     match result {
         EventAggregateResult::TimeSeries { headline, series } => {
-            assert!(series.is_empty() || headline.iter().all(|c| c.value == "0"));
+            let total: f64 = series
+                .iter()
+                .flat_map(|s| s.points.iter())
+                .map(|p| p.value)
+                .sum();
+            assert!(
+                total == 0.0
+                    && (series.is_empty()
+                        || series.iter().all(|s| s.points.is_empty())
+                        || headline.iter().any(|c| c.label == "Total" && c.value == "0")),
+                "empty table should yield zero series values: series={series:?} headline={headline:?}"
+            );
         }
         EventAggregateResult::Slices { slices, .. } => assert!(slices.is_empty()),
     }
