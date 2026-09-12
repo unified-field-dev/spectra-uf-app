@@ -53,7 +53,8 @@ test.describe("pw-spectra-event-explore", () => {
     await expectEventChartHasData(page, "time_series", { minTotal: 3 });
     const grid = page.getByTestId("spectra-event-data-grid");
     await expect(grid).toBeVisible();
-    await expect(grid.getByTestId("data-table-grid-focus")).toHaveCount(0);
+    // Chart mode hides thead/scroll host (CSS until Orbital show_table_grid ships on host).
+    await expect(grid.locator(".orbital-data-table__scroll-host")).toBeHidden();
     await expect(grid.getByRole("columnheader")).toHaveCount(0);
   });
 

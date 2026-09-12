@@ -1,7 +1,7 @@
 use leptos::prelude::*;
 use orbital_datatable::{
     DataTable, DataTableEmptyView, DataTableEvents, DataTableFeatures, DataTableFilter,
-    DataTableFooterSlot, DataTableHeaderChromeConfig, DataTableNoResultsView, PagingMode,
+    DataTableFooterSlot, DataTableNoResultsView, PagingMode,
 };
 use spectra_core::EventQueryResult;
 
@@ -20,7 +20,7 @@ pub fn SpectraEventDataGrid(
     filter: RwSignal<Option<DataTableFilter>>,
     /// Fires when the operator changes structured filters (header or Filters panel).
     on_filter_change: Callback<DataTableFilter>,
-    /// When true, toolbar only (no thead/tbody); chart is rendered by the parent.
+    /// When true, keep DataTable toolbar only (hide thead/tbody/footer chrome).
     #[prop(default = false)]
     chart_mode: bool,
 ) -> impl IntoView {
@@ -49,11 +49,6 @@ pub fn SpectraEventDataGrid(
         DataTableFeatures::HEADER_FILTERS
     };
 
-    let header_chrome = DataTableHeaderChromeConfig {
-        show_table_grid: !chart_mode,
-        ..Default::default()
-    };
-
     let events = DataTableEvents {
         on_filter_change: Some(Callback::new(move |f: DataTableFilter| {
             filter.set(Some(f.clone()));
@@ -62,9 +57,19 @@ pub fn SpectraEventDataGrid(
         ..Default::default()
     };
 
+    // Prefer Orbital `show_table_grid=false` when hosts path-patch a newer datatable.
+    // Until then, hide scroll-host/footer so chart mode keeps search/Filters/Columns/Export only.
+    let chart_chrome_css = r#"
+[data-testid="spectra-event-data-grid"][data-chart-mode="true"] .orbital-data-table__scroll-host,
+[data-testid="spectra-event-data-grid"][data-chart-mode="true"] .orbital-data-table__footer {
+    display: none !important;
+}
+"#;
+
     if chart_mode {
         view! {
-            <div data-testid="spectra-event-data-grid">
+            <style>{chart_chrome_css}</style>
+            <div data-testid="spectra-event-data-grid" data-chart-mode="true">
                 <DataTable
                     columns=columns
                     items=items
@@ -73,7 +78,6 @@ pub fn SpectraEventDataGrid(
                     filter=Signal::derive(move || filter.get())
                     data_table_events=events
                     paging=PagingMode::None
-                    header_chrome=header_chrome
                 >
                     <DataTableFooterSlot slot>
                         <span></span>
@@ -90,7 +94,7 @@ pub fn SpectraEventDataGrid(
         .into_any()
     } else {
         view! {
-            <div data-testid="spectra-event-data-grid">
+            <div data-testid="spectra-event-data-grid" data-chart-mode="false">
                 <DataTable
                     columns=columns
                     items=items
@@ -99,7 +103,6 @@ pub fn SpectraEventDataGrid(
                     filter=Signal::derive(move || filter.get())
                     data_table_events=events
                     paging=PagingMode::Paged
-                    header_chrome=header_chrome
                 />
             </div>
         }
