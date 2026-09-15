@@ -1,5 +1,6 @@
 use leptos::prelude::*;
 use orbital::components::EmptyState;
+use orbital::primitives::{Flex, FlexGap};
 use spectra_core::{EventAggregateResult, EventExploreView};
 
 use crate::components::charts::{
@@ -13,15 +14,19 @@ pub fn EventSeriesPanel(
 ) -> impl IntoView {
     match result {
         EventAggregateResult::TimeSeries { series, headline } => view! {
-            <EventAggregateStatRow headline=headline />
-            <EventTimeSeriesChart series=series />
+            <Flex vertical=true gap=FlexGap::Medium full_width=true fill=true>
+                <EventAggregateStatRow headline=headline />
+                <div style="flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column;">
+                    <EventTimeSeriesChart series=series />
+                </div>
+            </Flex>
         }
         .into_any(),
-        EventAggregateResult::Slices { .. } => view! {
+        EventAggregateResult::Slices { .. } | EventAggregateResult::Pivot { .. } => view! {
             <div data-testid="spectra-event-empty-state">
                 <EmptyState
                     message="No series data"
-                    description="This view expects a time series. Switch to Bar or Pie for grouped slices."
+                    description="This view expects a time series. Switch to Bar, Pie, or Table for grouped results."
                 />
             </div>
         }
@@ -68,17 +73,21 @@ pub fn EventPiePanel(
                 .into_any();
             }
             view! {
-                <EventAggregateStatRow headline=headline />
-                {match view {
-                    EventExploreView::BarChart => {
-                        view! { <EventBarChart slices=slices.clone() /> }.into_any()
-                    }
-                    _ => view! { <EventPieChart slices=slices /> }.into_any(),
-                }}
+                <Flex vertical=true gap=FlexGap::Medium full_width=true fill=true>
+                    <EventAggregateStatRow headline=headline />
+                    <div style="flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column;">
+                        {match view {
+                            EventExploreView::BarChart => {
+                                view! { <EventBarChart slices=slices.clone() /> }.into_any()
+                            }
+                            _ => view! { <EventPieChart slices=slices /> }.into_any(),
+                        }}
+                    </div>
+                </Flex>
             }
             .into_any()
         }
-        EventAggregateResult::TimeSeries { .. } => view! {
+        EventAggregateResult::TimeSeries { .. } | EventAggregateResult::Pivot { .. } => view! {
             <div data-testid="spectra-event-empty-state">
                 <EmptyState
                     message="No slice data"

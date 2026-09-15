@@ -28,6 +28,12 @@ const VIEWS: &[(EventExploreView, &str, &str, &str)] = &[
         "pie_chart",
         "spectra-event-view-pie-chart",
     ),
+    (
+        EventExploreView::Table,
+        "Table",
+        "table",
+        "spectra-event-view-table",
+    ),
 ];
 
 fn view_value(v: EventExploreView) -> &'static str {

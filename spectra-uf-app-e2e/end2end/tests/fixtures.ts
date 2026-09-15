@@ -1,4 +1,4 @@
-import { test as base, expect, type Page } from "@playwright/test";
+import { test as base, expect, type Locator, type Page } from "@playwright/test";
 
 export type SeedAuthKind =
   | "anonymous"
@@ -480,6 +480,45 @@ export async function expectEventChartEmpty(page: Page, reason: EventChartEmptyR
   const empty = page.getByTestId("spectra-event-empty-state");
   await expect(empty).toBeVisible({ timeout: 60_000 });
   await expect(empty).toContainText(EMPTY_COPY[reason]);
+}
+
+/**
+ * Assert no two elements matched by `selector` inside `container` have overlapping bounding
+ * boxes. Layout-level (position/size), not a screenshot diff, so it stays stable across
+ * environments/fonts. Same technique as orbital's own `end2end/tests/lib/assertions/layout.ts`
+ * `expectNoOverlappingLabels` — kept as a separate copy here since this is a different repo's
+ * e2e suite, but the two should stay in sync if the technique changes.
+ */
+export async function expectNoOverlappingLabels(
+  container: Locator,
+  selector = ".orb-axis-tick-label",
+) {
+  const labels = container.locator(selector);
+  const count = await labels.count();
+  const boxes: { x: number; y: number; width: number; height: number }[] = [];
+  for (let i = 0; i < count; i++) {
+    const box = await labels.nth(i).boundingBox();
+    if (box) boxes.push(box);
+  }
+
+  const overlapping: [number, number][] = [];
+  for (let i = 0; i < boxes.length; i++) {
+    for (let j = i + 1; j < boxes.length; j++) {
+      const a = boxes[i];
+      const b = boxes[j];
+      const intersects =
+        a.x < b.x + b.width &&
+        a.x + a.width > b.x &&
+        a.y < b.y + b.height &&
+        a.y + a.height > b.y;
+      if (intersects) overlapping.push([i, j]);
+    }
+  }
+
+  expect(
+    overlapping,
+    `overlapping label pairs (indices into rendered order): ${JSON.stringify(overlapping)}`,
+  ).toEqual([]);
 }
 
 export async function fillGroupBy(page: Page, field: string) {

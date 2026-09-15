@@ -23,6 +23,14 @@ pub fn EventAggregationBar(
             .to_string(),
     );
     let group_by = RwSignal::new(spec.get_untracked().group_by_field.unwrap_or_default());
+    let row_field = RwSignal::new(
+        spec.get_untracked()
+            .row_fields
+            .first()
+            .cloned()
+            .unwrap_or_default(),
+    );
+    let pivot_field = RwSignal::new(spec.get_untracked().pivot_field.unwrap_or_default());
     let measure_str = RwSignal::new(if spec.get_untracked().measure == EventMeasure::Count {
         "count".to_string()
     } else {
@@ -71,6 +79,30 @@ pub fn EventAggregationBar(
             spec.update(|s| s.group_by_field = None);
         } else {
             spec.update(|s| s.group_by_field = None);
+        }
+
+        // Same reset-when-leaving-view convention as group_by_field above, for Table's
+        // row_fields / pivot_field.
+        let table_view = current == EventExploreView::Table;
+        if table_view {
+            let rf = row_field.get();
+            let pf = pivot_field.get();
+            spec.update(|s| {
+                s.row_fields = if rf.is_empty() { Vec::new() } else { vec![rf] };
+                s.pivot_field = if pf.is_empty() { None } else { Some(pf) };
+            });
+        } else if !row_field.get_untracked().is_empty() || !pivot_field.get_untracked().is_empty() {
+            row_field.set(String::new());
+            pivot_field.set(String::new());
+            spec.update(|s| {
+                s.row_fields = Vec::new();
+                s.pivot_field = None;
+            });
+        } else {
+            spec.update(|s| {
+                s.row_fields = Vec::new();
+                s.pivot_field = None;
+            });
         }
     });
 
@@ -145,6 +177,38 @@ pub fn EventAggregationBar(
                                     </Select>
                                 </div>
                             </Flex>
+                        }
+                    })}
+                    {matches!(current, EventExploreView::Table).then(|| {
+                        let row_fields_options = fields.clone();
+                        let pivot_field_options = fields.clone();
+                        view! {
+                            <>
+                                <Flex vertical=true>
+                                    <Caption1>"Rows"</Caption1>
+                                    <div id="spectra-aggregation-rows" data-testid="spectra-aggregation-rows">
+                                        <Select bind=row_field>
+                                            <option value="">"(select field)"</option>
+                                            {row_fields_options.iter().map(|f| {
+                                                let opt = f.clone();
+                                                view! { <option value=opt.clone()>{opt.clone()}</option> }
+                                            }).collect_view()}
+                                        </Select>
+                                    </div>
+                                </Flex>
+                                <Flex vertical=true>
+                                    <Caption1>"Pivot field (optional)"</Caption1>
+                                    <div id="spectra-aggregation-pivot-field" data-testid="spectra-aggregation-pivot-field">
+                                        <Select bind=pivot_field>
+                                            <option value="">"(none)"</option>
+                                            {pivot_field_options.iter().map(|f| {
+                                                let opt = f.clone();
+                                                view! { <option value=opt.clone()>{opt.clone()}</option> }
+                                            }).collect_view()}
+                                        </Select>
+                                    </div>
+                                </Flex>
+                            </>
                         }
                     })}
                 </Flex>

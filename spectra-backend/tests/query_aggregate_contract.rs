@@ -66,6 +66,8 @@ async fn execute_event_aggregate_count_happy_path() {
                 measure_field: None,
                 time_bucket_secs: Some(3600),
                 group_by_field: None,
+                row_fields: vec![],
+                pivot_field: None,
             },
         ),
     )
@@ -83,7 +85,9 @@ async fn execute_event_aggregate_count_happy_path() {
                 "count series should reflect seeded rows: {series:?}"
             );
         }
-        EventAggregateResult::Slices { .. } => panic!("expected time series aggregate"),
+        EventAggregateResult::Slices { .. } | EventAggregateResult::Pivot { .. } => {
+            panic!("expected time series aggregate")
+        }
     }
 }
 
@@ -99,6 +103,8 @@ async fn execute_event_aggregate_sum_mem_backend_happy_path() {
                 measure_field: Some("value".into()),
                 time_bucket_secs: Some(3600),
                 group_by_field: None,
+                row_fields: vec![],
+                pivot_field: None,
             },
         ),
     )
@@ -116,7 +122,9 @@ async fn execute_event_aggregate_sum_mem_backend_happy_path() {
                 "sum of seeded values should be 18: series={series:?}"
             );
         }
-        EventAggregateResult::Slices { .. } => panic!("expected time series aggregate"),
+        EventAggregateResult::Slices { .. } | EventAggregateResult::Pivot { .. } => {
+            panic!("expected time series aggregate")
+        }
     }
 }
 
@@ -132,6 +140,8 @@ async fn execute_event_aggregate_group_by_slices_happy_path() {
                 measure_field: None,
                 time_bucket_secs: None,
                 group_by_field: Some("severity".into()),
+                row_fields: vec![],
+                pivot_field: None,
             },
         ),
     )
@@ -150,6 +160,41 @@ async fn execute_event_aggregate_group_by_slices_happy_path() {
         EventAggregateResult::TimeSeries { series, .. } => {
             panic!("expected Slices for PieChart group_by, got TimeSeries: {series:?}");
         }
+        EventAggregateResult::Pivot { .. } => panic!("expected Slices, got Pivot"),
+    }
+}
+
+#[tokio::test]
+async fn execute_event_aggregate_table_pivot_happy_path() {
+    let router = seeded_router().await;
+    let result = execute_event_aggregate(
+        &router,
+        &aggregate_request(
+            EventExploreView::Table,
+            EventAggregationSpec {
+                measure: EventMeasure::Count,
+                measure_field: None,
+                time_bucket_secs: None,
+                group_by_field: None,
+                row_fields: vec!["severity".into()],
+                pivot_field: None,
+            },
+        ),
+    )
+    .await
+    .expect("aggregate table");
+    match result {
+        EventAggregateResult::Pivot {
+            row_fields,
+            column_keys,
+            rows,
+            ..
+        } => {
+            assert_eq!(row_fields, vec!["severity".to_string()]);
+            assert_eq!(column_keys.len(), 1);
+            assert!(rows.len() >= 2, "expected severity groups: {rows:?}");
+        }
+        other => panic!("expected Pivot, got {other:?}"),
     }
 }
 
@@ -173,6 +218,8 @@ async fn execute_event_aggregate_empty_table_count_sad_path() {
                 measure_field: None,
                 time_bucket_secs: Some(3600),
                 group_by_field: None,
+                row_fields: vec![],
+                pivot_field: None,
             },
         ),
     )
@@ -194,5 +241,6 @@ async fn execute_event_aggregate_empty_table_count_sad_path() {
             );
         }
         EventAggregateResult::Slices { slices, .. } => assert!(slices.is_empty()),
+        EventAggregateResult::Pivot { rows, .. } => assert!(rows.is_empty()),
     }
 }

@@ -25,11 +25,11 @@ pub fn MetricTimeSeriesChart(
 
     let (x_axis, chart_series) = chart_from_time_series(&series);
     view! {
-        <div data-testid="spectra-metric-time-series-chart" style="width: 100%;">
+        <div data-testid="spectra-metric-time-series-chart" style="width: 100%; height: 100%;">
             <ChartSurfaceMaterial>
                 <Caption1>"Time series"</Caption1>
-                <div style="width: 100%; min-height: 320px;">
-                    <LineChart x_axis=x_axis series=chart_series width=960.0 height=360.0 />
+                <div style="width: 100%; flex: 1 1 auto; min-height: 320px;">
+                    <LineChart x_axis=x_axis series=chart_series responsive=true />
                 </div>
             </ChartSurfaceMaterial>
         </div>

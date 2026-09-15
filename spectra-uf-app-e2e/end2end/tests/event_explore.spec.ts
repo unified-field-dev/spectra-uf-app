@@ -9,6 +9,7 @@ import {
   expectGridHasRows,
   expectEventChartHasData,
   expectEventChartEmpty,
+  expectNoOverlappingLabels,
   fillGroupBy,
 } from "./fixtures";
 
@@ -179,5 +180,57 @@ test.describe("pw-spectra-event-explore", () => {
     );
     await waitForHydrated(page);
     await expectPermissionDenied(page);
+  });
+
+  test("pw-spectra-event-chart-stat-row-gap-happy", async ({ page }) => {
+    const seeded = await seedAuth(page, "admin");
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await openEventExplore(page, seeded.fixtures.event_table);
+    await selectEventView(page, "Time series");
+    await expectEventChartHasData(page, "time_series", { minTotal: 3 });
+    const stats = page.getByTestId("spectra-event-headline-stats");
+    const chart = page.getByTestId("spectra-event-time-series-chart");
+    const [statsBox, chartBox] = await Promise.all([stats.boundingBox(), chart.boundingBox()]);
+    expect(statsBox).toBeTruthy();
+    expect(chartBox).toBeTruthy();
+    // Chart sits below the stat cards with a real gap, not flush against them.
+    const gap = chartBox!.y - (statsBox!.y + statsBox!.height);
+    expect(gap).toBeGreaterThan(4);
+  });
+
+  test("pw-spectra-event-chart-fills-container-happy", async ({ page }) => {
+    const seeded = await seedAuth(page, "admin");
+    await openEventExplore(page, seeded.fixtures.event_table);
+    await selectEventView(page, "Time series");
+    await expectEventChartHasData(page, "time_series", { minTotal: 3 });
+    const chartHost = page.getByTestId("spectra-event-time-series-chart").locator("svg.orb-chart-svg");
+
+    await page.setViewportSize({ width: 1400, height: 900 });
+    await expect
+      .poll(async () => (await chartHost.boundingBox())?.width ?? 0, { timeout: 15_000 })
+      .toBeGreaterThan(0);
+    const wideBox = await chartHost.boundingBox();
+
+    await page.setViewportSize({ width: 760, height: 900 });
+    await expect
+      .poll(async () => (await chartHost.boundingBox())?.width ?? 0, { timeout: 15_000 })
+      .toBeLessThan(wideBox!.width);
+  });
+
+  test("pw-spectra-event-view-timeseries-dense-buckets-no-overlap-happy", async ({ page }) => {
+    const seeded = await seedAuth(page, "admin");
+    await openEventExplore(page, seeded.fixtures.event_table);
+    await selectEventView(page, "Time series");
+    // 150s buckets over the default 1-hour range -> up to 24 buckets, the dense case that
+    // used to draw every tick label horizontal/full-width and overlap into unreadable text.
+    const bucketInput = page.getByTestId("spectra-aggregation-bucket").locator("input");
+    await bucketInput.fill("150");
+    await page.getByTestId("spectra-event-see").getByRole("button").click();
+    await expectEventChartHasData(page, "time_series", { minTotal: 3 });
+    const chart = page.getByTestId("spectra-event-time-series-chart");
+    await expect
+      .poll(async () => chart.locator(".orb-axis-tick-label").count(), { timeout: 15_000 })
+      .toBeGreaterThan(4);
+    await expectNoOverlappingLabels(chart);
   });
 });

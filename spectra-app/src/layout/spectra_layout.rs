@@ -49,7 +49,7 @@ pub fn SpectraLayout() -> impl IntoView {
                     </Navigation>
                 </ShellLeftNav>
                 <RequireAuthenticated permission_name="QueryTable">
-                    <Flex vertical=true>
+                    <Flex vertical=true fill=true>
                         <div data-testid="spectra-breadcrumbs">
                             <SpectraBreadcrumbTrail />
                         </div>

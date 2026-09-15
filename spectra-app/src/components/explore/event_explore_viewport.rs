@@ -3,7 +3,7 @@ use orbital::primitives::{Flex, FlexGap};
 use orbital_datatable::DataTableFilter;
 use spectra_core::{EventAggregateResult, EventExploreView, EventQueryResult};
 
-use crate::components::explore::{EventPiePanel, EventSeriesPanel};
+use crate::components::explore::{EventAggregateTablePanel, EventPiePanel, EventSeriesPanel};
 use crate::components::query::normalize_view;
 use crate::components::tables::SpectraEventDataGrid;
 
@@ -17,6 +17,8 @@ pub fn EventExploreViewport(
     aggregate_result: Option<EventAggregateResult>,
     /// Group-by field for bar/pie EmptyState when unset.
     group_by_field: Option<String>,
+    /// Row-key fields for Table's EmptyState when unset.
+    row_fields: Vec<String>,
     /// Column field/header pairs when chart mode has no row payload yet.
     column_fields: Vec<(String, String)>,
     /// Controlled DataTable filter.
@@ -28,8 +30,8 @@ pub fn EventExploreViewport(
     let chart_mode = view != EventExploreView::EventLog;
 
     view! {
-        <div id="spectra-event-explore-viewport" data-testid="spectra-event-explore-viewport">
-            <Flex vertical=true gap=FlexGap::Small>
+        <div id="spectra-event-explore-viewport" data-testid="spectra-event-explore-viewport" style="height: 100%;">
+            <Flex vertical=true gap=FlexGap::Small fill=true>
                 <SpectraEventDataGrid
                     result=row_result.clone()
                     column_fields=column_fields
@@ -43,7 +45,10 @@ pub fn EventExploreViewport(
                         aggregate_result
                             .map(|r| {
                                 view! {
-                                    <div data-testid="spectra-event-explore-chart-body">
+                                    <div
+                                        data-testid="spectra-event-explore-chart-body"
+                                        style="flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column;"
+                                    >
                                         <EventSeriesPanel result=r />
                                     </div>
                                 }
@@ -56,8 +61,30 @@ pub fn EventExploreViewport(
                         aggregate_result
                             .map(|r| {
                                 view! {
-                                    <div data-testid="spectra-event-explore-chart-body">
+                                    <div
+                                        data-testid="spectra-event-explore-chart-body"
+                                        style="flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column;"
+                                    >
                                         <EventPiePanel view=view result=r group_by_field=gb />
+                                    </div>
+                                }
+                                .into_any()
+                            })
+                            .unwrap_or_else(|| ().into_any())
+                    }
+                    EventExploreView::Table => {
+                        let row_fields_selected = !row_fields.is_empty();
+                        aggregate_result
+                            .map(|r| {
+                                view! {
+                                    <div
+                                        data-testid="spectra-event-explore-chart-body"
+                                        style="flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column;"
+                                    >
+                                        <EventAggregateTablePanel
+                                            result=r
+                                            row_fields_selected=row_fields_selected
+                                        />
                                     </div>
                                 }
                                 .into_any()

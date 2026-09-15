@@ -23,6 +23,8 @@ pub fn EventExplorePage() -> impl IntoView {
         measure_field: None,
         time_bucket_secs: Some(3600),
         group_by_field: None,
+        row_fields: Vec::new(),
+        pivot_field: None,
     });
 
     view! {

@@ -99,6 +99,8 @@ pub fn EventExplorePanel(
                     measure_field: None,
                     time_bucket_secs: Some(3600),
                     group_by_field: None,
+                    row_fields: Vec::new(),
+                    pivot_field: None,
                 });
             let range = match range_key {
                 Some((start_ts, end_ts)) => {
@@ -196,7 +198,7 @@ pub fn EventExplorePanel(
             />
             <div
                 data-testid="spectra-event-explore-viewport-pane"
-                style="flex: 1 1 28rem; min-width: min(100%, 18rem); min-height: 0;"
+                style="flex: 1 1 28rem; min-width: min(100%, 18rem); min-height: 0; align-self: stretch;"
             >
             <Transition fallback=move || view! { <EventExploreSkeleton view=applied_view.get() /> }>
                 {move || match explore_res.get() {
@@ -206,6 +208,7 @@ pub fn EventExplorePanel(
                             row_result=Some(rows)
                             aggregate_result=None
                             group_by_field=None
+                            row_fields=Vec::new()
                             column_fields=column_fields.get()
                             table_filter=table_filter
                             on_filter_change=on_filter_change
@@ -217,6 +220,7 @@ pub fn EventExplorePanel(
                             row_result=None
                             aggregate_result=Some(agg)
                             group_by_field=aggregation.get().group_by_field.clone()
+                            row_fields=aggregation.get().row_fields.clone()
                             column_fields=column_fields.get()
                             table_filter=table_filter
                             on_filter_change=on_filter_change
