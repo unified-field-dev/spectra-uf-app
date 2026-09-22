@@ -1,6 +1,6 @@
 use leptos::prelude::*;
 use orbital::components::EmptyState;
-use orbital_charts::LineChart;
+use orbital_charts::{LineChart, TooltipConfig};
 use spectra_core::TimeSeriesDto;
 
 use super::chart_series::chart_from_time_series;
@@ -30,7 +30,12 @@ pub fn EventTimeSeriesChart(
         <div data-testid="spectra-event-time-series-chart" style="width: 100%; height: 100%;">
             <ChartSurfaceMaterial>
                 <div style="width: 100%; flex: 1 1 auto; min-height: 320px;">
-                    <LineChart x_axis=x_axis series=chart_series responsive=true />
+                    <LineChart
+                        x_axis=x_axis
+                        series=chart_series
+                        responsive=true
+                        tooltip=TooltipConfig::axis()
+                    />
                 </div>
             </ChartSurfaceMaterial>
         </div>

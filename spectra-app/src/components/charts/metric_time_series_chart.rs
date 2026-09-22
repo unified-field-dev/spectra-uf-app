@@ -1,6 +1,6 @@
 use leptos::prelude::*;
 use orbital::components::{Caption1, EmptyState};
-use orbital_charts::LineChart;
+use orbital_charts::{LineChart, TooltipConfig};
 use spectra_core::TimeSeriesDto;
 
 use super::chart_series::chart_from_time_series;
@@ -29,7 +29,12 @@ pub fn MetricTimeSeriesChart(
             <ChartSurfaceMaterial>
                 <Caption1>"Time series"</Caption1>
                 <div style="width: 100%; flex: 1 1 auto; min-height: 320px;">
-                    <LineChart x_axis=x_axis series=chart_series responsive=true />
+                    <LineChart
+                        x_axis=x_axis
+                        series=chart_series
+                        responsive=true
+                        tooltip=TooltipConfig::axis()
+                    />
                 </div>
             </ChartSurfaceMaterial>
         </div>
