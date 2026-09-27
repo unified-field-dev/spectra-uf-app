@@ -4,10 +4,11 @@ Playwright IsolatedLab host for [`spectra-app`](../spectra-app/) on `127.0.0.1:3
 
 ## Run
 
+From the repository root:
+
 ```bash
 export CARGO_BUILD_JOBS=1
 export CARGO_TARGET_DIR=target-spectra-uf-app
-cd L4-composers/spectra-uf-app
 cargo leptos end-to-end --project spectra-uf-app-e2e
 ```
 

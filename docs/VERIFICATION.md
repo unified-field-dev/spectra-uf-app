@@ -104,7 +104,6 @@ GitHub Actions job **`e2e`** runs the same gate as local:
 ```bash
 export CARGO_BUILD_JOBS=1
 export CARGO_TARGET_DIR=target-spectra-uf-app
-cd L4-composers/spectra-uf-app
 cargo leptos end-to-end --project spectra-uf-app-e2e
 ```
 

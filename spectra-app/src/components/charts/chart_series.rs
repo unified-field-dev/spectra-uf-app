@@ -253,8 +253,8 @@ mod tests {
                 "display label {label:?} should be shorter than scale key {key:?}"
             );
         }
-        // Same calendar day for all three buckets -> time-only labels.
-        assert_eq!(labels[0], "09:00");
+        // First bucket has no previous point -> date anchor; the rest share its day -> time only.
+        assert_eq!(labels[0], "Jan 05");
         assert_eq!(labels[1], "10:00");
         assert_eq!(labels[2], "11:00");
     }

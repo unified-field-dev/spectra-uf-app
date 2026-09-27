@@ -31,10 +31,7 @@ fn default_auth() -> String {
 }
 
 /// Create `spectra.query.{table}` if missing (for lab-only names not in inventory).
-async fn ensure_named_query_perm(
-    admin: &valence::Valence,
-    table: &str,
-) -> Result<(), StatusCode> {
+async fn ensure_named_query_perm(admin: &valence::Valence, table: &str) -> Result<(), StatusCode> {
     use gauge::types::PermissionCreateInput;
 
     let perm_name = spectra_query_permission_name(table);
