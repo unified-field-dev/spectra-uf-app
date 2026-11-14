@@ -47,6 +47,7 @@ const fn first_page_request() -> PageRequest {
         sort: None,
         filter: None,
         quick_search: None,
+        cursor: None,
     }
 }
 
@@ -64,7 +65,9 @@ fn is_first_page_request(request: &PageRequest) -> bool {
 /// Builds the Spectra query for one `DataTable` page.
 ///
 /// Paged mode always requests offsets that are multiples of `limit`, so the page index is
-/// `offset / limit`. With no sort columns the log is newest first.
+/// `offset / limit`. With no sort columns the log is newest first. `request.cursor` is
+/// ignored: Spectra event queries page by index, so [`event_result_to_page`] never issues
+/// one.
 #[must_use]
 pub fn page_request_to_event_query(scope: &EventLogScope, request: &PageRequest) -> EventQuery {
     let page_size = request.limit.max(1);
@@ -114,6 +117,9 @@ pub fn page_request_to_event_query(scope: &EventLogScope, request: &PageRequest)
 /// Converts one page of event rows into `DataTable` records.
 ///
 /// `result.row_count` is the total across pages, so it becomes the footer total.
+///
+/// `next_cursor` stays `None`. Spectra event queries page by index and have no position to
+/// resume from, so the table asks for the next page by `offset`.
 #[must_use]
 pub fn event_result_to_page(result: EventQueryResult, offset: u32) -> Page<DataRecord> {
     let seen = u64::from(offset).saturating_add(u64::try_from(result.rows.len()).unwrap_or(0));
@@ -141,6 +147,7 @@ pub fn event_result_to_page(result: EventQueryResult, offset: u32) -> Page<DataR
         has_more: seen < result.row_count,
         total_count: Some(result.row_count),
         next_request_offset: None,
+        next_cursor: None,
     }
 }
 
@@ -206,6 +213,7 @@ mod tests {
                 logic: FilterLogicWire::And,
             }),
             quick_search: Some("  disk  full ".into()),
+            cursor: None,
         };
         let query = page_request_to_event_query(&scope(), &request);
         assert_eq!(query.table, "platform_smoke_event");
@@ -230,6 +238,7 @@ mod tests {
             sort: Some(Vec::new()),
             filter: None,
             quick_search: None,
+            cursor: None,
         };
         let query = page_request_to_event_query(&scope(), &request);
         assert_eq!(query.pagination.page, 0);
@@ -249,6 +258,19 @@ mod tests {
         let mut searched = first_page_request();
         searched.quick_search = Some("x".into());
         assert!(!is_first_page_request(&searched));
+    }
+
+    #[test]
+    fn page_request_pages_by_offset_even_with_a_cursor() {
+        let mut request = first_page_request();
+        request.offset = EVENT_LOG_PAGE_SIZE * 3;
+        let by_offset = page_request_to_event_query(&scope(), &request);
+        for token in ["not a cursor", ""] {
+            let with_cursor = request.clone().with_cursor(Some(token.into()));
+            let query = page_request_to_event_query(&scope(), &with_cursor);
+            assert_eq!(query.pagination.page, 3);
+            assert_eq!(query.pagination.page_size, by_offset.pagination.page_size);
+        }
     }
 
     fn result(rows: usize, row_count: u64) -> EventQueryResult {
@@ -281,6 +303,8 @@ mod tests {
         assert_eq!(page.items.len(), 50);
         assert_eq!(page.total_count, Some(120));
         assert!(page.has_more);
+        // No cursor: the table asks for the next page by offset.
+        assert_eq!(page.next_cursor, None);
         assert_eq!(
             page.items[1].get("bytes").map(DataValue::display_string),
             Some("1".into())
@@ -295,5 +319,6 @@ mod tests {
         assert_eq!(empty.items.len(), 0);
         assert!(!empty.has_more);
         assert_eq!(empty.total_count, Some(0));
+        assert_eq!(page.next_cursor, None);
     }
 }
